@@ -1,3 +1,10 @@
+/*
+ * Run as
+ *  ./a.out A B C D E
+ * where A is inital char and B is trailing char. C is the numerator, D is the 
+ * denominator, E is a length of the bar.
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 
