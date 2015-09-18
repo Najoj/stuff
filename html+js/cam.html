@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <style>
+    body {
+      background-color: #0c0c0c;
+    }
+    
+    p, h2, input {
+      color: #ffffff;
+    }
+    
+    body img.webcam {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    body button
+    {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+  
+  <script type="text/javascript">
+  // <![CDATA[
+  // Förstora bilden
+  function bigger()
+  {
+    var pic = document.getElementById('webcam');
+    if(pic && pic.style)
+    {
+      pic.height *= 1.20;
+      pic.width *= 1.20;
+    }
+    write_to_cookie();
+  }
+  // Förminska bilden
+  function smaller()
+  {
+    var pic = document.getElementById('webcam');
+    if(pic && pic.style)
+    {
+      pic.height /= 1.20;
+      pic.width /= 1.20;
+    }
+    write_to_cookie();
+  }
+  // Kontrollera om man ska ladda om sidan. Annars sätts ny tidsgräns.
+  function check()
+  {
+    if(document.getElementById('updatebox').checked)
+    {
+      location.reload()
+    }
+    else
+    {
+      setTimeout("check();", 14500);
+    }
+  }
+  // Sparar lite fakta till kaka.
+  function write_to_cookie()
+  {
+    var pic = document.getElementById('webcam');
+    var checkedbox = 0;
+    if(document.getElementById('updatebox').checked)
+      checkedbox = 1;
+    document.cookie = "" + pic.height + " " + pic.width + " " + checkedbox;
+  }
+  // Läser från kaka. Denna kommer inte att göra något om kaka inte finns.
+  function read_from_cookie()
+  {
+    var ca = document.cookie.split(' ');
+    if( ca.length == 3 )
+    {
+      var pic = document.getElementById('webcam');
+      pic.height = parseInt(ca[0]);
+      pic.width  = parseInt(ca[1]);
+      document.getElementById('updatebox').checked = parseInt(ca[2]);
+    }
+  }
+  // Hämtar tiden
+  function get_date()
+  {
+    var date = new Date();
+    var h = date.getHours();
+    var m = date.getMinutes();
+    var s = date.getSeconds();
+    if( h < 10)
+      h = "0" + h;
+    if( m < 10)
+      m = "0" + m;
+    if( s < 10)
+      s = "0" + s;
+    date = h + ":" + m + ":" + s;
+    
+    document.write(date);
+  }
+  
+  setTimeout("check();", 14500);
+  
+  // ]]>
+  </script>
+  
+  <link rel="icon" href="/block.ico">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>
+    Spionera lite. :-)
+  </title>
+  </head>
+  <body onload="read_from_cookie()">
+    <p>Uppdatera sidan var 15:e sekund. <input type="checkbox" id="updatebox" onclick="write_to_cookie()"/> <script>get_date()</script></p>
+    <button type="button" onclick="bigger()">Större bild</button> <button type="button" onclick="smaller()">Mindre bild</button>
+    <img class="webcam" id="webcam" src="/Webcam.png" alt="Hello Internet!"> <br>
+  </body>
+</html>

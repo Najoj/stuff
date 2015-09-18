@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="icon" href="/block.ico">
+  <style>
+    html {
+        height: 100%; 
+    }
+    body {
+        width:  inherit;
+        height: 90%;
+        background-color: #000000;
+        margin:           2px;
+    }
+    
+    table, tr
+    {
+        width:  inherit;
+        height: inherit;
+        margin: auto auto auto auto;
+    }
+    h2 {
+      text-align:   center;
+      color:        #ffffff;
+    }
+    
+    td {
+        text-align:   center;
+        color:        #ffffff;
+        margin-top:   auto;
+        vertical-align: middle;
+     }
+    img.fb {
+      height:       100%;
+      width:        100%;
+      
+      max-height:   148px;
+      max-width:    445px;
+    }
+    img.tn {
+      height:       100%;
+      width:        100%;
+      
+      max-height:   282px;
+      max-width:    305px;
+    }
+    img.bl {
+      height:       100%;
+      width:        100%;
+      
+      max-height:   929px;
+      max-width:    920px;
+    }
+  </style>
+  <title>
+    Här är det jag som bestämmer.
+  </title>
+  </head>
+  <body>
+    <script type="text/javascript">
+      // <![CDATA[
+      var page = window.location.href;
+      if(page.indexOf("facebook") != -1   || page.indexOf("fbcdn") != -1)
+      {
+        if( window.innerWidth > window.innerHeight )
+            document.write("<table><tr><td><img class=\"fb\" src=\"/no-facebook.png\" title=\"Not F'd\"></td></tr></table>");
+        else
+            document.write("<table><tr><td><img class=\"tn\" src=\"/dislike.png\" title=\"Not F'd\"></td></tr></table>");
+      }
+      else
+      {
+        document.write(
+          "<h2>" +
+            "Denna sida är blockerad." +
+          "</h2>"
+        );
+        document.write("<table><tr><td><img class=\"bl\" src=\"/blockerad.png\" title=\"" + page + "\"></td></tr></table>");
+      }
+      // ]]>
+    </script>
+    <noscript>
+    <h2>
+        Denna sida är blockerad.
+    </h2>
+    <table>
+        <tr>
+            <td>
+                <img alt="Sidan är blockerad." class="bl" src="/blockerad.png" title="Sidan är blockerad.">
+            </td>
+        </tr>
+    </table>
+    </noscript>
+  </body>
+</html>
