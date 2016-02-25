@@ -28,7 +28,7 @@ else
 fi
 
 # Kollar om det är årsspecifk flaggdag.
-DATE_THIS=$(date --date @$(echo "$(date +%s)" | bc) +"%F")
+DATE_THIS=$(date +"%F")
 DATE_ALL=$(echo $DATE_THIS | sed s/$YEAR/DETTA_ÅR/)
 
 # Kollar om det är datumen finns i flaggdagsfilen
