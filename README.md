@@ -6,39 +6,59 @@ comments.
 ```
 .
 ├── c
-│   ├── bar.c                         Progress bar
-│   ├── bf.c                          Something to do with Brainfuck
-│   ├── bftoc.c                       Brainfuck to C
-│   ├── new_sleep.c                   Improved sleep.c
-│   ├── sleep.c                       sleep with countdown
-│   └── spela_klart.c                 Wait until currunt song is done
-├── html+js
-│   ├── cam.html                      Simple presentation of a photo
-│   └── index.html                    My localhost site.
+│   ├── bar.c -> /home/jojan/src/bar.c
+│   ├── barv2.c -> /home/jojan/src/barv2.c
+│   ├── beeper.c -> /home/jojan/src/beeper.c
+│   ├── bf.c -> /home/jojan/src/bf.c
+│   ├── bftoc.c -> /home/jojan/src/bftoc.c
+│   ├── new_sleep.c -> /home/jojan/src/new_sleep.c
+│   ├── nloglogn.c -> /home/jojan/src/nloglogn.c
+│   ├── sleep2.c -> /home/jojan/src/sleep2.c
+│   ├── sleep.c -> /home/jojan/src/sleep.c
+│   └── spela_klart.c -> /home/jojan/src/spela_klart.c
+├── html+js+css
+│   ├── cam.html
+│   └── index.html
 ├── py
-│   ├── rolling_title_once.py         Fetch info from MPD and prints it
-│   ├── rolling_title.py              Fetch info from MPD and prints it
-│   └── spela_klart.py                Earlier implementation of spela_klart.c
-├── README.md                         You are here.
+│   ├── mpdklient.py -> /home/jojan/src/mpdklient.py
+│   ├── rolling_title_once.py -> /home/jojan/src/rolling_title_once.py
+│   ├── rolling_title.py -> /home/jojan/src/rolling_title.py
+│   └── spela_klart.py -> /home/jojan/src/spela_klart.py
+├── README.md
 └── sh
-    ├── cdrip.sh                      Rips CD to FLAC
-    ├── dagar.sh                      Prints number of days since a given day.
-    ├── disc.sh                       Print used and total dics space.
-    ├── dn.sh                         Download latest Daily show and Nighly Show
-    ├── dvdrip.sh                     Rips DVD poorly
-    ├── flaggdagar                    Flag days
-    ├── installera-nvidia.sh          Installs my Nvidia driver for me
-    ├── mp3tillogg.sh                 Converts audio files to Ogg Vorbis
-    ├── månad.sh                      Prints month with colour
-    ├── namnsdag.sh                   Prints to-day's names
-    ├── pic.sh                        Changes and sets artwork. Used with Conky.
-    ├── ppa.sh                        Ubuntu PPA for Debian users
-    ├── rensa_upp.sh                  Sorts my music files
-    ├── rödadagar                     Red days in Sweden
-    ├── text.sh                       Easily edit song lyrics for ncmpcpp
-    ├── update_hosts.sh               Update my hosts file
-    ├── vecka.sh                      Shows this week
-    ├── veckor                        File with weeks
-    ├── veckor_gen.sh                 Generate file with weeks
-    └── vol.sh                        Prints alsa volume
+    ├── backup.sh -> /home/jojan/src/backup.sh
+    ├── byt_låtar.sh -> /home/jojan/src/byt_låtar.sh
+    ├── cdrip.sh -> /home/jojan/src/cdrip.sh
+    ├── ch_vol.sh -> /home/jojan/src/ch_vol.sh
+    ├── colours.sh -> /home/jojan/src/colours.sh
+    ├── dagar.sh -> /home/jojan/src/dagar.sh
+    ├── disc.sh -> /home/jojan/src/disc.sh
+    ├── dn.sh -> /home/jojan/src/dn.sh
+    ├── dvdrip.sh -> /home/jojan/src/dvdrip.sh
+    ├── fixa_låtarna.sh -> /home/jojan/src/fixa_låtarna.sh
+    ├── installera-nvidia.sh -> /home/jojan/src/installera-nvidia.sh
+    ├── ladda_ned.sh -> /home/jojan/src/ladda_ned.sh
+    ├── lad.sh -> /home/jojan/src/lad.sh
+    ├── lastsong.sh -> /home/jojan/src/lastsong.sh
+    ├── lico-update.sh -> /home/jojan/src/lico-update.sh
+    ├── minsvtget.sh -> /home/jojan/src/minsvtget.sh
+    ├── minwget.sh -> /home/jojan/src/minwget.sh
+    ├── mp3tillogg.sh -> /home/jojan/src/mp3tillogg.sh
+    ├── månad.sh -> /home/jojan/src/månad.sh
+    ├── namnsdag.sh -> /home/jojan/src/namnsdag.sh
+    ├── nextsong.sh -> /home/jojan/src/nextsong.sh
+    ├── nrss.sh -> /home/jojan/src/nrss.sh
+    ├── pic.sh -> /home/jojan/src/pic.sh
+    ├── pipes.sh -> /home/jojan/src/pipes.sh
+    ├── ppa.sh -> /home/jojan/src/ppa.sh
+    ├── rensa_upp.sh -> /home/jojan/src/rensa_upp.sh
+    ├── shutdown.sh -> /home/jojan/src/shutdown.sh
+    ├── spela_klart_album.sh -> /home/jojan/src/spela_klart_album.sh
+    ├── text.sh -> /home/jojan/src/text.sh
+    ├── ud.sh -> /home/jojan/src/ud.sh
+    ├── update_hosts.sh -> /home/jojan/src/update_hosts.sh
+    ├── vecka.sh -> /home/jojan/src/vecka.sh
+    ├── veckor_gen.sh -> /home/jojan/src/veckor_gen.sh
+    ├── vol.sh -> /home/jojan/src/vol.sh
+    └── vänta.sh -> /home/jojan/src/vänta.sh
 ```
