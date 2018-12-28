@@ -1,1 +1,0 @@
-/home/jojan/src/lico-update.sh
