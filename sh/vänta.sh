@@ -1,0 +1,1 @@
+/home/jojan/src/vänta.sh

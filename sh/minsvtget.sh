@@ -1,0 +1,1 @@
+/home/jojan/src/minsvtget.sh

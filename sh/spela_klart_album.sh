@@ -1,0 +1,1 @@
+/home/jojan/src/spela_klart_album.sh
