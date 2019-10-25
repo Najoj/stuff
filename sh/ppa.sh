@@ -12,7 +12,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # If there was a ppa url or an http url.
-if [ $(echo "$1" | cut -c -3) == "ppa" ]; then 
+if [ $(echo "$1" | cut -c -3) == "ppa" ]; then
     TITLE=$(echo "$1" | sed s/ppa\://g | tr "/" " " | gawk '{ print $1 }')
     PPA="https://launchpad.net/~"$TITLE"/+archive/$(echo "$A" | gawk '{ print $2 }')"
 else

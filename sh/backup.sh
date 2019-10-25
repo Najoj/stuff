@@ -108,10 +108,10 @@ $ECHO "done\n"
 
 ################################################################################
 # Save the installed programs programs.
-# dpkg --set-selections < ~/packages && apt-get dselect-upgrade.
+# apt-clone restore $FILE
 
 $ECHO "save installed programs... "
-dpkg --get-selections "*" > "$TEMPDIR/$IPROG"
+apt-clone clone "$TEMPDIR/"
 $ECHO "done\n"
 
 ################################################################################

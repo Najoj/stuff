@@ -60,4 +60,6 @@ comments.
     ├── veckor_gen.sh
     ├── vol.sh
     └── vänta.sh
+
+4 directories, 51 files
 ```

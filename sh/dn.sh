@@ -3,16 +3,16 @@
 function down {
     PDIR=$(pwd)     # previous directory
     LIM=10
-    
+
     TIT=$1          # title
     DIR=$2          # temporary directory
     URL=$3          # URL to video
 
     echo '>>>' ${TIT} '<<<'
-    
+
     mkdir -p "$DIR"
     cd "${DIR}"
-    
+
     for retries in {1..$LIM}; do
         if torify youtube-dl "$URL"; then
             break
@@ -36,9 +36,9 @@ function down {
 
     $cmd
     cd "${PDIR}"
-    
+
     [ -f "${PDIR}/${TIT}".mp4 ] && rm "${DIR}/"*.{mp4,txt} && rmdir "${DIR}"
-    
+
     return 0
 }
 

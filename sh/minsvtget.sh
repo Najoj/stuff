@@ -1,22 +1,22 @@
 #!/bin/bash
 
-TITLE="svtget"
+URL=$1
+TITLE="svtget" # ÄNDRA INTE
 echo -e '\033]2;'$TITLE'\007'
 
-URL=$1
-
+TMP=".svtplay-dl-"
 R=1
-while ! ps a | grep '/svtplay-dl' | wc -l | grep -E ^"[0123]"$ ; do
+while ! ls -d ${TMP}* 2> /dev/null | wc -l | grep -E ^"[0-3]"$; do
         echo -en '\r'
         date +%T | tr -d '\n'
-        
-        R=$((($RANDOM % 60 + $R) % 600))
+
+        R=$((($RANDOM % 60 + $R) % 300))
         echo -en "  Väntar $R sekunder..."
         sleep $R
 done
 
-RAN=$(echo $URL | sha256sum | awk '{ print $1 }' )
-TMP=".svtplay-dl-$RAN"
+SHA=$(echo $URL | sha256sum | awk '{ print $1 }' )
+TMP="${TMP}${SHA}"
 
 if [ -d "$TMP" ]; then
     echo "$(date +%T)  Mappen \"$TMP\" finns redan."
@@ -26,7 +26,7 @@ fi
 
 mkdir -p "$TMP" && cd "$TMP"
 
-svtplay-dl -r "${URL}" || youtube-dl -c "${URL}"
+youtube-dl "${URL}"
 mv -nv *.* ..
 cd .. && rmdir "$TMP"
 

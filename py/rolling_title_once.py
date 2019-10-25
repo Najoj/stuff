@@ -8,7 +8,7 @@ import sys
 import os
 
 # Total width
-LENGTH    = int(os.getenv('ROLLINGSIZE', 32))
+LENGTH    = int(os.getenv('ROLLINGSIZE', 31))
 # Divider when exceeding limit
 DIVIDER   = "   "
 

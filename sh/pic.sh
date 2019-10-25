@@ -25,7 +25,7 @@ CURRENT_MIRROR_TRANS="$BASE""CURRENT_MIRROR_TRANS.png"
 COMBINED="$BASE""COMBINED.png"
 TRANS="$BASE""TRANS.png"
 
-# This first flags are used when you have a picture that you want to be
+# These first flags are used when you have a picture that you want to be
 # associated in a certain way. Used as
 #   $0 [flag [picture]]
 
@@ -42,7 +42,7 @@ if [ "$1" == "-f" ] && ! [ -z "$ALBUM" ]; then
     else
         FILE="f/$FULL_FILE"
     fi
-    
+
 ################################################################################
 # Album (compilations for example)
 elif [ "$1" == "-c" ]; then
@@ -56,13 +56,13 @@ elif [ "$1" == "-c" ]; then
 # Artist
 elif [ "$1" == "-a" ]; then
     FILE="a/$ARTI_FILE"
-    
+
 elif [ "$1" == "-aw" ]; then
     FILE="aw/$ARTI_FILE"
-    
+
 elif [ "$1" == "-ab" ]; then
     FILE="ab/$ARTI_FILE"
-    
+
 ################################################################################
 # Errorous arguments
 elif [ $# -gt 0 ]; then
@@ -74,17 +74,17 @@ elif [ $# -gt 0 ]; then
 else
     FILE=f/$FULL_FILE
     if [ ! -f "$BASE""$FILE" ] && [ ! "$FILE" == ".png" ]; then
-        
+
         FILE=c/$ALBU_FILE
         if [ -z "$ALBUM" ] || [ ! -f "$BASE""$FILE" ]; then
-            
+
             FILE=a/$ARTI_FILE
             if [ ! -f "$BASE""$FILE" ]; then
                 FILE=".png"
             fi
         fi
     fi
-    
+
     unlink "$BASE""CURRENT.png" && \
     ln -s "$BASE""$FILE" "$BASE""CURRENT.png"
 fi
@@ -100,9 +100,9 @@ if [ $# -gt 1 ]; then
         echo "Misslyckades med att förstå vad \"$2\" är." 1>&2
         exit 1
     fi
-    
+
     file "$BASE""$FILE"
-    
+
     [ -f "$BASE""$FILE" ] && \
     unlink "$BASE""CURRENT.png" && \
     ln -s "$BASE""$FILE" "$BASE""CURRENT.png"

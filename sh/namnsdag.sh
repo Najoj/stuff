@@ -14,7 +14,7 @@ DAY=$(date +%_j)
 #DAY=60      # Leap year debug
 
 # Tar fram dagens namn.
-NAMES=$(head -n $DAY $FILE | tail -n 1)
+NAMES=$( head -n$DAY $FILE | tail -1)
 # Fiffigt sätt att se om det är skottår.
 if date --date="February 29, $YEAR" &> /dev/null; then
     if [ $DAY -eq 60 ]; then

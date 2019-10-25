@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const float frequencies[] = { 
+const float frequencies[] = {
 //   C,       C#,        D,        D#,        E,        F,       F#,        G,       G#,        A,        B,       B#
  16.352,   17.324,   18.354,   19.445,   20.602,   21.827,   23.125,   24.500,   25.957,   27.500,   29.135,   30.868,    //  0   octave
  32.703,   34.648,   36.708,   38.891,   41.203,   43.654,   46.249,   48.999,   51.913,   55.000,   58.270,   61.735,    //  1   octave
@@ -25,7 +25,7 @@ int main(int argc, const char **argv)
         return 1;
     }
 
-    
+
     FILE * note_sheet;
 
     return 0;

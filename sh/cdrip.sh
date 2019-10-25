@@ -69,7 +69,7 @@ for i in $(seq 1 ${TRACKS}); do
     echo -e "\n===================="
     echo    "  Spår ${i} av ${TRACKS}."
     echo    "===================="
-    
+
     cdparanoia -X ${i} - | flac --best -o "track${i}.flac" - \
         -T artist="$ARTIST" -T album="$ALBUM" -T track="$i"
 done

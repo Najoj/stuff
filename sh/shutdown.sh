@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REQ_PROGRAMS="mpc whiptail systemctl dbus-send mocp"
-REQ_SCRIPTS="ch_vol.sh lico-update.sh"
+REQ_SCRIPTS="ch_vol.sh"
 SLEEP_TIME="2m"
 
 for prog in $REQ_PROGRAMS; do
@@ -20,7 +20,6 @@ function forall
     pause_player
     all_downloaded
     remove_stuff
-    lico_update
 }
 
 function all_downloaded
@@ -75,13 +74,6 @@ function pause_player
     ${HOME}/src/ch_vol.sh normalise >  /dev/null &
 }
 
-# Updates Linux counter https://linuxcounter.net/
-function lico_update
-{
-    ping -c 2 -t 15 linuxcounter.net && \
-    ${HOME}/src/lico-update.sh -m
-}
-
 HIBERNATE="hibernate"
 SUSPEND="suspend"
 REBOOT="reboot"
@@ -101,12 +93,12 @@ case $WHAT in
     $HALT)
         await_halt
         forall
-        dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.PowerOff" boolean:true 
+        dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.PowerOff" boolean:true
         ;;
     $REBOOT)
         await_halt
         forall
-        dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Reboot" boolean:true 
+        dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Reboot" boolean:true
         #dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart
     ;;
     $SUSPEND)   # Suspend

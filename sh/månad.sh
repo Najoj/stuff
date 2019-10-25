@@ -1,6 +1,6 @@
 #!/bin/bash
 
-case $(date +%m) in 
+case $(date +%m) in
     03|04|05)
         N=4
         ;;

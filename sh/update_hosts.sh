@@ -18,7 +18,7 @@ fi
 TMP=$(mktemp)
 
 # Sparar det gamla
-AVG="SPARA ALLT OVANFÖR" 
+AVG="SPARA ALLT OVANFÖR"
 
 echo "Bygger ny hosts-fil till $NYHOSTS."
 echo -e "##### SKAPAD $D\n" | tr "_" " "   > $NYHOSTS
@@ -34,7 +34,7 @@ echo "###### ${AVG} ######" >> $NYHOSTS
 echo -n "Laddar ned ny hosts-fil från someonewhocares.org till $TMP... "
 wget -q http://someonewhocares.org/hosts/hosts -O $TMP  || \
     (echo "Kunde inte hämta hosts-fil. Avslutar" 1>&2 && rm -v $TMP ; exit -1)
-    
+
 echo "och lägger den i $NYHOSTS."
 echo -e "##### SIDOR FRÅN http://someonewhocares.org/hosts/\n" >> $NYHOSTS
 cat $TMP | sed s/\#127/127/g | grep ^"127.0.0.1" | grep -v "localhost" | sort -g | uniq >> $NYHOSTS
@@ -64,6 +64,11 @@ wget -q http://sbc.io/hosts/alternates/porn/hosts -O - | grep -v ^"#" > $TMP  ||
 echo "och lägger den i $NYHOSTS."
 echo -e "\n\n##### SIDOR FRÅN http://sbc.io/hosts/alternates/porn/hosts\n" >> $NYHOSTS
 cat $TMP | grep -v ^$ |sed s/'0.0.0.0'/'127.0.0.1'/g | grep -Ev "(localhost|broadcasthost)" | sort -g | uniq >> $NYHOSTS
+
+################################################################################
+
+cat $NYHOSTS | sed s/[^a-z0-9]$//g > $TMP
+cp $TMP $NYHOSTS
 
 ################################################################################
 

@@ -136,7 +136,7 @@ int mode()
 
             break;
         case BCK:
-            
+
             if (time.seconds > 0)
                 return SECOND;
             if (time.minutes > 0)
@@ -194,7 +194,7 @@ char **argv;
 	int i;
 
 	/*
-	 * Check the number of arguments. 
+	 * Check the number of arguments.
 	 */
 	if (1 == argc) {
 		fprintf(stderr,
@@ -209,7 +209,7 @@ char **argv;
 	option.print_order = EVR;
 
 	/*
-	 * Look for arguments. 
+	 * Look for arguments.
 	 */
 	int err = 0;
 	for (i = 1; i < argc; i++) {
@@ -231,7 +231,7 @@ char **argv;
 					argv[i]);
 				break;
 			}
-            argv[i][0] = '\0'; 
+            argv[i][0] = '\0';
 		}
 	}
 	printf("order: %d\n", option.print_order);
@@ -240,14 +240,14 @@ char **argv;
 	}
 
 	/*
-	 * Take every argument and parse it to seconds. 
+	 * Take every argument and parse it to seconds.
 	 */
 	for (i = 1; i < argc; i++) {
 		time.secs += parse_to_secs(argv[i]);
 	}
 
 	/*
-	 * If you have less than zeros seconds, an error message returns. 
+	 * If you have less than zeros seconds, an error message returns.
 	 */
 	if (time.secs < 0) {
 		fprintf(stderr,

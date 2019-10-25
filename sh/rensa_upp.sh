@@ -12,7 +12,11 @@ LIMIT=15000
 #  Uppdaterar.                  #
 #################################
 
-mpc -w update || exit 1
+echo -n "uppdaterar databas..."
+mpc -w update > /dev/null || exit 1
+echo " klar!"
+
+LENGTH=$(mpc playlist | wc -l)
 
 #################################
 #  Rensar upp i min musikmapp.  #
@@ -21,7 +25,7 @@ mpc -w update || exit 1
 for arg in $@; do
     case "$arg" in
         "-o")
-            if [ $(mpc playlist | wc -l) -ge $LIMIT ]; then
+            if [ $LENGTH -ge $LIMIT ]; then
                 echo "Spellistan är över $LIMIT. Rens!"
                 exit 1 || OSORT="false"
             else
@@ -55,14 +59,29 @@ if $OSORT; then
     if [ 0 = $(ls "${DIR}/.osorterat/"*\.{flac,ogg} | wc -l) ]; then
         echo "den är tom. ==="
     else
-        LIMIT=$(( LIMIT - $(mpc playlist | wc -l) ))
-        [ $LIMIT -le 0 ] && LIMIT=0
+        echo "den är inte tom."
+        LIMITA=$(( ($LIMIT-$LENGTH) / 2))
+        LIMITB=$(($LIMIT-$LENGTH-$LIMITA))
+
         let i=1;
-        echo "den är inte tom. Lägger till högst $LIMIT filer. ==="
+        # äldst
+        echo "Lägger till $LIMITA gamla filer. ==="
         cd "${DIR}/.osorterat/"         && \
-        ls *\.{ogg,flac} | shuf | head -n $LIMIT | while read track; do
+        ls *\.{ogg,flac} --full-time --color=never | tr -s ' ' | sort -gr -k6 |\
+        cut -d\  -f9- | tail -n $LIMITA | while read track; do
             echo -n "$i. " && let i++
-            mv -uv "${track}" "${DIR}"    && \
+            mv -v "${track}" "${DIR}"    && \
+            mpc -qw update                && \
+            mpc -w add "${track#./}"
+        done
+
+        # populära
+        echo "Lägger till $LIMITB filer på måfå. ==="
+        cd "${DIR}/.osorterat/"         && \
+        ls *\.{ogg,flac} | \
+        shuf | tail -n $LIMITB | while read track; do
+            echo -n "$i. " && let i++
+            mv -v "${track}" "${DIR}"    && \
             mpc -qw update                && \
             mpc -w add "${track#./}"
         done
@@ -76,15 +95,15 @@ echo " === Flyttar på band som börjar med \"The\". ==="
 find . -maxdepth 1 -type f -name 'The *' -a '(' -name '*\.flac' -o -name '*\.ogg'  ')' | \
 while read band; do
     newband=$(echo "${band#./The }" | sed 's/ - /, The - '/)
-    mv -uv "${band}" "${newband}"   && \
+    mv -v "${band}" "${newband}"   && \
     mpc -wq update                  && \
     mpc -w add "${newband}"
 done
 
 find . -maxdepth 1 -type d -name 'The *' | \
-while read dir; do 
+while read dir; do
     newdir="$(echo "${dir#./The }, The")" && \
-    mv -uv "${dir}" "${newdir}"         && \
+    mv -v "${dir}" "${newdir}"         && \
     mpc -wq update                      && \
     mpc -w add "${newdir}"
 done
@@ -96,11 +115,11 @@ echo " === Undersöker om några band redan har mappar. ==="
 ls *" - "* | sed 's/ - /\n/' | egrep -v "\.(ogg|flac)"$ | sort -g | uniq  | \
 while read band; do
     if ls -d "${band}/" &> /dev/null ; then
-        mv -uv "${band} - "* "${band}/" && \
+        mv -v "${band} - "* "${band}/" && \
         cd "${band}"                    && \
         ls "${band} - "* | sed 's/ - /\n/' | egrep "\.(ogg|flac)"$ | sort -g | \
         while read title; do
-            mv -uv "${band} - ${title}" "${title}"   && \
+            mv -v "${band} - ${title}" "${title}"   && \
             mpc -wq update                  && \
             mpc -w add "${band}/${title}"
         done
@@ -118,7 +137,7 @@ while read band; do
     if [ $N -ge $LIM ]; then
     echo $band  $N
         mkdir "${band}"
-        mv -uv "${band} - "* "${band}/"
+        mv -v "${band} - "* "${band}/"
         cd "${band}"
         ls | while read bandtitle; do
             title=${bandtitle#${band} - }

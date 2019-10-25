@@ -23,23 +23,23 @@ int parse_to_secs(char *tp)
         return 0;
 
     /*
-     * Temporary second counter that will contain return value. 
+     * Temporary second counter that will contain return value.
      */
     int secs = 0;
 
     /*
-     * Character pointer to a position. Start by the end. 
+     * Character pointer to a position. Start by the end.
      */
     char *smhd;
 
     for (smhd = tp; *smhd != '\0'; smhd++);
     /*
-     * Reverse one step from the null pointer. 
+     * Reverse one step from the null pointer.
      */
     smhd--;
 
     /*
-     * Check suffix, if any. 
+     * Check suffix, if any.
      */
     switch (*smhd)
     {
@@ -75,7 +75,7 @@ int parse_to_secs(char *tp)
 void convert()
 {
     /*
-     * Convert seconds to days, hours, minutes and seconds. 
+     * Convert seconds to days, hours, minutes and seconds.
      */
     days = hours = minutes = seconds = 0;
     while (secs > DAY - 1)
@@ -112,7 +112,7 @@ void countdown()
     else if (hours > 0)
     {
         option = 0b0100;
-        mode = MODE[1]; 
+        mode = MODE[1];
     }
     else if (minutes > 0)
     {
@@ -185,7 +185,7 @@ int main(int argc, char **argv)
     int i;
     MODE = u;
     /*
-     * Check the number of arguments. 
+     * Check the number of arguments.
      */
     if (1 == argc)
     {
@@ -196,11 +196,11 @@ int main(int argc, char **argv)
     }
 
     /*
-     * Look for arguments. 
+     * Look for arguments.
      */
     int err = 0;
 /*    for (i = 1; i < argc; i++)
-    { 
+    {
         if ('-' == argv[i][0] && '\0' == argv[i][2])
 
             switch (argv[i][1])
@@ -224,7 +224,7 @@ int main(int argc, char **argv)
     }
 */
     /*
-     * Take every argument and parse it to seconds. 
+     * Take every argument and parse it to seconds.
      */
     for (i = 1; i < argc; i++)
     {
@@ -232,7 +232,7 @@ int main(int argc, char **argv)
     }
 
     /*
-     * If you have less than zeros seconds, an error message returns. 
+     * If you have less than zeros seconds, an error message returns.
      */
     if (secs < 0)
     {

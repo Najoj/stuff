@@ -22,7 +22,7 @@ fi
 if [ "$1" = "conky" ]; then
     COLOUR=color1
     $REDDAY && COLOUR=color3
-    
+
     grep -v ^\  "$WEEKFILE"                                                    \
     | grep -C 1 -m 2 "v$THISWEEK"                                              \
     | sed s/" $TODAY"/' ${'$COLOUR'}'$TODAY'${color}'/                         \
@@ -30,7 +30,7 @@ if [ "$1" = "conky" ]; then
 else #todo: if xmobar
     COLOUR="#45C913"
     $REDDAY && COLOUR="#F04545"
-    
+
     echo -en '<fc=#45C913>'
     grep -m 1 "v$THISWEEK" "$WEEKFILE"                                         \
     | sed s/'Rs'/'<fc=\#7A3A3B>'/g | sed s/'Re'/'<\/fc>'/g                     \

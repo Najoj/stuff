@@ -81,7 +81,7 @@ D=20
 for i in $(seq -w $SW $EW); do
     echo -en "v$i  $(echo $SEQ | cut -c $A-$B | sed "s/^[ ]*//g")"
     echo -e  "Rs $(echo $SEQ | cut -c $C-$D | sed "s/^[ ]*//g")Re"
-    
+
     let A=$A+21
     let B=$B+21
     let C=$C+21

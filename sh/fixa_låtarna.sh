@@ -1,33 +1,37 @@
 #!/bin/bash
 
-cd ~/musik
+cd /media/musik/
 
 for i in {9..2}; do
     find . -name "* ($i).ogg" -type f | \
         grep -v ^./.osorterat | \
-        while read old; do 
-            TO=$(($i-1))
-            for j in $(seq 1 $TO); do 
-                new=$(echo "$old" | sed "s/ ($i).ogg/ ($j).ogg/")
-                if ! [ -f "$new" ]; then
-                    INSERT=$(echo $new | sed "s/\.\///")
-                    echo $INSERT
-                    mv -v "$old" "$new"
-                    mpc insert "$INSERT"
-                fi
-            done
+    while read old; do
+        TO=$(($i-1))
+        for j in $(seq 1 $TO); do
+            new="${old% ($i).ogg} ($j).ogg"
+            if ! [ -f "$new" ]; then
+                INSERT="${new#./}"
+                echo $INSERT
+                mv -nv "$old" "$new"
+                mpc -qw update
+                mpc add "$INSERT"
+            fi
         done
     done
 
     find . -name "* (1).ogg" -type f | \
-        grep -v ^./.osorterat | \
-        while read old; do 
-            new=$(echo "$old" | sed "s/ ($i).ogg/.ogg/")
-            if ! [ -f "$new" ]; then
-                INSERT=$(echo $new | sed "s/\.\///")
-                echo $INSERT
-                mv -v "$old" "$new" && mpc insert "${new%./}"
-            fi
-        done
+            grep -v ^./.osorterat | \
+    while read old; do
+        new="${old%' (1).ogg'}.ogg"
 
-        exit 0
+        if ! [ -f "$new" ]; then
+            INSERT="${new#./}"
+            echo insert $INSERT
+            mv -nv "$old" "$new"
+            mpc -qw update
+            mpc add "$INSERT"
+        fi
+    done
+done
+
+exit 0

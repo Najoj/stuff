@@ -20,7 +20,7 @@ elif [[ "$FILE" =~ .*\.[Mm][Pp]3 ]]; then
     OUTPUT="${DIR}${FILE%.[Mm][Pp]3}.ogg"
     which mpg321 oggenc && ! [ -f "$OUTPUT" ] && \
     mpg321 "${FILE}" -w - | oggenc -m 128 -M 320 -o "${OUTPUT}" -
-    
+
 elif [[ "$FILE" =~ .*\.[Mm]4[Aa] ]]; then
     TEMP="$(mktemp).wav"
     OUTPUT="${DIR}${FILE%.[Mm]4[Aa]}.ogg"
@@ -29,7 +29,7 @@ elif [[ "$FILE" =~ .*\.[Mm]4[Aa] ]]; then
     ffmpeg -i "${TEMP}" -acodec libvorbis "${OUTPUT}"
 
     rm -f "${TEMP}"
-    
+
 elif [[ "$FILE" =~ .*\.[Ww][Aa][Vv] ]]; then
     OUTPUT="${DIR}${FILE%.[Ww][Aa][Vv]}.ogg"
     which oggenc && ! [ -f "$OUTPUT" ] && \
@@ -49,7 +49,7 @@ elif [[ "$FILE" =~ .*\.[Aa][Ii][Ff][Ff] ]]; then
     OUTPUT="${DIR}${FILE%.[Aa][Ii][Ff][Ff]}.ogg"
     which ffmpeg && ! [ -f "$OUTPUT" ] && \
     ffmpeg -i "${FILE}" -acodec libvorbis "${OUTPUT}"
-    
+
 else
     false
 fi

@@ -1,7 +1,7 @@
 #!/bin/sh
 
-if [ -z $1 ]; then 
-	TODO=Hibernate
+if [ -z $1 ]; then
+	TODO=suspend
 else
 	TODO=$1
 fi

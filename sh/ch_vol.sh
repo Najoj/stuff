@@ -4,28 +4,24 @@ which amixer grep gawk tr > /dev/null || exit 2
 
 arg=$(echo "$1" | tr [:upper:] [:lower:] )
 
-#amixer  -c  0    set     Front     unmute
-amixer  -q  set  Center    unmute
-amixer  -q  set  Front     unmute
-amixer  -q  set  LFE       unmute
-amixer  -q  set  Surround  unmute
+alias amixer='amixer -c0'
 
-amixer  -c 0  set Front     92%
-amixer  -c 0  set Surround  92%
+#amixer  sset  Master   unmute
+#amixer  sset  Capture  unmute
 
 case $arg in
     +)
-        amixer -q -c 0 sset Master 1+,1+ unmute
+        amixer sset Master 1+,1+ unmute
         ;;
     -)
-        amixer -q -c 0 sset Master 1-,1- unmute
+        amixer sset Master 1-,1- unmute
         ;;
     n|normalise)
 
-        amixer -q -c 0 set Master  75%
+        amixer set Master  50%
         ;;
     unmute|mute)
-        amixer -q set Master toggle
+        amixer set Master toggle
         ;;
     *)
         if [ $# -gt 0 ]; then
