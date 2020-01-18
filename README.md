@@ -29,6 +29,7 @@ comments.
     ├── byt_låtar.sh
     ├── cdrip.sh
     ├── ch_vol.sh
+    ├── cless.sh
     ├── colours.sh
     ├── dagar.sh
     ├── disc.sh
@@ -50,6 +51,7 @@ comments.
     ├── pic.sh
     ├── pipes.sh
     ├── ppa.sh
+    ├── rensa_lyrics.sh
     ├── rensa_upp.sh
     ├── shutdown.sh
     ├── spela_klart_album.sh
@@ -61,5 +63,5 @@ comments.
     ├── vol.sh
     └── vänta.sh
 
-4 directories, 51 files
+4 directories, 53 files
 ```
