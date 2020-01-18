@@ -3,9 +3,6 @@
 DIR="${HOME}/src/ln"
 RET=0
 
-# Mp3 till ogg.
-mto="${HOME}/src/mp3tillogg.sh"
-
 for URL in $@ ; do
     PRET=$RET
     PRE=
