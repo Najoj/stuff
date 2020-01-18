@@ -5,9 +5,15 @@ FILE="${HOME}/src/namnsdagar"
 # Lista med flaggdagar i oordning.
 FLAG="${HOME}/src/flaggdagar"
 
+# Option to add days ahead
+DAYS_AHEAD=0
+if ! [ -z $@ ]; then
+    DAYS_AHEAD=$1
+fi
+
 # Året och dagen
 YEAR=$(date +%Y)
-DAY=$(date +%_j)
+DAY=$(date +%_j --date="$DAYS_AHEAD days")
 
 ## DEBUG
 #YEAR=2012   # Leap year debug
