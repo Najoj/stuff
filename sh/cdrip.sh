@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Ser om cdparanoia och flac finns.
-if ! which awk cdparanoia flac &> /dev/null ; then
+# Ser om awk, cdparanoia och flac finns.
+if ! command -v awk cdparanoia flac &> /dev/null ; then
     echo "awk, cdparanoia och flac måste vara installerade"
     exit 1
 fi
@@ -10,7 +10,7 @@ ARTIST=""
 ALBUM=""
 DIR=""
 
-while getopts :a:A: option; do
+while getopts :a:A:h:H:?: option; do
     #echo "${option}"
     case "${option}" in
         a)
@@ -22,7 +22,7 @@ while getopts :a:A: option; do
         h|H)
             echo "$0 [-a artist] [-A album_title] dir"  >&2
         ;;
-        ?|:)
+        \?|:)
             echo "Bajsargument. :-)" >&2
             exit 1
         ;;
@@ -57,19 +57,19 @@ fi
 TRACKS=$(cdparanoia -Q 2>&1 | gawk '{ print $1 }' | tail -n 3 | head -n 1 | tr -d ".")
 
 echo -e "artist:\\t\"$ARTIST\"" >&2
-echo -e "album:\t\"$ALBUM\""    >&2
-echo -e "spår:\t\"$TRACKS\""  >&2
-echo -e "mapp:\t\"$DIR\""       >&2
+echo -e "album:\\t\"$ALBUM\""    >&2
+echo -e "spår:\\t\"$TRACKS\""  >&2
+echo -e "mapp:\\t\"$DIR\""       >&2
 
 # Går till mappen
-cd "$DIR"
+cd "$DIR" || return 255
 
 # Kopierar alla spår, ett spår i taget, och konverterar till flac.
-for i in $(seq 1 ${TRACKS}); do
-    echo -e "\n===================="
+for i in $(seq 1 "${TRACKS}"); do
+    echo -e "\\n===================="
     echo    "  Spår ${i} av ${TRACKS}."
     echo    "===================="
 
-    cdparanoia -X ${i} - | flac --best -o "track${i}.flac" - \
+    cdparanoia -X "${i}" - | flac --best -o "track${i}.flac" - \
         -T artist="$ARTIST" -T album="$ALBUM" -T track="$i"
 done
