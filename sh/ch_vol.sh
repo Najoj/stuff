@@ -1,8 +1,8 @@
 #!/bin/sh
 
-which amixer grep gawk tr > /dev/null || exit 2
+command -v amixer grep gawk tr > /dev/null || exit 2
 
-arg=$(echo "$1" | tr [:upper:] [:lower:] )
+arg=$(echo "$1" | tr "[:upper:]" "[:lower:]" )
 
 alias amixer='amixer -c0'
 
@@ -36,6 +36,6 @@ case $arg in
         ;;
 esac
 
-${HOME}/src/vol.sh | tail -1 > ~/.volym
+"${HOME}"/src/vol.sh | tail -1 > ~/.volym
 
 exit 0
