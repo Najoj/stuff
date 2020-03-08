@@ -25,8 +25,6 @@ comments.
 │   └── spela_klart.py
 ├── README.md
 └── sh
-    ├── backup.sh
-    ├── byt_låtar.sh
     ├── cdrip.sh
     ├── ch_vol.sh
     ├── cless.sh
@@ -63,5 +61,5 @@ comments.
     ├── vol.sh
     └── vänta.sh
 
-4 directories, 53 files
+4 directories, 51 files
 ```
