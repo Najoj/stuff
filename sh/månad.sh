@@ -17,4 +17,4 @@ case $(date +%m) in
         N=1
 esac
 
-echo -n \$\{color${N}\}\$\{time \%b\}\$\{color\}
+echo -n \$\{color${N}\}\$\{time %b\}\$\{color\}

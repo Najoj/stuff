@@ -5,7 +5,7 @@ DIR=$2
 
 [ -f "$FILE" ] || exit 1
 
-echo '>> '${FILE}' <<'
+echo ">> ${FILE} <<"
 
 if   [[ "$FILE" =~ .*\.[Oo][Gg][Gg] ]]; then
     OUTPUT="${DIR}${FILE%.[Oo][Gg][Gg]}.ogg"

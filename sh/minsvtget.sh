@@ -6,16 +6,16 @@ echo -e '\033]2;'$TITLE'\007'
 
 TMP=".svtplay-dl-"
 R=1
-while ! ls -d ${TMP}* 2> /dev/null | wc -l | grep -E ^"[0-3]"$; do
+while ! find .svtplay-dl-* -maxdepth 1 -type d 2> /dev/null | wc -l | grep -E ^"[0-3]"$; do
         echo -en '\r'
         date +%T | tr -d '\n'
 
-        R=$((($RANDOM % 60 + $R) % 300))
+        R=$(((RANDOM % 60 + R) % 300))
         echo -en "  Väntar $R sekunder..."
         sleep $R
 done
 
-SHA=$(echo $URL | sha256sum | awk '{ print $1 }' )
+SHA=$(echo "$URL" | sha256sum | awk '{ print $1 }' )
 TMP="${TMP}${SHA}"
 
 if [ -d "$TMP" ]; then
@@ -24,10 +24,11 @@ if [ -d "$TMP" ]; then
     exit 1
 fi
 
-mkdir -p "$TMP" && cd "$TMP"
+mkdir -p "$TMP" 
+cd "$TMP" || exit 1
 
 youtube-dl "${URL}"
-mv -nv *.* ..
+mv -nv -- *.* ..
 cd .. && rmdir "$TMP"
 
 echo "$(date +%T)  Klar."
