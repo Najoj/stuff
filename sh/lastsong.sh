@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
 	TODO=suspend
 else
 	TODO=$1
@@ -15,10 +15,10 @@ done
 
 echo "Will \"${TODO}\"."
 
-${HOME}/src/spela_klart.py
+"${HOME}"/src/spela_klart.py
 
 mpc pause
 
-${HOME}/src/shutdown.sh $TODO
+"${HOME}"/src/shutdown.sh $TODO
 
 exit $?
