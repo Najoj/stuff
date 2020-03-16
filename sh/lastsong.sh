@@ -19,6 +19,6 @@ echo "Will \"${TODO}\"."
 
 mpc pause
 
-"${HOME}"/src/shutdown.sh $TODO
+"${HOME}"/src/shutdown.sh "$TODO"
 
 exit $?
