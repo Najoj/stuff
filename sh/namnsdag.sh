@@ -7,7 +7,7 @@ FLAG="${HOME}/src/flaggdagar"
 
 # Option to add days ahead
 DAYS_AHEAD=0
-if ! [ -z $@ ]; then
+if ! [ -z "$1" ]; then
     DAYS_AHEAD=$1
 fi
 
@@ -20,20 +20,20 @@ DAY=$(date +%_j --date="$DAYS_AHEAD days")
 #DAY=60      # Leap year debug
 
 # Tar fram dagens namn.
-NAMES=$( head -n$DAY $FILE | tail -1)
+NAMES=$( head -n"$DAY" "$FILE" | tail -1)
 # Fiffigt sätt att se om det är skottår.
 if date --date="February 29, $YEAR" &> /dev/null; then
-    if [ $DAY -eq 60 ]; then
+    if [ "$DAY" -eq 60 ]; then
         NAMES="Skottdagen"
-    elif [ $DAY -gt 60 ]; then
-        let DAY="$DAY-1"
-        NAMES=$(head -n $DAY $FILE | tail -n 1)
+    elif [ "$DAY" -gt 60 ]; then
+            DAY=$((DAY-1))
+        NAMES=$(head -n "$DAY" "$FILE" | tail -n 1)
     fi
 fi
 
 # Kollar om det är flaggdag.
 DATE_THIS=$(date +"%F")
-DATE_ALL=$(echo $DATE_THIS | sed s/$YEAR/DETTA_ÅR/)
+DATE_ALL=${DATE_THIS//$YEAR/DETTA_ÅR}
 
 # Kollar om det är datumen finns i flaggdagsfilen
 PRE=""

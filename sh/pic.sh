@@ -7,7 +7,7 @@ if ! pidof mpd &> /dev/null ; then
     exit 1
 else
     for p in ${REQ} ; do
-        if ! which ${p} &> /dev/null ; then
+        if ! which "${p}" &> /dev/null ; then
             echo "${p} is not installed." 1>&2
             exit 2
         fi
@@ -21,9 +21,9 @@ SIZE="100x100"
 
 CURRENT="$BASE""CURRENT.png"
 CURRENT_MIRROR="$BASE""CURRENT_MIRROR.png"
-CURRENT_MIRROR_TRANS="$BASE""CURRENT_MIRROR_TRANS.png"
-COMBINED="$BASE""COMBINED.png"
-TRANS="$BASE""TRANS.png"
+# CURRENT_MIRROR_TRANS="$BASE""CURRENT_MIRROR_TRANS.png"
+# COMBINED="$BASE""COMBINED.png"
+# TRANS="$BASE""TRANS.png"
 
 # These first flags are used when you have a picture that you want to be
 # associated in a certain way. Used as

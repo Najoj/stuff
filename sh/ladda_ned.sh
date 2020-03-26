@@ -59,8 +59,8 @@ elif [[ "${URL}" =~ http://(www\.)?liveleak.com/view\?i= ]]; then
 
 elif [[ "${URL}" =~ http(s)?://((w|www)\.)?[A-Za-z0-9]*\.bandcamp.com/ ]]; then
 
-        torsocks "${DIR}"/youtube.sh -x --audio-format=vorbis "${URL}"   || \
-                "${DIR}"/youtube.sh -x --audio-format=vorbis "${URL}"    || \
+        torsocks "${DIR}"/youtube.sh -x --audio-format="vorbis" "${URL}"   || \
+                "${DIR}"/youtube.sh -x --audio-format="vorbis" "${URL}"    || \
                 RET=$((RET+1))
 
         TXT=$( youtube-dl --get-filename "${URL}" )
@@ -73,7 +73,7 @@ elif [[ "${URL}" =~ http(s)?://((w|www)\.)?soundcloud.com/ ]]; then
 
         TXT=$( youtube-dl --get-filename "${URL}" )
 
-elif [[ "${URL}" =~ http(s)?://sverigesradio\.se/topsy/ljudfil/podrss/[0-9]+(\.|\-)[mM][pP]3 ]]; then
+elif [[ "${URL}" =~ http(s)?://sverigesradio\.se/topsy/ljudfil/podrss/[0-9]+(\.|\-)[mM][pP]3 ]] || [[ "${URL}" =~ http(s)?://sverigesradio\.se/topsy/ljudfil/srse/[0-9]+(\.|\-)[mM][pP]3 ]]; then
         "${DIR}"/sr.sh "${URL}"     || \
                 RET=$((RET+1))
 
