@@ -19,8 +19,6 @@ function unlock {
 function extra {
         lock;
         echo "Full uppgradering."
-        srm -vf "$FILE" "$LOG"
-        echo -e "EXTRA\t\t$(date)" | gzip - > $LOG
 
         sudo su -c \
                 "   apt-get $Q update                                                       && \
@@ -39,7 +37,6 @@ function extra {
         function regular {
                 echo "Normal uppgradering."
 
-                echo -e "\n\nNORMAL\t\t$(date)" | gzip - >> $LOG
 
                 sudo su -c \
                         "   apt-get $Q update                                                       && \
@@ -131,7 +128,6 @@ done
 
 # Filer
 FILE="${HOME}/.updatedate.gz"
-LOG="${HOME}/.updatelog.gz"
 EXTRA=$(gunzip -c "$FILE" | head -n 1)
 REGULAR=$(gunzip -c "$FILE" | tail -n 1)
 # Sekunder
@@ -150,13 +146,6 @@ else
                         ;;
                 -h)
                         echo "less $0"
-                        ;;
-                -l)
-                        if [ -e "$LOG" ]; then
-                                less "$LOG"
-                        else
-                                echo "\"$LOG\" finns inte." 1>&2
-                        fi
                         ;;
                 -s)
                         regular
