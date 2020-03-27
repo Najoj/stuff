@@ -151,16 +151,16 @@ done
 
 #################################
 
-cd "$DIR"
+cd "$DIR" || exit 2
 echo " === Undersöker om några låtar ska nedgraderas. ==="
 ls -d */ | sed 's/\///' | \
-while read band; do
-    if ls -d "${band}/" &> /dev/null ; then
-        cd "${band}"
-        N=$(ls *.* 2> /dev/null | wc -l)
-        if ! ( ls -d */ &> /dev/null || [ $N -ge $LIM ] ); then
-            ls *.* 2> /dev/null | \
-            while read title; do
+while read -r band; do
+    if find . -type d -name "${band}" -maxdepth 1 &> /dev/null ; then
+        cd "${band}" || exit 2
+        N=$(find . -maxdepth 1 -name "*.*" 2> /dev/null | wc -l)
+        if ! ( ls -d ./*/ &> /dev/null || [ "$N" -ge $LIM ] ); then
+                find . -maxdepth 1 -name "*.*" 2> /dev/null | \
+            while read -r title; do
                 mv -uv "${title}" ../"${band} - ${title}"   && \
                 mpc -wq update                              && \
                 mpc -w add "${band} - ${title}"
