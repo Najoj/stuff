@@ -3,7 +3,7 @@
 which mpc 2> /dev/null || exit 1
 
 SPELA_KLART="${HOME}/src/spela_klart"
-[ -f $SPELA_KLART ]    || exit 1
+[ -f "$SPELA_KLART" ]    || exit 1
 
 ORIGINAL="$(mpc -f "%album%" | head -1)"
 CURRENT="$ORIGINAL"
