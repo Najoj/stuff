@@ -21,7 +21,7 @@ function extra {
         echo "Full uppgradering."
 
         sudo su -c \
-                "   apt-get $Q update                                                       && \
+                "apt-get $Q update                                                      && \
                 apt-get $Q autoremove                  --assume-yes                     && \
                 apt-get $Q dist-upgrade                --assume-yes                     && \
                 apt-get $Q autoclean                   --assume-yes                     && \
@@ -29,54 +29,54 @@ function extra {
                 aptitude purge ~c                      --assume-yes                     && \
                 \
                 ${HOME}/src/update_hosts.sh
-                        " 
+        " 
 
-                        avsluta
-                }
+        avsluta
+}
 
-        function regular {
-                echo "Normal uppgradering."
+function regular {
+        echo "Normal uppgradering."
 
 
-                sudo su -c \
-                        "   apt-get $Q update                                                       && \
-                        apt-get $Q autoremove                  --assume-yes                     && \
-                        apt-get $Q --only-upgrade upgrade      --assume-yes                     && \
-                        apt-get $Q autoclean                   --assume-yes
-                                        " 
+        sudo su -c \
+                "   apt-get $Q update                                                       && \
+                apt-get $Q autoremove                  --assume-yes                     && \
+                apt-get $Q --only-upgrade upgrade      --assume-yes                     && \
+                apt-get $Q autoclean                   --assume-yes
+        " 
 
-                                        avsluta
-                                }
+        avsluta
+}
 
-                        function avsluta {
-                                $SAVE && echo "$(date +%s)" | gzip - >> "$FILE"
+function avsluta {
+        $SAVE && date +%s | gzip - >> "$FILE"
 
-                                sh ${HOME}/.oh-my-zsh/tools/upgrade.sh
+        sh "${HOME}/.oh-my-zsh/tools/upgrade.sh"
 
-                                unlock
-                        }
+        unlock
+}
 
-                function update {
-                        # If file exists
-                        if [ -e "$FILE" ]; then
-                                # First line is last "extra update" date, and last is "regular update" date
-                                EXTRA=$(gunzip -c "$FILE" | head -n 1)
-                                REGULAR=$(gunzip -c "$FILE" | tail -n 1)
+function check_update {
+        # If file exists
+        if [ -e "$FILE" ]; then
+                # First line is last "extra update" date, and last is "regular update" date
+                EXTRA=$(gunzip -c "$FILE" | head -n 1)
+                REGULAR=$(gunzip -c "$FILE" | tail -n 1)
 
                 # Calculates what $NOW should be
                 EXTRAL=$((EXTRA+BIG_LIMIT))
                 REGULARL=$((REGULAR+SMALL_LIMIT))
 
                 # If limit is passed to one thing or the other thing
-                if [ $NOW -gt $EXTRAL ]; then
+                if [ "$NOW" -gt "$EXTRAL" ]; then
                         extra
-                elif [ $NOW -gt $REGULARL ]; then
+                elif [ "$NOW" -gt "$REGULARL" ]; then
                         regular
                 fi
         else
                 extra
-                fi
-        }
+        fi
+}
 
 function check {
         lock
@@ -101,9 +101,9 @@ function updatedates {
                 echo "nu"
         else
                 date --date=@"$NEXT_EXTRA" +"%a %_d %b %Y, klockan %T" \
-                        | sed s/"$(date +"%a %_d %b %Y")"/"i dag"/ \
-                        | sed s/"$(date --date @$TOMORROW +"%a %_d %b %Y")"/"i morgon"/ \
-                        | sed s/"$(date +" %Y")"/""/
+                        | sed "s/$(date +"%a %_d %b %Y")/i dag/" \
+                        | sed "s/$(date --date @$TOMORROW +"%a %_d %b %Y")/i morgon/" \
+                        | sed "s/$(date +" %Y")//"
 
         fi
 
@@ -112,9 +112,9 @@ function updatedates {
                 echo "nu"
         else
                 date --date=@"$NEXT_REGULAR" +"%a %_d %b %Y, klockan %T" \
-                        | sed s/"$(date +"%a %_d %b %Y")"/"i dag"/ \
-                        | sed s/"$(date --date @$TOMORROW +"%a %_d %b %Y")"/"i morgon"/ \
-                        | sed s/"$(date +" %Y")"/""/
+                        | sed "s/$(date +"%a %_d %b %Y")/i dag/" \
+                        | sed "s/$(date --date @$TOMORROW +"%a %_d %b %Y")/i morgon/" \
+                        | sed "s/$(date +" %Y")//"
         fi
 }
 
@@ -183,12 +183,12 @@ else
                         extra
                         ;;
                 *)
-                        update
+                        check_update
                         ;;
         esac
-                        fi
+fi
 
-                        unlock
+unlock
 
-                        exit 0
+exit 0
 
