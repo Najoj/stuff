@@ -23,7 +23,7 @@ AVG="SPARA ALLT OVANFÖR"
 echo "Bygger ny hosts-fil till $NYHOSTS."
 echo -e "##### SKAPAD $D\n" | tr "_" " "   > "$NYHOSTS"
 
-head -n "$(grep -n -m 1 "${AVG}" $HOSTS | gawk '{ print $1-1 }' )" "$HOSTS"  | tail -n +3 >> "$NYHOSTS"
+head -n "$(grep -n -m 1 "${AVG}" $HOSTS | awk '{ print $1-1 }' )" "$HOSTS"  | tail -n +3 >> "$NYHOSTS"
 echo "###### ${AVG} ######" >> "$NYHOSTS"
 
 ################################################################################
