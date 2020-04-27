@@ -39,11 +39,11 @@ function regular {
 
 
         sudo su -c \
-                "   apt-get $Q update                                                       && \
+            "   apt-get $Q update                                                       && \
                 apt-get $Q autoremove                  --assume-yes                     && \
                 apt-get $Q --only-upgrade upgrade      --assume-yes                     && \
                 apt-get $Q autoclean                   --assume-yes
-        " 
+            " 
 
         avsluta
 }
