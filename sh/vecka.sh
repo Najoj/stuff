@@ -10,10 +10,11 @@ TODAY=$(date +%_d | sed "s/ /0/")
 THISWEEK=$(date +%V)
 
 DATE_THIS=$(date +%F)
-DATE_ALL=$(echo "$DATE_THIS" | sed s/$(date +%Y)/DETTA_ÅR/)
+YEAR_THIS=$(date +%Y)
+DATE_ALL=${DATE_THIS//DETTA_ÅR/$YEAR_THIS/}
 REDDAY=false
 
-if [ 7 == $(date +%u) ] || \
+if [ 7 == "$(date +%u)" ] || \
     grep "^$DATE_THIS" "$REDDAYS" &> /dev/null || \
     grep "^$DATE_ALL"  "$REDDAYS" &> /dev/null ; then
         REDDAY=true
@@ -25,7 +26,7 @@ if [ "$1" = "conky" ]; then
 
     grep -v ^\  "$WEEKFILE"                                                    \
     | grep -C 1 -m 2 "v$THISWEEK"                                              \
-    | sed s/" $TODAY"/' ${'$COLOUR'}'$TODAY'${color}'/                         \
+    | sed s/" $TODAY"/" ${"$COLOUR"}$TODAY"'${color}'/                         \
     | sed s/Rs/'${color2}'/g | sed s/Re/'${color}'/g
 else #todo: if xmobar
     COLOUR="#45C913"
