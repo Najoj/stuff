@@ -7,7 +7,7 @@ if ! pidof mpd &> /dev/null ; then
     exit 1
 else
     for p in ${REQ} ; do
-        if ! which "${p}" &> /dev/null ; then
+        if ! command -v "${p}" &> /dev/null ; then
             echo "${p} is not installed." 1>&2
             exit 2
         fi

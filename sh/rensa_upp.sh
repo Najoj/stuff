@@ -1,6 +1,6 @@
 #!/bin/bash
 
-which mpc > /dev/null || exit 1
+command -v mpc > /dev/null || exit 1
 
 DIR="/media/musik"
 LIM=8
@@ -56,7 +56,8 @@ cd "$DIR" || exit 1
 
 if $OSORT; then
         echo -n " === Undersöker .osorterat-mappen... "
-        if [ 0 = "$(find "${DIR}/.osorterat/" -type f -and \( -name "*.flac" -or -name "*.ogg" \) | wc -l)" ]; then
+        _LEN=$(find "${DIR}/.osorterat/" -maxdepth 1 -type f -and \( -name "*.flac" -or -name "*.ogg" \) | wc -l)
+        if [ 0 = "$_LEN" ]; then
                 echo "den är tom. ==="
         else
                 echo "den är inte tom."
@@ -67,8 +68,8 @@ if $OSORT; then
                 echo "Lägger till $LIMITA gamla filer. ==="
                 cd "${DIR}/.osorterat/" || exit 1
 
-                find . -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
-                        | tr -s ' ' | sort -gr -k6 | tail -n $LIMITA \
+                find . -maxdepth 1 -printf "%T@ %p\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
+                        | sort -n | cut -d\  -f2- | head -n $LIMITA \
                         | while read -r track; do
                         mv -v "${track}" "${DIR}"    && \
                         mpc -qw update                && \
@@ -78,9 +79,9 @@ if $OSORT; then
                 # populära
                 echo "Lägger till $LIMITB filer på måfå. ==="
                 cd "${DIR}/.osorterat/" || exit 1
-                find . -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
+                find . -type f -maxdepth 1 -and \( -name "*.flac" -or -name "*.ogg" \) \
                         | shuf | tail -n $LIMITB | while read -r track; do
-                        echo -n "$i. " && let i++
+                        echo -n "$i. " && i=$((i+1))
                         mv -v "${track}" "${DIR}"    && \
                         mpc -qw update                && \
                         mpc -w add "${track#./}"
@@ -113,13 +114,13 @@ done
 
 cd "$DIR" || exit 1
 echo " === Undersöker om några band redan har mappar. ==="
-find . -name \*" - "\* | sed 's/ - /\n/' | \
-        grep -Ev "\.(ogg|flac)"$ | sort -g | uniq  | \
+find . -maxdepth 1 -name \*" - "\* | sed 's/ - /\n/' | \
+        grep -Ev "\\.(ogg|flac)"$ | sort -g | uniq  | \
 while read -r band; do
         if ls -d "${band}/" &> /dev/null ; then
                 mv -v "${band} - "* "${band}/" && \
                 cd "${band}"                    && \
-                find . -name "${band} - "\* | sed 's/ - /\n/' | grep -E "\.(ogg|flac)"$ | sort -g | \
+                find . -name "${band} - "\* | sed 's/ - /\n/' | grep -E "\\.(ogg|flac)"$ | sort -g | \
                 while read -r title; do
                         mv -v "${band} - ${title}" "${title}"   && \
                         mpc -wq update                  && \
@@ -133,12 +134,12 @@ done
 
 cd "$DIR" || exit 1
 echo " === Undersöker om några band ska ha mappar. ==="
-find . -name \*" - "\* -type f | grep -Ev '.(omslag|spellistor|osorterat|torrenter)' | \
-sed 's/ - /\n/' | grep -Ev "\.(ogg|flac)"$ | sort -g | uniq  | \
+find . -maxdepth 1 -name \*" - "\* -type f | \
+    grep -Ev '.(omslag|spellistor|osorterat|torrenter)' | \
+    sed 's/ - /\n/' | grep -Ev "\\.(ogg|flac)"$ | sort -g | uniq  | \
 while read -r band; do
-        N=$(find . -name "${band} - *\.*" -type f | wc -l)
+        N=$(find . -name "${band} - *\\.*" -type f | wc -l)
         if [ "$N" -ge "$LIM" ]; then
-                echo "$band  $N"
                 mkdir "${band}"
                 mv -v "${band} - "* "${band}/"
                 cd "${band}" || exit 1
@@ -156,20 +157,17 @@ done
 
 cd "$DIR" || exit 2
 echo " === Undersöker om några låtar ska nedgraderas. ==="
-find . -type d -maxdepth 1 | sed 's/\///' | \
+find . -maxdepth 1 -type d | \
 while read -r band; do
-        echo $band
-        if find . -type d -name "${band}" -maxdepth 1 &> /dev/null ; then
-                cd "${band}" || exit 2
-                N=$(find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | wc -l)
-                if ! (ls -d ./*/ &> /dev/null || [ "$N" -ge $LIM ] ); then
-                        find . -maxdepth 1 -name "*.*" 2> /dev/null | \
-                        while read -r title; do
-                                mv -uv "${title}" ../"${band} - ${title}"   && \
-                                mpc -wq update                              && \
-                                mpc -w add "${band} - ${title}"
-                        done
-                fi
+        cd "${band}" || exit 2
+        N=$(find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | wc -l)
+        if ! ls ./*/ &> /dev/null && [ "$N" -lt $LIM ]; then
+                find . -maxdepth 1 -name "*.*" 2> /dev/null | \
+                while read -r title; do
+                        mv -uv "${title}" ../"${band} - ${title#./}"   && \
+                        mpc -wq update                                 && \
+                        mpc -w add "${band} - ${title#./}"
+                done
         fi
         cd "$DIR" || exit 2
         rmdir "${band}" 2> /dev/null

@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="2020.02.16"
+VERSION="2020.06.20"
 
 ###
 # lock
@@ -11,6 +11,7 @@ function lock {
         fi
         touch $LOCK
 }
+
 function unlock {
         rm -f $LOCK
 }
@@ -26,11 +27,10 @@ function extra {
                 apt-get $Q dist-upgrade                --assume-yes                     && \
                 apt-get $Q autoclean                   --assume-yes                     && \
                 apt-get $Q clean                                                        && \
-                aptitude purge ~c                      --assume-yes                     && \
                 \
                 ${HOME}/src/update_hosts.sh
         " 
-
+        $SAVE && rm -v "${FILE}"
         avsluta
 }
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-which mpc 2> /dev/null || exit 1
+command -v mpc 2> /dev/null || exit 1
 
 SPELA_KLART="${HOME}/src/spela_klart"
 [ -f "$SPELA_KLART" ]    || exit 1
