@@ -68,7 +68,7 @@ if $OSORT; then
                 echo "Lägger till $LIMITA gamla filer. ==="
                 cd "${DIR}/.osorterat/" || exit 1
 
-                find . -maxdepth 1 -printf "%T@ %p\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
+                find . -maxdepth 1 -printf "%T@ %p\\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
                         | sort -n | cut -d\  -f2- | head -n $LIMITA \
                         | while read -r track; do
                         mv -v "${track}" "${DIR}"    && \

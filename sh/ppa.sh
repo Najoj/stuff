@@ -13,7 +13,7 @@ fi
 
 # If there was a ppa url or an http url.
 if [ "$(echo "$1" | cut -c -3)" == "ppa" ]; then
-        TITLE=$(echo "$1" | sed "s/ppa\://g" | tr "/" " " | gawk '{ print $1 }')
+        TITLE=$(echo "$1" | sed "s/ppa\\://g" | tr "/" " " | gawk '{ print $1 }')
         PPA="https://launchpad.net/~$TITLE/+archive/$(echo "$A" | gawk '{ print $2 }')"
 else
         PPA="$1"
@@ -32,10 +32,10 @@ SERVER="apt-key adv --keyserver pgp.mit.edu --recv-keys $KEY"
 # If you are root, I will add to sources.list and add GPG keys.
 if [ $UID -eq 0 ]; then
         if $SERVER; then
-                echo -en "\n## $(links -dump "$PPA" \
+                echo -en "\\n## $(links -dump "$PPA" \
                         | head -n 4 \
                         | tail -n 1) \
-                        PPA added on $(date +"%F %T").\n$DATA" >> /etc/apt/sources.list \
+                        PPA added on $(date +"%F %T").\\n$DATA" >> /etc/apt/sources.list \
                 else 
                         echo "FAILED" 1>&2 ; exit -1
                 fi

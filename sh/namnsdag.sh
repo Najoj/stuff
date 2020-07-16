@@ -39,8 +39,8 @@ DATE_ALL=${DATE_THIS//$YEAR/DETTA_ÅR}
 PRE=""
 POST=""
 if grep "$DATE_THIS" "$FLAG" 1>&2 || grep "$DATE_ALL" "$FLAG" 1>&2 ; then
-    PRE="\033[1;33m\033[44m ⚑ "
-    POST=" \033[0m"
+    PRE="\\033[1;33m\\033[44m ⚑ "
+    POST=" \\033[0m"
 fi
 
 echo -e -n "${PRE}${NAMES}${POST}"

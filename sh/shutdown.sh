@@ -51,7 +51,7 @@ function await_halt
                 AGAIN=false
                 for PID in youtube-dl svtget-dl srm; do
                         if pgrep "${PID}" ; then
-                                id=$(pgrep "${PID}" | sed "s/\n/\ /")
+                                id=$(pgrep "${PID}" | sed "s/\\n/\\ /")
                                 echo -- "$0" "Väntar på ${PID} (${id})."
                                 sleep "${SLEEP_TIME}"
                                 AGAIN=true

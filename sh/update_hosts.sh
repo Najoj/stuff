@@ -21,7 +21,7 @@ TMP=$(mktemp)
 AVG="SPARA ALLT OVANFÖR"
 
 echo "Bygger ny hosts-fil till $NYHOSTS."
-echo -e "##### SKAPAD $D\n" | tr "_" " "   > "$NYHOSTS"
+echo -e "##### SKAPAD $D\\n" | tr "_" " "   > "$NYHOSTS"
 
 head -n "$(grep -n -m 1 "${AVG}" $HOSTS | awk '{ print $1-1 }' )" "$HOSTS"  | tail -n +3 >> "$NYHOSTS"
 echo "###### ${AVG} ######" >> "$NYHOSTS"
@@ -36,7 +36,7 @@ wget -q http://someonewhocares.org/hosts/hosts -O "$TMP"  || \
     (echo "Kunde inte hämta hosts-fil. Avslutar" 1>&2 && rm -v "$TMP" ; exit -1)
 
 echo "och lägger den i $NYHOSTS."
-echo -e "##### SIDOR FRÅN http://someonewhocares.org/hosts/\n" >> "$NYHOSTS"
+echo -e "##### SIDOR FRÅN http://someonewhocares.org/hosts/\\n" >> "$NYHOSTS"
 sed s/\#127/127/g "$TMP" | grep ^"127.0.0.1" | grep -v "localhost" | sort -g | uniq >> "$NYHOSTS"
 
 ################################################################################
@@ -49,7 +49,7 @@ wget -q http://winhelp2002.mvps.org/hosts.txt -O - | grep -v ^"#" > "$TMP"  || \
     (echo "Kunde inte hämta hosts-fil. Avslutar" 1>&2 && rm -v "$TMP" ; exit -1)
 
 echo "och lägger den i $NYHOSTS."
-echo -e "\n\n##### SIDOR FRÅN http://winhelp2002.mvps.org/hosts.txt\n" >> "$NYHOSTS"
+echo -e "\\n\\n##### SIDOR FRÅN http://winhelp2002.mvps.org/hosts.txt\\n" >> "$NYHOSTS"
 sed s/'0.0.0.0'/'127.0.0.1'/g "$TMP" | grep -v "localhost" | sort -g | uniq | grep -v ^$ >> "$NYHOSTS"
 
 ################################################################################
@@ -62,7 +62,7 @@ wget -q http://sbc.io/hosts/alternates/porn/hosts -O - | grep -v ^"#" > "$TMP"  
     (echo "Kunde inte hämta hosts-fil. Avslutar" 1>&2 && rm -v "$TMP" ; exit -1)
 
 echo "och lägger den i $NYHOSTS."
-echo -e "\n\n##### SIDOR FRÅN http://sbc.io/hosts/alternates/porn/hosts\n" >> "$NYHOSTS"
+echo -e "\\n\\n##### SIDOR FRÅN http://sbc.io/hosts/alternates/porn/hosts\\n" >> "$NYHOSTS"
 grep -v ^$ "$TMP" | sed s/'0.0.0.0'/'127.0.0.1'/g | grep -Ev "(localhost|broadcasthost)" | sort -g | uniq >> "$NYHOSTS"
 
 ################################################################################

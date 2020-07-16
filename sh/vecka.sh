@@ -26,7 +26,7 @@ if [ "$1" = "conky" ]; then
 
     grep -v ^\  "$WEEKFILE"                                                    \
     | grep -C 1 -m 2 "v$THISWEEK"                                              \
-    | sed s/" $TODAY"/" ${"$COLOUR"}$TODAY"'${color}'/                         \
+    | sed "s/ $TODAY/ ${$COLOUR}$TODAY'${color}'/"                             \
     | sed s/Rs/'${color2}'/g | sed s/Re/'${color}'/g
 else #todo: if xmobar
     COLOUR="#45C913"
