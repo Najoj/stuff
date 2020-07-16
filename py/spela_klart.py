@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 #-*- coding:utf-8 -*-
 
-# MPD
 from musicpd  import MPDClient
 
+import os
 import time
 import sys
 
@@ -31,7 +31,17 @@ def printTime(t):
 def main():
     try:
         client = MPDClient()
-        client.connect("localhost", 6600)
+        try: 
+            host = os.environ['MPD_HOST']
+        except KeyError:
+            host = 'localhost'
+
+        try: 
+            host = os.environ['MPD_PORT']
+        except KeyError:
+            port = 6600
+
+        client.connect(host, port)
         currentTrack = client.status()['songid']
 
 
