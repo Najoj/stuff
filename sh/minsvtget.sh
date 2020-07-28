@@ -6,7 +6,7 @@ echo -e '\033]2;'$TITLE'\007'
 
 TMP=".svtplay-dl-"
 R=1
-while ! find .svtplay-dl-* -maxdepth 1 -type d 2> /dev/null | wc -l | grep -E ^"[0-3]"$; do
+while ! find .svtplay-dl-* -maxdepth 1 -type d 2> /dev/null | wc -l | grep -E ^"[0-2]"$; do
         echo -en '\r'
         date +%T | tr -d '\n'
 
