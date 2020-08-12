@@ -10,19 +10,24 @@ if [ -z "$*" ]; then
 fi
 
 LIM=20
-RESULT=$(mpc -f "%position% \"%artist% - %title% (%album%)\" off  " playlist | grep -Ei "$@" | tail -n $LIM)
-WHIPTAIL="whiptail --fb --notags --radiolist \"Vilken menar du?\" 30 80 20 $RESULT"
+RESULT=$(mpc -f "%position% \"%artist% - %title% (%album%)\" off  " playlist | grep -Ei "$@" | shuf | tail -n $LIM )
 LEN=$(echo "${RESULT}" | grep -cv ^$)
+
+RESULT=$(echo $RESULT | tr '\n' ' ')
+echo $RESULT
+WHIPTAIL="whiptail --fb --notags --radiolist \"Vilken menar du?\" 30 80 20 $RESULT"
+echo $WHIPTAIL
 
 if [ "$LEN" -eq 0 ]; then
     err "No results."
     exit 1
 elif [ "$LEN" -eq 1 ]; then
-    echo "$RESULT" | cut -d \" -f 2
+#    echo "$RESULT" | cut -d \" -f 2
     FROM=$(echo "$RESULT" | cut -d\  -f 1)
 else
-    FROM=$(eval "$WHIPTAIL" 3>&1 1>&2 2>&3)
-    if [ -z "$FROM" ]; then
+    FROM=$($WHIPTAIL 3>&1 1>&2 2>&3)
+    echo FROM $FROM
+    if [ -z $FROM ]; then
         err "No file chosen."
         exit 1
     fi
@@ -30,7 +35,7 @@ fi
 
 TO=$(($(mpc -f "%position%" current)+1))
 
-if [ "$FROM" -lt "$TO" ]; then
+if [ $FROM -lt $TO ]; then
     TO=$((TO+1))
 fi
 

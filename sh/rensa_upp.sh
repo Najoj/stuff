@@ -114,13 +114,14 @@ done
 
 cd "$DIR" || exit 1
 echo " === Undersöker om några band redan har mappar. ==="
-find . -maxdepth 1 -name \*" - "\* | sed 's/ - /\n/' | \
-        grep -Ev "\\.(ogg|flac)"$ | sort -g | uniq  | \
+find . -type f -maxdepth 1 -name \*" - "\* | sed -E 's/.+ - //' | sort -u | \
 while read -r band; do
         if ls -d "${band}/" &> /dev/null ; then
-                mv -v "${band} - "* "${band}/" && \
-                cd "${band}"                    && \
-                find . -name "${band} - "\* | sed 's/ - /\n/' | grep -E "\\.(ogg|flac)"$ | sort -g | \
+                mv -v "${band} - "* "${band}/"
+                cd "${band}" || break
+                # Remove inital ./
+                band=${band#./}
+                find . -name "${band} - "\* | sed -E 's/.+ - //' | \
                 while read -r title; do
                         mv -v "${band} - ${title}" "${title}"   && \
                         mpc -wq update                  && \
