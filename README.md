@@ -3,7 +3,7 @@ Some small scripts and simpler code that I have written. Pardon the lack of
 comments.
 ## Short descriptions
 *TODO*
-```
+```sh
 .
 ├── c
 │   ├── bar.c
@@ -31,14 +31,12 @@ comments.
     ├── colours.sh
     ├── dagar.sh
     ├── disc.sh
-    ├── dn.sh
     ├── dvdrip.sh
     ├── fixa_låtarna.sh
-    ├── installera-nvidia.sh
+    ├── flytta_upp.sh
     ├── ladda_ned.sh
     ├── lad.sh
     ├── lastsong.sh
-    ├── lico-update.sh
     ├── minsvtget.sh
     ├── minwget.sh
     ├── mp3tillogg.sh
@@ -47,12 +45,14 @@ comments.
     ├── nextsong.sh
     ├── nrss.sh
     ├── pic.sh
-    ├── pipes.sh
+    ├── pip-upgrade.sh
     ├── ppa.sh
     ├── rensa_lyrics.sh
     ├── rensa_upp.sh
+    ├── req.sh
     ├── shutdown.sh
     ├── spela_klart_album.sh
+    ├── test.sh
     ├── text.sh
     ├── ud.sh
     ├── update_hosts.sh
