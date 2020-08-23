@@ -14,15 +14,12 @@ RESULT=$(mpc -f "%position% \"%artist% - %title% (%album%)\" off  " playlist | g
 LEN=$(echo "${RESULT}" | grep -cv ^$)
 
 RESULT=$(echo $RESULT | tr '\n' ' ')
-echo $RESULT
 WHIPTAIL="whiptail --fb --notags --radiolist \"Vilken menar du?\" 30 80 20 $RESULT"
-echo $WHIPTAIL
 
 if [ "$LEN" -eq 0 ]; then
     err "No results."
     exit 1
 elif [ "$LEN" -eq 1 ]; then
-#    echo "$RESULT" | cut -d \" -f 2
     FROM=$(echo "$RESULT" | cut -d\  -f 1)
 else
     FROM=$($WHIPTAIL 3>&1 1>&2 2>&3)
