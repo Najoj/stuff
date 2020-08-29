@@ -32,7 +32,7 @@ if date --date="February 29, $YEAR" &> /dev/null; then
 fi
 
 # Kollar om det är flaggdag.
-DATE_THIS=$(date +"%F")
+DATE_THIS=$(date +"%F" --date="$DAYS_AHEAD days")
 DATE_ALL=${DATE_THIS//$YEAR/DETTA_ÅR}
 
 # Kollar om det är datumen finns i flaggdagsfilen

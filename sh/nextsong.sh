@@ -13,7 +13,7 @@ LIM=20
 RESULT=$(mpc -f "%position% \"%artist% - %title% (%album%)\" off  " playlist | grep -Ei "$@" | shuf | tail -n $LIM )
 LEN=$(echo "${RESULT}" | grep -cv ^$)
 
-RESULT=$(echo $RESULT | tr '\n' ' ')
+RESULT=$(echo "${RESULT}" | tr '\n' ' ')
 WHIPTAIL="whiptail --fb --notags --radiolist \"Vilken menar du?\" 30 80 20 $RESULT"
 
 if [ "$LEN" -eq 0 ]; then
@@ -23,7 +23,6 @@ elif [ "$LEN" -eq 1 ]; then
     FROM=$(echo "$RESULT" | cut -d\  -f 1)
 else
     FROM=$($WHIPTAIL 3>&1 1>&2 2>&3)
-    echo FROM $FROM
     if [ -z $FROM ]; then
         err "No file chosen."
         exit 1
