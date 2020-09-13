@@ -114,7 +114,7 @@ done
 
 cd "$DIR" || exit 1
 echo " === Undersöker om några band redan har mappar. ==="
-find . -type f -maxdepth 1 -name \*" - "\* | sed -E 's/.+ - //' | sort -u | \
+find . -maxdepth 1 -type f -name \*" - "\* | sed -E 's/.+ - //' | sort -u | \
 while read -r band; do
         if ls -d "${band}/" &> /dev/null ; then
                 mv -v "${band} - "* "${band}/"

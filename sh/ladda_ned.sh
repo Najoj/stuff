@@ -11,7 +11,7 @@ for URL in "$@"; do
                 [[ "${URL}" =~ http(s)?://(www\.|m\.)?youtu\.be/ ]]                           ||
                 [[ "${URL}" =~ http(s)?://invidio\.us/watch\? ]]; then
                 "${DIR}"/youtube.sh "${URL}" || RET=$((RET+1))
-                TXT=$(youtube -dl--get-filename "${URL}")
+                TXT=$(youtube-dl--get-filename "${URL}")
 
         elif [[ "${URL}" =~ http(s)?://((www|player)\.)?vimeo.com/ ]]; then
                 "${DIR}"/youtube.sh "${URL}" || RET=$((RET))

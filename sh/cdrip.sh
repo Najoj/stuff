@@ -1,10 +1,13 @@
 #!/bin/bash
 
 # Ser om awk, cdparanoia och flac finns.
-if ! command -v awk cdparanoia flac &> /dev/null ; then
-    echo "awk, cdparanoia och flac måste vara installerade"
-    exit 1
-fi
+REQ=(awk cdparanoia flac)
+for p in ${REQ[*]}; do
+        if ! command -v "$p" &> /dev/null ; then
+                echo "$p krävs."
+                exit 1
+        fi
+done
 
 ARTIST=""
 ALBUM=""
@@ -54,7 +57,7 @@ if ! cdparanoia -Q &> /dev/null ; then
 fi
 
 # Hämtar antalet spår på cd:n
-TRACKS=$(cdparanoia -Q 2>&1 | gawk '{ print $1 }' | tail -n 3 | head -n 1 | tr -d ".")
+TRACKS=$(cdparanoia -Q 2>&1 | awk '{ print $1 }' | tail -n 3 | head -n 1 | tr -d ".")
 
 echo -e "artist:\\t\"$ARTIST\"" >&2
 echo -e "album:\\t\"$ALBUM\""    >&2
