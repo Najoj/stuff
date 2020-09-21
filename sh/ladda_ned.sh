@@ -4,7 +4,8 @@ DIR="${HOME}/src/ln"
 RET=0
 for URL in "$@"; do
         PRET=$RET
-        if [[ "${URL}" = ~magnet:\? ]]; then
+        if [[ "${URL}" =~ magnet:\? ]] ||
+                [[ "${URL}" =~ http(s)?://(.*)\.torrent ]]; then
                 deluge - console "add ${URL}"
         elif [[ "${URL}" =~ http(s)?://(www\.|m\.)?youtube\.com/watch\? ]]                 ||
                 [[ "${URL}" =~ http(s)?://(www\.|m\.)?youtube(-nocookie)?\.com/embed(ed)?/ ]] ||
@@ -13,23 +14,11 @@ for URL in "$@"; do
                 "${DIR}"/youtube.sh "${URL}" || RET=$((RET+1))
                 TXT=$(youtube-dl --get-filename "${URL}")
 
-        elif [[ "${URL}" =~ http(s)?://((www|player)\.)?vimeo.com/ ]]; then
-                "${DIR}"/youtube.sh "${URL}" || RET=$((RET))
-                TXT=$(youtube-dl --get-filename "${URL}")
-
-        elif [[ "${URL}" =~ http(s)?://(www\.)?metacafe.com/ ]]; then
-                "${DIR}"/youtube.sh "${URL}" || RET=$((RET+1))
-                TXT=$(youtube-dl --get-filename "${URL}")
-
-        elif [[ "${URL}" =~ http(s)?://(www\.)?cjube.com/ ]]; then
-                "${DIR}"/youtube.sh "${URL}" || RET=$((RET+1))
-                TXT=$(youtube-dl --get-filename "${URL}")
-                
-        elif [[ "${URL}" =~ http(s)?://(www\.)?dailymotion.com/ ]]; then
-                "${DIR}"/youtube.sh "${URL}" || RET=$((RET+1))
-                TXT=$(youtube-dl --get-filename "${URL}")
-
-        elif [[ "${URL}" =~ http://(www\.)?liveleak.com/view\?i= ]]; then
+        elif [[ "${URL}" =~ http(s)?://((www|player)\.)?vimeo.com/ ]] ||
+                [[ "${URL}" =~ http(s)?://(www\.)?metacafe.com/ ]] 
+                [[ "${URL}" =~ http(s)?://(www\.)?cjube.com/ ]] ||
+                [[ "${URL}" =~ http(s)?://(www\.)?dailymotion.com/ ]] ||
+                [[ "${URL}" =~ http://(www\.)?liveleak.com/view\?i= ]]; then
                 "${DIR}"/youtube.sh "${URL}" || RET=$((RET+1))
                 TXT=$(youtube-dl --get-filename "${URL}")
         
