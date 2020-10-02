@@ -57,6 +57,10 @@ for URL in "$@"; do
                 done || RET=$((RET + 1))
                 TXT="bild nedladdad"
 
+        elif [[ "${URL}" =~ (\.)([Oo][Gg][Gg]|[Ff][Ll][Aa][Cc]) ]]; then
+                "${HOME}"/src/minwget.sh "$URL"
+                TXT="ljud nedladdad"
+
         elif [[ "${URL}" =~ (\.)([Mm][Pp]4|(Oo][Gg)([Gg]|[Aa]|[Vv]))(\?)?.* ]]; then
                 FILE=$(echo "$URL" | sed - e s / "^http\\(\\(.\\)*\\/\\)\\+"// | sed s/"\\?.*$"//)
                 "${HOME}"/src/minwget.sh "$URL" -O "$FILE"
@@ -64,7 +68,6 @@ for URL in "$@"; do
         else
                 "${DIR}"/youtube.sh "${URL}" || RET=$((RET+1))
                 TXT=$(youtube-dl --get-filename "${URL}")
-                RET=$((RET + 1))
         fi
         TXT="$(echo " $TXT " | cut -c -80)"
         if [ $RET -eq $PRET ]; then

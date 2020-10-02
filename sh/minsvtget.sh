@@ -19,17 +19,26 @@ SHA=$(echo "$URL" | sha256sum | awk '{ print $1 }' )
 TMP="${TMP}${SHA}"
 
 if [ -d "$TMP" ]; then
-    echo "$(date +%T)  Mappen \"$TMP\" finns redan."
-    sleep 10
-    exit 1
+        echo "$(date +%T)  Mappen \"$TMP\" finns redan."
+        sleep 10
+        exit 1
 fi
 
 mkdir -p "$TMP" 
 cd "$TMP" || exit 1
 
-youtube-dl "${URL}"
-mv -nv -- *.* ..
-cd .. && rmdir "$TMP"
+R=0
+while ! youtube-dl "${URL}" && [ $R -lt 3 ]; do
+        sleep 5
+        R=$((R+1))
+done
+
+if [ $R -lt 3 ]; then
+        mv -nv -- *.* ..
+        cd .. && rmdir "$TMP"
+else
+        cd .. && rm -rf "$TMP"
+fi
 
 echo "$(date +%T)  Klar."
 sleep 10
