@@ -35,7 +35,6 @@ fi
 
 WHIPTAIL=(whiptail --fb --notags --radiolist "Vilken låt\\?" 30 80 20)
 WHIPTAIL=("${WHIPTAIL[@]}" "${RESULT[@]}")
-echo "$LEN"
 
 if [ "$LEN" -eq 0 ]; then
     err "No results."
