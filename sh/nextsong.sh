@@ -19,9 +19,7 @@ fi
 LIM=20
 RESULT=()
 while IFS=$'\t' read -r nr title; do
-        RESULT+=("$nr")
-        RESULT+=("$title")
-        RESULT+=("off")
+        RESULT+=("$nr" "$title" "off")
         ((LEN+=1))
 done < <(mpc -f "%position%\\t%artist% - %title% (%album%)" playlist | \
         grep -Ei "$@" | shuf | tail -n $LIM | sort -g | sed "s/!/\\!/g" | \
