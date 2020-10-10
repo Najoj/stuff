@@ -20,7 +20,6 @@ LIM=20
 RESULT=()
 while IFS=$'\t' read -r nr title; do
         RESULT+=("$nr" "$title" "off")
-        ((LEN+=1))
 done < <(mpc -f "%position%\\t%artist% - %title% (%album%)" playlist | \
         grep -Ei "$@" | shuf | tail -n $LIM | sort -g | sed "s/!/\\!/g" | \
         sed "s/?/\\?/g")
@@ -50,7 +49,7 @@ fi
 TO=$(($(mpc -f "%position%" current)+1))
 
 if [ "$FROM" -lt "$TO" ]; then
-    TO=$((TO+1))
+    ((TO+=1))
 fi
 
 mpc mv "$FROM" "$TO"
