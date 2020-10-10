@@ -71,5 +71,5 @@ else
         TOTAL=$(printf "%.2fkiB" "${X}")
 fi
 
-echo "${USED} av $TOTAL"
+echo "${USED} av ${TOTAL}"
 
