@@ -24,16 +24,14 @@ if [ "$1" = "conky" ]; then
     COLOUR=color1
     $REDDAY && COLOUR=color3
 
-    grep -v ^\  "$WEEKFILE"                                                    \
-    | grep -C 1 -m 2 "v$THISWEEK"                                              \
-    | sed "s/ $TODAY/ ${$COLOUR}$TODAY'${color}'/"                             \
-    | sed s/Rs/'${color2}'/g | sed s/Re/'${color}'/g
-else #todo: if xmobar
+    # shellcheck disable=SC2154 disable=SC2082 disable=SC2016
+    grep -v ^\  "$WEEKFILE" | grep -C 1 -m 2 "v$THISWEEK" | sed "s/ $TODAY/ ${$COLOUR}$TODAY'${color}'/" | sed s/Rs/'${color2}'/g | sed s/Re/'${color}'/g
+else 
     COLOUR="#45C913"
     $REDDAY && COLOUR="#F04545"
 
     echo -en '<fc=#45C913>'
     grep -m 1 "v$THISWEEK" "$WEEKFILE"                                         \
     | sed s/'Rs'/'<fc=\#7A3A3B>'/g | sed s/'Re'/'<\/fc>'/g                     \
-    | sed s/' '/'<\/fc> '/ | sed s/" $TODAY"/" <fc=$COLOUR>$TODAY<\/fc>"/
+    | sed "s/ /<\\/fc> /" | sed "s/ $TODAY/ <fc=$COLOUR>$TODAY<\\/fc>/"
 fi
