@@ -1,8 +1,6 @@
 #!/bin/bash
-VERSION="2020.06.20"
+VERSION="2020.11.15"
 
-###
-# lock
 LOCK=/tmp/update-LOCK
 function lock {
         if [ -e $LOCK ]; then
@@ -22,11 +20,11 @@ function extra {
         echo "Full uppgradering."
 
         sudo su -c \
-                "apt-get $Q update                                                      && \
-                apt-get $Q autoremove                  --assume-yes                     && \
-                apt-get $Q dist-upgrade                --assume-yes                     && \
-                apt-get $Q autoclean                   --assume-yes                     && \
-                apt-get $Q clean                                                        && \
+            "   apt-get $Q update                                           && \
+                apt-get $Q autoremove                  --assume-yes         && \
+                apt-get $Q dist-upgrade                --assume-yes         && \
+                apt-get $Q autoclean                   --assume-yes         && \
+                apt-get $Q clean                                            && \
                 \
                 ${HOME}/src/update_hosts.sh
         " 
@@ -39,11 +37,12 @@ function regular {
 
 
         sudo su -c \
-            "   apt-get $Q update                                                       && \
-                apt-get $Q autoremove                  --assume-yes                     && \
-                apt-get $Q --only-upgrade upgrade      --assume-yes                     && \
+            "   apt-get $Q update                                           && \
+                apt-get $Q autoremove                  --assume-yes         && \
+                apt-get $Q --only-upgrade upgrade      --assume-yes         && \
                 apt-get $Q autoclean                   --assume-yes
             " 
+        python3 -m pip install --upgrade pip
 
         avsluta
 }
@@ -132,8 +131,9 @@ EXTRA=$(gunzip -c "$FILE" | head -n 1)
 REGULAR=$(gunzip -c "$FILE" | tail -n 1)
 # Sekunder
 BIG_LIMIT=$(( 365*60*60*24 / 12  ))
-SMALL_LIMIT=$(( BIG_LIMIT / 4 ))
+SMALL_LIMIT=$(( BIG_LIMIT / 3 ))
 NOW=$(date +%s)
+
 # Lyckovariabel
 SAVE=true
 
