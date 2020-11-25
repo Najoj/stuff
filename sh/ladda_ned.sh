@@ -6,7 +6,8 @@ for URL in "$@"; do
         PRET=$RET
         if [[ "${URL}" =~ magnet:\? ]] ||
                 [[ "${URL}" =~ http(s)?://(.*)\.torrent ]]; then
-                deluge - console "add ${URL}"
+                deluge-console "add ${URL}"
+
         elif [[ "${URL}" =~ http(s)?://(www\.|m\.)?youtube\.com/watch\? ]]                 ||
                 [[ "${URL}" =~ http(s)?://(www\.|m\.)?youtube(-nocookie)?\.com/embed(ed)?/ ]] ||
                 [[ "${URL}" =~ http(s)?://(www\.|m\.)?youtu\.be/ ]]                           ||
