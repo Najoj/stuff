@@ -99,7 +99,7 @@ while read -r band; do
         newband="${newband// - /, The - }"
         mv -v "${band}" "${newband}"   && \
         mpc -wq update                  && \
-        mpc -w add "${newband}"
+        mpc -w add "${newband#./}"
 done
 
 find . -maxdepth 1 -type d -name 'The *' | \
@@ -107,7 +107,7 @@ while read -r dir; do
         newdir="${dir#./The }, The"
         mv -v "${dir}" "${newdir}"         && \
         mpc -wq update                      && \
-        mpc -w add "${newdir}"
+        mpc -w add "${newdir#./}"
 done
 
 #################################
@@ -125,7 +125,7 @@ while read -r band; do
                 while read -r title; do
                         mv -v "${band} - ${title}" "${title}"   && \
                         mpc -wq update                  && \
-                        mpc -w add "${band}/${title}"
+                        mpc -w add "${band#./}/${title}"
                 done
         fi
         cd "$DIR" || exit 2
@@ -139,16 +139,16 @@ find . -maxdepth 1 -name \*" - "\* -type f | \
     grep -Ev '.(omslag|spellistor|osorterat|torrenter)' | \
     sed 's/ - /\n/' | grep -Ev "\\.(ogg|flac)"$ | sort -g | uniq  | \
 while read -r band; do
-        N=$(find . -name "${band} - *\\.*" -type f | wc -l)
+        N=$(find . -name "${band#./} - *\\.*" -type f | wc -l)
         if [ "$N" -ge "$LIM" ]; then
                 mkdir "${band}"
                 mv -v "${band} - "* "${band}/"
                 cd "${band}" || exit 1
                 find . -maxdepth 1 | while read -r bandtitle; do
-                        title=${bandtitle#${band} - }
+                        title="${bandtitle#${band} - }"
                         mv -v "${bandtitle}" "${title}"   && \
                         mpc -wq update                 && \
-                        mpc -w add "${band}/${title}"
+                        mpc -w add "${band#./}/${title}"
                 done
         fi
         cd "$DIR" || exit 2
@@ -167,7 +167,7 @@ while read -r band; do
                 while read -r title; do
                         mv -uv "${title}" ../"${band} - ${title#./}"   && \
                         mpc -wq update                                 && \
-                        mpc -w add "${band} - ${title#./}"
+                        mpc -w add "${band#./} - ${title#./}"
                 done
         fi
         cd "$DIR" || exit 2
