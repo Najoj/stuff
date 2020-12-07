@@ -6,5 +6,5 @@ $PIP install --upgrade pip
 $PIP list --outdated --format=freeze    |\
         grep -v '^\-e'                  |\
         cut -d= -f1                     |\
-        xargs -n1 "$PIP" install --upgrade
+        xargs -n1 $PIP install --upgrade
 

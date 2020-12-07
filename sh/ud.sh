@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION="2020.11.15"
+VERSION="2020.12.01"
 
 LOCK=/tmp/update-LOCK
 function lock {
@@ -42,7 +42,7 @@ function regular {
                 apt-get $Q --only-upgrade upgrade      --assume-yes         && \
                 apt-get $Q autoclean                   --assume-yes
             " 
-        python3 -m pip install --upgrade pip
+        python3 -m pip install --no-warn-script-location --upgrade pip
 
         avsluta
 }
