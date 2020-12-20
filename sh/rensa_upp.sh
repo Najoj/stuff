@@ -1,9 +1,8 @@
 #!/bin/bash
-
 command -v mpc > /dev/null || exit 1
 
 DIR="/media/musik"
-LIM=8
+LIM=10
 SHUFFLE="true"
 OSORT="false"
 LIMIT=15000
@@ -139,7 +138,7 @@ find . -maxdepth 1 -name \*" - "\* -type f | \
     grep -Ev '.(omslag|spellistor|osorterat|torrenter)' | \
     sed 's/ - /\n/' | grep -Ev "\\.(ogg|flac)"$ | sort -g | uniq  | \
 while read -r band; do
-        N=$(find . -name "${band#./} - *\\.*" -type f | wc -l)
+        N=$(find . -maxdepth 1 -name "${band#./} - *\\.*" -type f | wc -l)
         if [ "$N" -ge "$LIM" ]; then
                 mkdir "${band}"
                 mv -v "${band} - "* "${band}/"
@@ -162,7 +161,7 @@ find . -maxdepth 1 -type d | \
 while read -r band; do
         cd "${band}" || exit 2
         N=$(find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | wc -l)
-        if ! ls ./*/ &> /dev/null && [ "$N" -lt $LIM ]; then
+        if ! ls ./*/ &> /dev/null && [ "$N" -lt "$LIM" ]; then
                 find . -maxdepth 1 -name "*.*" 2> /dev/null | \
                 while read -r title; do
                         mv -uv "${title}" ../"${band} - ${title#./}"   && \
