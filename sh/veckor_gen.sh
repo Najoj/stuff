@@ -66,9 +66,9 @@ done
 # This is where the action happens
 
 A=1
-B=17
-C=18
-D=20
+B=18
+C=19
+D=21
 for i in $(seq -w $SW $EW); do
     echo -en "v$i  $(echo "$SEQ" | cut -c $A-$B | sed "s/^[ ]*//g")"
     echo -e  "Rs $(echo "$SEQ" | cut -c $C-$D | sed "s/^[ ]*//g")Re"
