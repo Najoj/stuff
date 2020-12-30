@@ -4,8 +4,8 @@
 from musicpd  import MPDClient
 
 import os
-import time
 import sys
+import time
 
 def printTime(t):
     # Time in minutes and rest
@@ -30,6 +30,10 @@ def printTime(t):
 
 def main():
     try:
+        i = 1
+        if len(sys.argv) == 2:
+            i = int(sys.argv[1])
+
         client = MPDClient()
         try: 
             host = os.environ['MPD_HOST']
@@ -44,12 +48,12 @@ def main():
         client.connect(host, port)
         currentTrack = client.status()['songid']
 
-
-        while currentTrack == client.status()['songid']:
-            t = int(float(client.currentsong()['time']) - float(client.status()['elapsed']))
-            print (printTime(t), end='\r')
-            sys.stdout.flush()
-            time.sleep(0.25)
+        for _ in range(i):
+            while currentTrack == client.status()['songid']:
+                t = int(float(client.currentsong()['time']) - float(client.status()['elapsed']))
+                print (printTime(t), end='\r')
+                sys.stdout.flush()
+                time.sleep(0.25)
 
 
         client.close()
