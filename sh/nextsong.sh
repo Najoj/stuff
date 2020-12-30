@@ -22,12 +22,12 @@ while IFS=$'\t' read -r nr title; do
         RESULT+=("$nr" "$title" "off")
 done < <(mpc -f "%position%\\t%artist% - %title% (%album%)" playlist | \
         grep -Ei "$@" | shuf | tail -n $LIM | sort -g | sed "s/!/\\!/g" | \
-        sed "s/?/\\?/g")
+        sed "s/?/\?/g")
 
 LEN=${#RESULT[@]}
 LEN=$((LEN/3))
 if [ $LEN -eq 0 ]; then
-        err "No results"
+        err "No results."
 fi
 
 WHIPTAIL=(whiptail --fb --notags --radiolist "Vilken låt\\?" 30 80 20)
