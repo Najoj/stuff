@@ -18,7 +18,7 @@ done
 
 # See if there are plenty of dowloads already running
 R=1
-while pgrep -ic svtget | grep -E ^"[0-2]"$; do
+while pgrep -ic svtget | grep -vE ^"[0-3]"$; do
         echo -en '\r'
         date +%T | tr -d '\n'
 
