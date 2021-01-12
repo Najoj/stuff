@@ -18,7 +18,7 @@ done
 
 # See if there are plenty of dowloads already running
 R=1
-while pgrep -ic svtget | grep -vE ^"[0-3]"$; do
+while ! find ${TMP}* -maxdepth 1 -type d 2> /dev/null | wc -l | grep -E ^"[0-2]"$; do
         echo -en '\r'
         date +%T | tr -d '\n'
 
