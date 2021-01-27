@@ -1,30 +1,35 @@
 #!/usr/bin/env python3
 #-*- coding:utf-8 -*-
 
-# MPD
-from musicpd  import MPDClient
-# 4 argumentz
+"""
+Rolling song title from MPD based on elapsed song playing time.
+"""
+
+# for arguments
 import sys
 import os
+# MPD
+from musicpd import MPDClient
 
 # Total width
-LENGTH    = int(os.getenv('ROLLINGSIZE', 31))
+LENGTH    = int(os.getenv('ROLLINGSIZE', '31'))
 # Divider when exceeding limit
-DIVIDER   = "   "
+DIVIDER   = '     '
 
 def parser(client, title_string):
-    # Replaces each key with value, iff it exists.
+    """ Replaces each key with value, iff it exists. """
     for key in client.currentsong().keys():
         try:
             replace_with = str(client.currentsong()[str(key)])
             title_string = str.replace(title_string, "%" + key + "%", replace_with)
-        except:
+        except TypeError:
             title_string = str.replace(title_string, "%" + key + "%", "")
             continue
     return title_string
 
 def main():
-    if 1 == len(sys.argv):
+    """ Plain main function. """
+    if len(sys.argv) == 1:
         print("You will have to give an argument.", file=sys.stderr)
         return 1
     # If nothing fails.
@@ -35,7 +40,7 @@ def main():
         client.connect("localhost", 6600)
         title_string = parser(client, str(sys.argv[1]))
 
-    except:
+    except TypeError:
         # Failure. Probably unable to connect to the MPD server.
         return_value = 1
         title_string = "Could not connect to the MPD server"
