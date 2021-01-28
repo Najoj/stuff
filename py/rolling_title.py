@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 #-*- coding:utf-8 -*-
 
-###
-# To do: Warn about non-existing tags
-###
+"""
+To do: Warn about non-existing tags
+"""
 
 # MPD
 from musicpd  import MPDClient
@@ -13,7 +13,7 @@ import sys  # argument
 import os   # environment variables
 
 # Total width
-LENGTH    = int(os.getenv('ROLLINGSIZE', 60))
+LENGTH    = int(os.getenv('ROLLINGSIZE', '60'))
 # Divider when exceeding limit
 DIVIDER   = "    "
 # Time step between outputs
