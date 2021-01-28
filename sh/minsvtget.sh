@@ -9,8 +9,8 @@ TMP=".svtplay-dl-"
 # Remove stuck folders
 AGO=$(date --date="24 hours ago" +%s)
 find ${TMP}* -maxdepth 1 -type d 2> /dev/null | while read -r directory; do
-        NOW=$(stat -c "%Y" "$directory")
-        if [ $((NOW-24*60*60)) -gt "$AGO" ]; then
+        NOW=$(stat -c "%Z" "$directory")
+        if [ "$NOW" -lt "$AGO" ]; then
                 echo "Tar bort $directory"
                 rm -rf "$directory"
         fi
