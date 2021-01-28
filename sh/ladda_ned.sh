@@ -63,7 +63,8 @@ for URL in "$@"; do
                 "${HOME}"/src/minwget.sh "$URL"
                 TXT="ljud nedladdad"
 
-        elif [[ "${URL}" =~ (\.)([Zz][Ii][Pp])(\?)?.* ]]; then
+        elif [[ "${URL}" =~ (\.)([Zz][Ii][Pp])(\?)?.* ]] ||
+                [[ "${URL}" =~ (\.)([Tt][Aa][Rr](\,[Gg][Zz])?) ]]; then
                 FILE=$(echo "$URL" | sed - e s / "^http\\(\\(.\\)*\\/\\)\\+"// | sed s/"\\?.*$"//)
                 "${HOME}"/src/minwget.sh "$URL" -O "$FILE"
                 TXT="film nedladdad"
