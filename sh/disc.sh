@@ -1,14 +1,14 @@
 #!/bin/bash
 
 for req in df grep gawk; do
-        if ! hash "$req" > /dev/null; then
+        if ! command -v "$req" > /dev/null; then
                 echo "\"$req\" saknas"
                 exit 1
         fi
 done
 
-USED=$( df | grep ^/dev/ | gawk '{ print $3 }' | while read -r int; do echo -n "$int+"; done | sed s/+\$/\\n/ | bc )
-TOTAL=$(df | grep ^/dev/ | gawk '{ print $2 }' | while read -r int; do echo -n "$int+"; done | sed s/+\$/\\n/ | bc )
+USED=$( df | grep ^/dev/ | gawk '{ print $4 }' | while read -r int; do echo -n "$int+"; done | sed s/+\$/\\n/ | bc )
+TOTAL=$(df | grep ^/dev/ | gawk '{ print $3 }' | while read -r int; do echo -n "$int+"; done | sed s/+\$/\\n/ | bc )
 
 echo USED:   "${USED}"  1>&2
 echo TOTAL:  "${TOTAL}" 1>&2
