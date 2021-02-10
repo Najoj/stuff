@@ -30,18 +30,18 @@ done < <(mpc -f "%position%\\t%artist% - %title% (%album%)" playlist | \
         sed "s/?/\\?/g")
 
 LEN=${#RESULT[@]}
+# RESULT will contain three parts, thus the length divided by three will be the
+# number of songs found.
 LEN=$((LEN/3))
 if [ $LEN -eq 0 ]; then
         err "No results."
+        exit 1
 fi
 
 WHIPTAIL=(whiptail --fb --notags --radiolist "Vilken låt\\?" 30 80 20)
 WHIPTAIL=("${WHIPTAIL[@]}" "${RESULT[@]}")
 
-if [ "$LEN" -eq 0 ]; then
-        err "No results."
-        exit 1
-elif [ "$LEN" -eq 1 ]; then
+if [ "$LEN" -eq 1 ]; then
         FROM=$(echo "${RESULT[0]}" | cut -d\  -f 1)
 else
         FROM=$(exec "${WHIPTAIL[@]}" 3>&1 1>&2 2>&3)
@@ -51,10 +51,12 @@ else
         fi
 fi
 
+# Position before currently playing
 TO=$(($(mpc -f "%position%" current)+1))
 
 if [ "$FROM" -lt "$TO" ]; then
-        ((TO+=1))
+        # If moving forward, take into account that songs before will move
+        ((TO-=1))
 fi
 
 mpc mv "$FROM" "$TO"
