@@ -1,6 +1,7 @@
 #!/bin/bash
-UNIKA=$(mktemp)
+command -v mpc grep mktemp || exit 1
 
+UNIKA=$(mktemp)
 mpc -f "%position% %file%" playlist | \
         while IFS=' ' read -r pos file; do 
                 if grep "$file" "$UNIKA"; then 
@@ -11,3 +12,5 @@ mpc -f "%position% %file%" playlist | \
         done
 
 rm "$UNIKA"
+
+exit 0
