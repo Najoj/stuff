@@ -15,7 +15,7 @@ done
 
 echo "Will \"${TODO}\"."
 
-"${HOME}"/src/spela_klart.py
+"${HOME}"/src/spela_klart.py || exit 1
 
 mpc pause
 
