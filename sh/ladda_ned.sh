@@ -65,12 +65,12 @@ for URL in "$@"; do
 
         elif [[ "${URL}" =~ (\.)([Zz][Ii][Pp])(\?)?.* ]] ||
                 [[ "${URL}" =~ (\.)([Tt][Aa][Rr](\,[Gg][Zz])?) ]]; then
-                FILE=$(echo "$URL" | sed - e s / "^http\\(\\(.\\)*\\/\\)\\+"// | sed s/"\\?.*$"//)
+                FILE=$(echo "$URL" | sed -e s/"^http\\(\\(.\\)*\\/\\)\\+"// | sed s/"\\?.*$"//)
                 "${HOME}"/src/minwget.sh "$URL" -O "$FILE"
                 TXT="film nedladdad"
 
         elif [[ "${URL}" =~ (\.)([Mm][Pp]4|(Oo][Gg)([Gg]|[Aa]|[Vv]))(\?)?.* ]]; then
-                FILE=$(echo "$URL" | sed - e s / "^http\\(\\(.\\)*\\/\\)\\+"// | sed s/"\\?.*$"//)
+                FILE=$(echo "$URL" | sed -e s/"^http\\(\\(.\\)*\\/\\)\\+"// | sed s/"\\?.*$"//)
                 "${HOME}"/src/minwget.sh "$URL" -O "$FILE"
                 TXT="film nedladdad"
         else
