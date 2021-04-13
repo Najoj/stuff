@@ -3,6 +3,7 @@ Some small scripts and simpler code that I have written. Pardon the lack of
 comments.
 ## Short descriptions
 *TODO*
+
 ```sh
 .
 ├── c
@@ -19,11 +20,18 @@ comments.
 │   ├── cam.html
 │   └── index.html
 ├── py
+│   ├── id3tag.py
 │   ├── mpdklient.py
 │   ├── rolling_title_once.py
 │   ├── rolling_title.py
 │   └── spela_klart.py
 ├── README.md
+├── rust
+│   └── spela_klart
+│       ├── Cargo.lock
+│       ├── Cargo.toml
+│       └── src
+│           └── main.rs
 └── sh
     ├── cdrip.sh
     ├── ch_vol.sh
@@ -52,7 +60,7 @@ comments.
     ├── req.sh
     ├── shutdown.sh
     ├── spela_klart_album.sh
-    ├── test.sh
+    ├── ta_bort_dubletter_ur_mpd.sh
     ├── text.sh
     ├── ud.sh
     ├── update_hosts.sh
@@ -61,5 +69,4 @@ comments.
     ├── vol.sh
     └── vänta.sh
 
-4 directories, 51 files
-```
+28 directories, 170 files
