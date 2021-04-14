@@ -3,7 +3,7 @@
  * Compile: cc spela_klart.c -o spela_klart -lmpdclient
  * Run: ./spela_klart
  *
- * Exist successfully when song changes.
+ * Exits successfully when song changes.
  *
  * Error handling is done by ignoring none-fatal erros and trying to reconnect if
  * fatal errors happen.
