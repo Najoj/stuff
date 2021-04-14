@@ -8,3 +8,6 @@ edition = "2018"
 
 [dependencies]
 mpd = "*"
+
+[profile.release]
+opt-level = "s"
