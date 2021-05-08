@@ -37,7 +37,7 @@ wget -q http://someonewhocares.org/hosts/zero/hosts -O "$TMP"  || \
 
 echo "och lägger den i $NYHOSTS."
 echo -e "##### SIDOR FRÅN http://someonewhocares.org/hosts/\\n" >> "$NYHOSTS"
-sed s/\#127/127/g "$TMP" | grep ^"127.0.0.1" | grep -v "localhost" | sort -g | uniq >> "$NYHOSTS"
+sed s/\#0/0/g "$TMP" | grep ^"0.0.0.0" | grep -v "localhost" | sort -g | uniq >> "$NYHOSTS"
 
 ################################################################################
 #
