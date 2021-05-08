@@ -1,13 +1,19 @@
 #!/bin/bash
 
 URL=$1
+if [ -z "${URL}" ]; then
+        echo "No URL argument"
+        exit 2
+fi
+
 TITLE="svtget" # ÄNDRA INTE
 echo -e '\033]2;'$TITLE'\007'
 
 TMP=".svtplay-dl-"
 
+
 # Remove stuck folders
-AGO=$(date --date="24 hours ago" +%s)
+AGO=$(date --date="12 hours ago" +%s)
 find ${TMP}* -maxdepth 1 -type d 2> /dev/null | while read -r directory; do
         NOW=$(stat -c "%Z" "$directory")
         if [ "$NOW" -lt "$AGO" ]; then
@@ -42,13 +48,15 @@ cd "$TMP" || exit 1
 
 # Dowload with 3 retries
 R=0
-while ! youtube-dl "${URL}" && [ $R -lt 3 ]; do
+L=3
+while ! youtube-dl "${URL}" && [ $R -lt $L ]; do
+        echo "$R/$L"
         sleep 5
         R=$((R+1))
 done
 
 # Move files and remove files
-if [ $R -lt 3 ]; then
+if [ $R -lt $L ]; then
         mv -nv -- *.* ..
         cd .. && rmdir "$TMP"
 else
