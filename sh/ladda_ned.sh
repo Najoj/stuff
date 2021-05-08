@@ -77,7 +77,7 @@ for URL in "$@"; do
                 "${DIR}"/youtube.sh "${URL}" || RET=$((RET+1))
                 TXT=$(youtube-dl --get-filename "${URL}")
         fi
-        TXT="$(echo " $TXT " | cut -c -80)"
+        TXT="$(echo "$TXT" | cut -c -80)"
         if [ $RET -eq $PRET ]; then
                 echo -e '\e[1;32m'"Klar med \"$TXT\""'\033[0m' | head - 1>&2
         else
