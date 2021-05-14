@@ -30,7 +30,7 @@ function all_downloaded
                 for PID in curl wget ffmpeg apt-get; do
                         if pidof  ${PID} ; then
                                 id=$(pidof ${PID} | tr " " ",")
-                                echo -- "$0" "Väntar på ${PID} (${id})."
+                                echo "$0" "Väntar på ${PID} (${id})."
                                 sleep "${SLEEP_TIME}"
                                 AGAIN=true
                         fi
