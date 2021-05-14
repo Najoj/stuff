@@ -55,7 +55,7 @@ cd "$DIR" || exit 1
 
 if $OSORT; then
         echo -n " === Undersöker .osorterat-mappen... "
-        _LEN=$(find "${DIR}/.osorterat/" -type f -and \( -name "*.flac" -or -name "*.ogg" \) -maxdepth 1 | wc -l)
+        _LEN=$(find "${DIR}/.osorterat/" -maxdepth 1 -type f -and \( -name "*.flac" -or -name "*.ogg" \) | wc -l)
         if [ 0 = "$_LEN" ]; then
                 echo "den är tom. ==="
         else

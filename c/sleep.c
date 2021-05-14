@@ -219,7 +219,7 @@ int main(int argc, char **argv)
     }
     else if (0 == secs)
     {
-        return 0;
+        return 1;
     }
 
     convert();
