@@ -1,5 +1,5 @@
 #!/bin/bash
-command -v mpc grep mktemp || exit 1
+command -v mpc grep mktemp > /dev/null || exit 1
 
 UNIKA=$(mktemp)
 mpc -f "%position% %file%" playlist | tac | \
