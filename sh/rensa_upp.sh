@@ -60,7 +60,9 @@ if $OSORT; then
                 echo "den är tom. ==="
         else
                 echo "den är inte tom."
-                LIMITA=$(( (LIMIT-LENGTH) / 2))
+                #LIMITA=$(( (LIMIT-LENGTH) / 2))
+                # TEMPORARILY FOR ABOUT A YEAR LOL WAHDUP?
+                LIMITA=$(( 0-0 ))
                 LIMITB=$((LIMIT-LENGTH-LIMITA))
 
                 # äldst
@@ -70,21 +72,20 @@ if $OSORT; then
                 find . -maxdepth 1 -printf "%T@ %p\\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
                         | sort -n | cut -d\  -f2- | head -n $LIMITA \
                         | while read -r track; do
-                        mv -v "${track}" "${DIR}"    && \
-                        mpc -qw update                && \
+                        mv -v "${track}" "${DIR}"   && \
+                        mpc -qw update              && \
                         mpc -w add "${track#./}"
                 done | cat -n
 
                 # populära
                 echo "Lägger till $LIMITB filer på måfå. ==="
                 cd "${DIR}/.osorterat/" || exit 1
-                find . -type f -maxdepth 1 -and \( -name "*.flac" -or -name "*.ogg" \) \
+                find . -maxdepth 1 -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
                         | shuf | tail -n $LIMITB | while read -r track; do
-                        echo -n "$i. " && i=$((i+1))
-                        mv -v "${track}" "${DIR}"    && \
-                        mpc -qw update                && \
+                        mv -v "${track}" "${DIR}"   && \
+                        mpc -qw update              && \
                         mpc -w add "${track#./}"
-                done
+                done | cat -n
         fi
 fi
 
@@ -96,7 +97,7 @@ find . -maxdepth 1 -type f -name 'The *' -a '(' -name '*\.flac' -o -name '*\.ogg
 while read -r band; do
         newband="${band#./The }" 
         newband="${newband// - /, The - }"
-        mv -v "${band}" "${newband}"   && \
+        mv -v "${band}" "${newband}"    && \
         mpc -wq update                  && \
         mpc -w add "${newband#./}"
 done
@@ -104,8 +105,8 @@ done
 find . -maxdepth 1 -type d -name 'The *' | \
 while read -r dir; do
         newdir="${dir#./The }, The"
-        mv -v "${dir}" "${newdir}"         && \
-        mpc -wq update                      && \
+        mv -v "${dir}" "${newdir}"  && \
+        mpc -wq update              && \
         mpc -w add "${newdir#./}"
 done
 
@@ -123,7 +124,7 @@ while read -r band; do
                 find . -name "${band} - "\* | sed -E 's/.+ - //' | \
                 while read -r title; do
                         mv -v "${band} - ${title}" "${title}"   && \
-                        mpc -wq update                  && \
+                        mpc -wq update                          && \
                         mpc -w add "${band#./}/${title}"
                 done
         fi
@@ -145,8 +146,8 @@ while read -r band; do
                 cd "${band}" || exit 1
                 find . -maxdepth 1 | while read -r bandtitle; do
                         title="${bandtitle#${band} - }"
-                        mv -v "${bandtitle}" "${title}"   && \
-                        mpc -wq update                 && \
+                        mv -v "${bandtitle}" "${title}"     && \
+                        mpc -wq update                      && \
                         mpc -w add "${band#./}/${title}"
                 done
         fi
@@ -164,8 +165,8 @@ while read -r band; do
         if ! ls ./*/ &> /dev/null && [ "$N" -lt "$LIM" ]; then
                 find . -maxdepth 1 -name "*.*" 2> /dev/null | \
                 while read -r title; do
-                        mv -uv "${title}" ../"${band} - ${title#./}"   && \
-                        mpc -wq update                                 && \
+                        mv -uv "${title}" ../"${band} - ${title#./}"    && \
+                        mpc -wq update                                  && \
                         mpc -w add "${band#./} - ${title#./}"
                 done
         fi
