@@ -7,12 +7,11 @@ Rolling song title from MPD based on elapsed song playing time.
 
 # for arguments
 import sys
-import os
 # MPD
 from musicpd import MPDClient
 
 # Total width
-LENGTH    = int(os.getenv('ROLLINGSIZE', '31'))
+LENGTH    = 31
 # Divider when exceeding limit
 DIVIDER   = '     '
 
