@@ -3,8 +3,9 @@
 if [ $# -lt 1 ]; then
         DAT="1988-05-04 01:00"
 else
-        DAT=${*[1]}
+        DAT="${*}"
 fi
+
 IDAG=$(date               +%s)
 FDAG=$(date --date="$DAT" +%s)
 
