@@ -35,6 +35,9 @@ for URL in "$@"; do
         elif [[ "${URL}" =~ http(s)?://sverigesradio\.se/topsy/ljudfil/podrss/[0-9]+(\.|\\-)[mM][pP]3 ]] || \
              [[ "${URL}" =~ http(s)?://sverigesradio\.se/topsy/ljudfil/srse/[0-9]+(\.|\\-)[mM][pP]3 ]]; then
                      "${DIR}"/sr.sh "${URL}" || RET=$((RET + 1))
+                     if [ "$?" == 3 ]; then
+                             RET=$((RET - 1))
+                     fi
                      TXT=${URL}
 
         elif [[ "${URL}" =~ http(s)?://(www\.)?(aftonbladet|comedycentral|di|dn|dplay|efn|expressen|kanal9play|tv4|svd|nickelodeon|ur|oppetarkiv|tv10play|tv3play|tv4play|tv6play|tv8play|urplay|svtplay)\.se ]]; then
