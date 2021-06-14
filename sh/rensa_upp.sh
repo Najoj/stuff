@@ -60,16 +60,14 @@ if $OSORT; then
                 echo "den är tom. ==="
         else
                 echo "den är inte tom."
-                #LIMITA=$(( (LIMIT-LENGTH) / 2))
-                # TEMPORARILY FOR ABOUT A YEAR LOL WAHDUP?
-                LIMITA=$(( 0-0 ))
+                LIMITA=$(( (LIMIT-LENGTH) / 2))
                 LIMITB=$((LIMIT-LENGTH-LIMITA))
 
                 # äldst
                 echo "Lägger till $LIMITA gamla filer. ==="
                 cd "${DIR}/.osorterat/" || exit 1
 
-                find . -maxdepth 1 -printf "%T@ %p\\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
+                find . -maxdepth 1 -printf "%Ak %p\\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
                         | sort -n | cut -d\  -f2- | head -n $LIMITA \
                         | while read -r track; do
                         mv -v "${track}" "${DIR}"   && \
