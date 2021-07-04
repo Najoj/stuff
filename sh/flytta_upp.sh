@@ -2,7 +2,7 @@
 # Move the argument number of songs from the end of current MPD playlist to
 # random position. If no argument, move 10 songs.
 
-if [ $# -eq 1 ] && test "$1" -eq "$1"; then
+if [ $# -eq 1 ] && test "$1" -eq "$1" && [ "$1" -ge 0 ]; then
     N=$1
 else
     N=10
