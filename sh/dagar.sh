@@ -12,10 +12,13 @@ FDAG=$(date --date="$DAT" +%s)
 DAGAR=$(( (IDAG-FDAG) / (60*60*24) ))
 
 if factor "$DAGAR" | wc -w | grep ^2$ > /dev/null ; then
+        DAGAR=$(printf "%'d" $DAGAR)
         echo -en '\033[35m\033[40m' ${DAGAR} '\033[0m'
 elif echo "$DAGAR" | grep 00$ > /dev/null ; then
+        DAGAR=$(printf "%'d" $DAGAR)
         echo -en '\033[36m\033[40m' ${DAGAR} '\033[0m'
 else
+        DAGAR=$(printf "%'d" $DAGAR)
         echo -n ${DAGAR}
 fi
 
