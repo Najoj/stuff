@@ -21,10 +21,10 @@ function extra {
 
         sudo su -c \
             "   apt-get $Q update                                           && \
-                apt-get $Q autoremove                  --assume-yes         && \
-                apt-get $Q dist-upgrade                --assume-yes         && \
                 apt-get $Q autoclean                   --assume-yes         && \
                 apt-get $Q clean                                            && \
+                apt-get $Q autoremove                  --assume-yes         && \
+                apt-get $Q dist-upgrade                --assume-yes         && \
                 \
                 ${HOME}/src/update_hosts.sh
         " 
