@@ -51,11 +51,12 @@ else
         fi
 fi
 
-# Position before currently playing
+# Position after currently playing
 TO=$(($(mpc -f "%position%" current)+1))
 
+# If moving forward a song which is placed before current one, take into account
+# the currently playing one
 if [ "$FROM" -lt "$TO" ]; then
-        # If moving forward, take into account that songs before will move
         ((TO-=1))
 fi
 
