@@ -2,7 +2,7 @@
 # Move the argument number of songs from the end of current MPD playlist to
 # random position. If no argument, move 10 songs.
 
-if [ $# -eq 1 ] && test "$1" -eq "$1" && [ "$1" -ge 0 ]; then
+if [ "${1+x}" ] && [ "$1" -ge 0 ]; then
     N=$1
 else
     N=10
@@ -15,7 +15,7 @@ LEN=$(mpc playlist | wc -l)
 BEFORE=$(mpc -f "%position%" current)
 seq $N | while read -r; do
         CUR=$(($(mpc -f %position% current)+1))
-        NEW=$((RANDOM % (LEN-CUR-N) + CUR))
+        NEW=$(((RANDOM) % (LEN-CUR-N) + CUR))
         mpc mv "${LEN}" "${NEW}"
 done
 AFTER=$(mpc -f "%position%" current)
