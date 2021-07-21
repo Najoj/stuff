@@ -1,5 +1,11 @@
+#!/usr/bin/env python3
+#-*- coding:utf-8 -*-
+
 """
 Remove all tags but artist and title from given file.
+
+TODO: Adjust capitalisation of artist and titel. Have to figure out which
+language the title is in that case.
 """
 
 import sys
