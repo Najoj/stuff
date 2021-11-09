@@ -4,7 +4,7 @@ command -v mpc grep mktemp > /dev/null || exit 1
 UNIKA=$(mktemp)
 mpc -f "%position% %file%" playlist | tac | \
         while IFS=' ' read -r pos file; do 
-                if grep "$file" "$UNIKA"; then 
+                if grep -F "$file" "$UNIKA"; then 
                         mpc del "$pos"
                 else 
                         echo "$file" >> "$UNIKA"

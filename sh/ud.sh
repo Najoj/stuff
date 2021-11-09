@@ -49,9 +49,7 @@ function regular {
 
 function avsluta {
         $SAVE && date +%s | gzip - >> "$FILE"
-
         sh "${HOME}/.oh-my-zsh/tools/upgrade.sh"
-
         unlock
 }
 
@@ -117,7 +115,7 @@ function updatedates {
         fi
 }
 
-REQUIRED="srm fdupes apt-cache apt-get bc zcat gunzip date echo grep head less sed"
+REQUIRED="fdupes apt-cache apt-get bc zcat gunzip date echo grep head less sed"
 for software in $REQUIRED; do
         if ! command -v "$software" > /dev/null; then
                 echo "$software not found." >&2

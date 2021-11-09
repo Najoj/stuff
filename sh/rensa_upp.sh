@@ -67,8 +67,8 @@ if $OSORT; then
                 echo "Lägger till $LIMITA gamla filer." 
                 cd "${DIR}/.osorterat/" || exit 1
 
-                find . -maxdepth 1 -printf "%Ak %p\\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
-                        | sort -n | cut -d\  -f3- | head -n "$LIMITA" \
+                find . -maxdepth 1 -type f -printf "%A@ %p\\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
+                        | sort -n | cut -d\  -f2- | head -n "$LIMITA" \
                         | while read -r track; do
                         mv -v "${track}" "${DIR}"   && \
                         mpc -qw update              && \
@@ -156,9 +156,9 @@ done
 
 cd "$DIR" || exit 2
 echo "Undersöker om några låtar ska nedgraderas."
-find . -maxdepth 1 -type d | \
+find . -maxdepth 1 -type d -and -not -name '.*' -and -not -path "./lost+found" | \
 while read -r band; do
-        cd "${band}" || exit 2
+        cd "${band}" || continue
         N=$(find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | wc -l)
         if ! ls ./*/ &> /dev/null && [ "$N" -lt "$LIM" ]; then
                 find . -maxdepth 1 -name "*.*" 2> /dev/null | \

@@ -8,6 +8,8 @@ if [ -z "${SLEEP}" ]; then
     fi
 fi
 
-${SLEEP} $(($(date +%s --date="$*")-$(date +%s)))
+THEN=$(date +%s --date="$*")
+${SLEEP} $((THEN-$(date +%s)))
 
-exit $?
+echo $((THEN-$(date +%s)))
+

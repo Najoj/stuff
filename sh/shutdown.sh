@@ -49,7 +49,7 @@ function await_halt
         AGAIN=true
         while $AGAIN; do
                 AGAIN=false
-                for PID in youtube-dl svtget-dl srm; do
+                for PID in youtube-dl svtget-dl; do
                         if pgrep "${PID}" ; then
                                 id=$(pgrep "${PID}" | sed "s/\\n/\\ /")
                                 echo -- "$0" "Väntar på ${PID} (${id})."
