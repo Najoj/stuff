@@ -1,8 +1,8 @@
 #!/bin/bash
 
-NAME=$(basename $0)
+NAME=$(basename "$0")
 LOCK="/tmp/$NAME.lock"
-exec 8<>$LOCK
+exec 8<>"$LOCK"
 if ! flock -n 8; then
         echo "Already shutting down".
         exit 1
