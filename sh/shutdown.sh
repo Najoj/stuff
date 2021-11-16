@@ -1,5 +1,13 @@
 #!/bin/bash
 
+NAME=$(basename $0)
+LOCK="/tmp/$NAME.lock"
+exec 8<>$LOCK
+if ! flock -n 8; then
+        echo "Already shutting down".
+        exit 1
+fi
+
 REQ_PROGRAMS="mpc whiptail systemctl dbus-send mocp"
 REQ_SCRIPTS="ch_vol.sh"
 SLEEP_TIME="2m"
@@ -89,22 +97,22 @@ if [ -z "$WHAT" ]; then
 fi
 
 case $WHAT in
-        $HALT)
+        "$HALT")
                 await_halt
                 forall
                 dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.PowerOff" boolean:true
                 ;;
-        $REBOOT)
+        "$REBOOT")
                 await_halt
                 forall
                 dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Reboot" boolean:true
                 #dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart
                 ;;
-        $SUSPEND)   # Suspend
+        "$SUSPEND")   # Suspend
                 forall
                 systemctl suspend
                 ;;
-        $HIBERNATE)
+        "$HIBERNATE")
                 forall
                 systemctl hibernate
                 ;;
