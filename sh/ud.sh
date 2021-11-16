@@ -1,22 +1,21 @@
-#!/bin/bash
-VERSION="2020.12.01"
+#!/bin/bash -e
+VERSION="2021.11.16"
 
-LOCK=/tmp/update-LOCK
 function lock {
-        if [ -e $LOCK ]; then
-                echo "$0 already running"
-                exit 0
+        NAME=$(basename "$0")
+        LOCK="/tmp/${NAME}.lock"
+        exec 8>$LOCK;
+
+        if ! flock -n -x 8; then
+                echo "Uppdatering redan igång."
+                exit 1
         fi
-        touch $LOCK
 }
 
-function unlock {
-        rm -f $LOCK
-}
 ###
 
 function extra {
-        lock;
+        lock
         echo "Full uppgradering."
 
         sudo su -c \
@@ -33,6 +32,7 @@ function extra {
 }
 
 function regular {
+        lock
         echo "Normal uppgradering."
 
 
@@ -50,7 +50,6 @@ function regular {
 function avsluta {
         $SAVE && date +%s | gzip - >> "$FILE"
         sh "${HOME}/.oh-my-zsh/tools/upgrade.sh"
-        unlock
 }
 
 function check_update {
@@ -76,10 +75,8 @@ function check_update {
 }
 
 function check {
-        lock
         sudo apt-get update
         apt list --upgradable -a
-        unlock
 }
 
 function updatedates {
@@ -185,8 +182,6 @@ else
                         ;;
         esac
 fi
-
-unlock
 
 exit 0
 
