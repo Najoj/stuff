@@ -5,7 +5,7 @@ DIR="/media/musik"
 LIM=10
 SHUFFLE="true"
 OSORT="false"
-LIMIT=15000
+((LIMIT=16000-10*1))
 
 #################################
 #  Uppdaterar.                  #
@@ -142,7 +142,7 @@ while read -r band; do
                 mkdir "${band}"
                 mv -v "${band} - "* "${band}/"
                 cd "${band}" || exit 1
-                find . -maxdepth 1 | while read -r bandtitle; do
+                find . -maxdepth 1 -type f | while read -r bandtitle; do
                         title="${bandtitle#${band} - }"
                         mv -v "${bandtitle}" "${title}"     && \
                         mpc -wq update                      && \
@@ -161,7 +161,7 @@ while read -r band; do
         cd "${band}" || continue
         N=$(find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | wc -l)
         if ! ls ./*/ &> /dev/null && [ "$N" -lt "$LIM" ]; then
-                find . -maxdepth 1 -name "*.*" 2> /dev/null | \
+                find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | \
                 while read -r title; do
                         mv -uv "${title}" ../"${band} - ${title#./}"    && \
                         mpc -wq update                                  && \
@@ -180,4 +180,3 @@ eval "$SHUFFLE" > /dev/null
 
 echo "Klar!"
 
-exit 0
