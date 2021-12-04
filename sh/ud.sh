@@ -4,7 +4,7 @@ VERSION="2021.11.16"
 function lock {
         NAME=$(basename "$0")
         LOCK="/tmp/${NAME}.lock"
-        exec 8>$LOCK;
+        exec 8> "$LOCK"
 
         if ! flock -n -x 8; then
                 echo "Uppdatering redan igång."
@@ -75,15 +75,16 @@ function check_update {
 }
 
 function check {
+        lock
         sudo apt-get update
         apt list --upgradable -a
 }
 
 function updatedates {
         # Updates the numbers
-        NEXT_EXTRA=$((EXTRA+BIG_LIMIT))
-        NEXT_REGULAR=$((REGULAR+SMALL_LIMIT))
-        TOMORROW=$((NOW+60*60*24))
+        ((NEXT_EXTRA=EXTRA+BIG_LIMIT))
+        ((NEXT_REGULAR=REGULAR+SMALL_LIMIT))
+        ((TOMORROW=NOW+60*60*24))
 
 
         if [ $NEXT_REGULAR -ge $NEXT_EXTRA ]; then
@@ -112,8 +113,9 @@ function updatedates {
         fi
 }
 
-REQUIRED="fdupes apt-cache apt-get bc zcat gunzip date echo grep head less sed"
-for software in $REQUIRED; do
+REQUIRED=(fdupes apt-cache apt-get bc zcat gunzip date echo grep head less sed
+          flock)
+for software in ${REQUIRED[*]}; do
         if ! command -v "$software" > /dev/null; then
                 echo "$software not found." >&2
                 exit 2
@@ -141,6 +143,9 @@ else
                         ;;
                 -h)
                         echo "less $0"
+                        ;;
+                -l)
+                        zless $LOG
                         ;;
                 -s)
                         regular
