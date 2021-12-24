@@ -25,7 +25,6 @@ if [[ "$#" -gt 0 ]]; then
                 ((r+=$(manage "$url")))
         done
 else
-        echo "Write your urls. End with ^D."
         while read -r url; do
                 ((r+=$(manage "$url")))
         done 

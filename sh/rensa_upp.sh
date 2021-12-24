@@ -5,7 +5,9 @@ DIR="/media/musik"
 LIM=10
 SHUFFLE="true"
 OSORT="false"
-((LIMIT=16000-10*1))
+# Have I an a varible to adjust limit easily, for temporary limits
+((LIMIT=15000+I))
+((OK=0))
 
 #################################
 #  Uppdaterar.                  #
@@ -27,6 +29,7 @@ for arg in "$@"; do
                         if [ "$LENGTH" -ge "$LIMIT" ]; then
                                 >&2 echo "Spellistan är över $LIMIT. Rens!"
                                 OSORT="false"
+                                ((OK=1))
                         else
                                 OSORT="true"
                         fi
@@ -179,4 +182,6 @@ eval "$SHUFFLE" > /dev/null
 #################################
 
 echo "Klar!"
+
+exit "$OK"
 

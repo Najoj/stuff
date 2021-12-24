@@ -38,7 +38,7 @@ if [ $LEN -eq 0 ]; then
         exit 1
 fi
 
-WHIPTAIL=(whiptail --fb --notags --radiolist "Vilken låt\\?" 30 80 20)
+WHIPTAIL=(whiptail --fb --notags --radiolist "Välj låt:" 30 80 20)
 WHIPTAIL=("${WHIPTAIL[@]}" "${RESULT[@]}")
 
 if [ "$LEN" -eq 1 ]; then

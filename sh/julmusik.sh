@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# List of directories relative mpd's music_directory.
 JULLISTA="/media/musik/.spellistor/jullista.m3u"
 SPELA_KLART="${HOME}/src/spela_klart"
 
@@ -39,3 +40,4 @@ sort -u "$JULLISTA" | shuf | while read -r file; do
         done
 done
 
+echo "Slut!"

@@ -1,5 +1,5 @@
 #!/bin/bash -e
-VERSION="2021.11.16"
+VERSION="2021.12.12"
 
 function lock {
         NAME=$(basename "$0")
@@ -43,6 +43,7 @@ function regular {
                 apt-get $Q autoclean                   --assume-yes
             " 
         python3 -m pip install --no-warn-script-location --upgrade pip
+        cabal update
 
         avsluta
 }
@@ -87,7 +88,7 @@ function updatedates {
         ((TOMORROW=NOW+60*60*24))
 
 
-        if [ $NEXT_REGULAR -ge $NEXT_EXTRA ]; then
+        if [ "$NEXT_REGULAR" -ge "$NEXT_EXTRA" ]; then
                 NEXT_REGULAR=$NEXT_EXTRA
         fi
 
@@ -97,7 +98,7 @@ function updatedates {
         else
                 date --date=@"$NEXT_EXTRA" +"%a %_d %b %Y, klockan %T" \
                         | sed "s/$(date +"%a %_d %b %Y")/i dag/" \
-                        | sed "s/$(date --date @$TOMORROW +"%a %_d %b %Y")/i morgon/" \
+                        | sed "s/$(date --date @"$TOMORROW" +"%a %_d %b %Y")/i morgon/" \
                         | sed "s/$(date +" %Y")//"
 
         fi
@@ -108,7 +109,7 @@ function updatedates {
         else
                 date --date=@"$NEXT_REGULAR" +"%a %_d %b %Y, klockan %T" \
                         | sed "s/$(date +"%a %_d %b %Y")/i dag/" \
-                        | sed "s/$(date --date @$TOMORROW +"%a %_d %b %Y")/i morgon/" \
+                        | sed "s/$(date --date @"$TOMORROW" +"%a %_d %b %Y")/i morgon/" \
                         | sed "s/$(date +" %Y")//"
         fi
 }
@@ -143,9 +144,6 @@ else
                         ;;
                 -h)
                         echo "less $0"
-                        ;;
-                -l)
-                        zless $LOG
                         ;;
                 -s)
                         regular
