@@ -11,7 +11,7 @@ for r in "${REQ[@]}"; do
         fi
 done
 
-if ! mpc -w update; then
+if ! mpc -qw update; then
         err "Could not update MPD's database."
         exit 1
 fi
@@ -21,12 +21,11 @@ if [ -z "$*" ]; then
         exit 1
 fi
 
-LIM=20
 RESULT=()
 while IFS=$'\t' read -r nr title; do
         RESULT+=("$nr" "$title" "off")
 done < <(mpc -f "%position%\\t%artist% - %title% (%album%)" playlist | \
-        grep -Ei "$@" | shuf | tail -n $LIM | sort -g | sed "s/!/\\!/g" | \
+        grep -Ei "$@" | shuf | sort -g | sed "s/!/\\!/g" | \
         sed "s/?/\\?/g")
 
 LEN=${#RESULT[@]}
@@ -38,7 +37,7 @@ if [ $LEN -eq 0 ]; then
         exit 1
 fi
 
-WHIPTAIL=(whiptail --fb --notags --radiolist "Välj låt:" 30 80 20)
+WHIPTAIL=(whiptail --fb --notags --radiolist --scrolltext "Välj låt:" 30 80 20)
 WHIPTAIL=("${WHIPTAIL[@]}" "${RESULT[@]}")
 
 if [ "$LEN" -eq 1 ]; then
