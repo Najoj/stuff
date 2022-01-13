@@ -19,14 +19,23 @@ function manage
         return 0
 }
 
+wd=$(pwd)
 r=0
 if [[ "$#" -gt 0 ]]; then
         for url in "${@}"; do
+                nwd=${url##*/}
+                mkdir "$nwd" 
+                cd "$nwd" || continue
                 ((r+=$(manage "$url")))
+                cd "$wd" || cd ..
         done
 else
         while read -r url; do
+                nwd=${url##*/}
+                mkdir "$nwd" 
+                cd "$nwd" || continue
                 ((r+=$(manage "$url")))
+                cd "$wd" || cd ..
         done 
 fi
 
