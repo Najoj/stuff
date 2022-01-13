@@ -11,7 +11,7 @@ THISWEEK=$(date +%V)
 
 DATE_THIS=$(date +%F)
 YEAR_THIS=$(date +%Y)
-DATE_ALL=${DATE_THIS//DETTA_ÅR/$YEAR_THIS/}
+DATE_ALL=${DATE_THIS//$YEAR_THIS/DETTA_ÅR}
 REDDAY=false
 
 if [ 7 == "$(date +%u)" ] || \

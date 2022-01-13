@@ -25,7 +25,7 @@ while [ "$SW" != "02" ]; do
     SW=$(date +%V -d "$SD JAN $YEAR 00:00:00")
 done
 
-if [ $SD -gt 7 ]; then
+if [ "$SD" -gt 7 ]; then
     (( SD -= 7 ))
     SW="01"
 fi
@@ -38,14 +38,14 @@ while [ "$EW" != "51" ]; do
     EW=$(date +%V -d "$ED DEC $YEAR 00:00:00")
 done
 
-if [ $ED -lt 25 ]; then
+if [ "$ED" -lt 25 ]; then
     (( ED += 7 ))
     EW="52"
 fi
 
 ################################################################################
 # January
-for i in $(seq -w $SD 31); do
+for i in $(seq -w "$SD" 31); do
     SEQ="$SEQ $i"
 done
 
@@ -57,7 +57,7 @@ for M in $FEB 31 30 31 30 31 31 30 31 30; do
 done
 
 # December
-for i in $(seq -w 1 $ED); do
+for i in $(seq -w 1 "$ED"); do
     SEQ="$SEQ $i"
 done
 
