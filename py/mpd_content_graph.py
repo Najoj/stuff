@@ -22,11 +22,6 @@ FILE_NAME = '.mpd_graph.json'
 FILE = os.path.join(HOME, '.mpd_graph.json')
 FILE = os.path.abspath(FILE)
 
-def read_mpd(data: dict) -> dict:
-    # Get current timestamp
-    now = int(time.time())
-    if now not in data:
-        data[now] = dict()
 
 def generate_graph(data: dict) -> None:
     """ Generate graph with matplot """
