@@ -2,6 +2,18 @@
 
 function manage
 {
+        base=$(echo "${url##*//}" | cut -d\. -f1)
+        mkdir "$base"
+
+        nwd=${url##*/}
+        fullwd="${base}/${nwd}"
+
+        mkdir "$fullwd" 
+        cd "$fullwd" || return 1
+
+        #echo "$fullwd" 
+        #sleep 10
+
         ((retries=5))
         ((count=0))
         echo "$url"
@@ -16,6 +28,9 @@ function manage
         if [[ "$retries" -le "$count" ]]; then
                 return 1
         fi
+
+
+        cd "$wd" || cd ../..
         return 0
 }
 
@@ -23,19 +38,11 @@ wd=$(pwd)
 r=0
 if [[ "$#" -gt 0 ]]; then
         for url in "${@}"; do
-                nwd=${url##*/}
-                mkdir "$nwd" 
-                cd "$nwd" || continue
                 ((r+=$(manage "$url")))
-                cd "$wd" || cd ..
         done
 else
         while read -r url; do
-                nwd=${url##*/}
-                mkdir "$nwd" 
-                cd "$nwd" || continue
                 ((r+=$(manage "$url")))
-                cd "$wd" || cd ..
         done 
 fi
 
