@@ -1,5 +1,5 @@
 """
-Menat to run ever so often to log how many song by artist X is available in the
+Meant to run ever so often to log how many song by artist X is available in the
 current MPD playlist.
 
 Load and store from JSON file.
@@ -25,6 +25,9 @@ FILE = os.path.abspath(FILE)
 
 def generate_graph(data: dict) -> None:
     """ Generate graph with matplot """
+    if not data:
+        print('No data to plot.', file=sys.stderr)
+        return
 
     x_data = list(data.keys())
     labels = list(data[x_data[0]].keys())
@@ -43,7 +46,7 @@ def generate_graph(data: dict) -> None:
             y_values[artist] += [0] * (len_x - len_y)
 
         if len_x < len_y:
-            print('This should never happen')
+            print('This should never happen.')
             continue
 
         plt.plot(x_data, y_values[artist], label=artist)
@@ -83,7 +86,7 @@ def read_mpd(data: dict) -> dict:
 
 def save_json(data: dict) -> None:
     """ Save new data into json file. """
-    with open(FILE, 'w', encdoing='UTF-8') as file:
+    with open(FILE, 'w', encoding='UTF-8') as file:
         json.dump(data, file)
 
 
