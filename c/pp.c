@@ -45,7 +45,10 @@ int main(argc, argv)
                 if(start == end)
                 {
                         count--;
-                        printf("%u -> %u\n", list[count], stop);
+                        char c = '=';
+                        if(list[count] < stop) c = '<';
+                        else if(list[count] > stop) c = '>';
+                        printf("%u %c %u\n", list[count], c, stop);
                         fflush(stdout);
                 }
                 else
