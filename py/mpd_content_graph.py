@@ -4,14 +4,15 @@ current MPD playlist.
 
 Load and store from JSON file.
 
-TODO: Assert that the same playlist is used
+TODO: Assert the same playlist is used
 """
-
-import json
-import sys
-import argparse
 import os
+import sys
 import time
+
+import argparse
+import json
+import matplotlib.pyplot as plt
 import musicpd
 
 # Constans
@@ -26,6 +27,43 @@ def read_mpd(data: dict) -> dict:
     now = int(time.time())
     if now not in data:
         data[now] = dict()
+
+def generate_graph(data: dict) -> None:
+    """ Generate graph with matplot """
+
+    x_data = list(data.keys())
+    labels = list(data[x_data[0]].keys())
+
+    y_values = {}
+    for stime in data:
+        for artist in data[stime]:
+            if artist not in y_values:
+                y_values[artist] = []
+            y_values[artist].append(data[stime][artist])
+
+    for artist in labels:
+        len_x, len_y = len(x_data), len(y_values[artist])
+
+        if len_x > len_y:
+            y_values[artist] += [0] * (len_x - len_y)
+
+        if len_x < len_y:
+            print('This should never happen')
+            continue
+
+        plt.plot(x_data, y_values[artist], label=artist)
+
+    plt.legend()
+    plt.show()
+
+
+def read_mpd(data: dict) -> dict:
+    """ Read data from MPD playlist """
+
+    # Get current timestamp
+    now = int(time.time())
+    if now not in data:
+        data[now] = {}
 
     # Connect to MPD
     host = os.getenv('MPD_HOST', 'localhost')
@@ -42,26 +80,30 @@ def read_mpd(data: dict) -> dict:
             data[now][artist] = 0
         data[now][artist] += 1
 
-    
     client.close()
     client.disconnect()
 
     return data
 
+
 def save_json(data: dict) -> None:
-    with open(FILE, 'w') as file:
+    """ Save new data into json file. """
+    with open(FILE, 'w', encdoing='UTF-8') as file:
         json.dump(data, file)
 
+
 def load_json() -> dict:
-    data = dict()
+    """ Read data from json file. """
+    data = {}
 
     if not os.path.exists(FILE):
         print(f'{FILE} does not exist. Create empty.', file=sys.stderr)
-        open(FILE, 'w').close()
+        with open(FILE, 'w', encoding='UTF-8') as file:
+            file.close()
 
-    with open(FILE, 'r') as file:
+    with open(FILE, 'r', encoding='UTF-8') as file:
         content = file.read()
-        # TODO: Should this really be necessary?
+        # Should this really be necessary?
         if not content:
             content = '{}'
 
@@ -70,26 +112,25 @@ def load_json() -> dict:
 
 
 def main(show_graph: bool = False) -> None:
+    """ Do everything """
     # Load JSON file content
     data = load_json()
 
     if not show_graph:
-        # Read data from MPD into dictionary 
+        # Read data from MPD into dictionary
         data = read_mpd(data)
 
         # Save data to JSON
         save_json(data)
 
     else:
-        # TODO: Generate graph
-        # generate_graph(data)
-        print('Not yet implemented', file=sys.stderr)
+        generate_graph(data)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--graph', default=False, const=True,
-            action='store_const',
-            help='Wether to just show a graph')
+                        action='store_const',
+                        help='Wether to just show a graph')
     args = parser.parse_args()
     main(args.graph)
-
