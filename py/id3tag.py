@@ -41,7 +41,7 @@ def parent(word: str, first_word: bool) -> str:
 
     word = word.lower()
 
-    lowercased = ('a', 'an', 'in', 'of', 'on', 'the', 'and', 'at')
+    lowercased = ('a', 'an', 'in', 'of', 'on', 'the', 'and', 'at', 'to', 'for')
     cap = first_word or word not in lowercased
     if cap:
         word = word.capitalize()
