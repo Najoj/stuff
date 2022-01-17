@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 
-from musicpd  import MPDClient
+from musicpd import MPDClient
 
 import os
 import sys
 import time
 
+
 def printTime(t):
     # Time in minutes and rest
     tm = int(t/60)
-    ts = int(t%60)
+    ts = int(t % 60)
 
     # Return strings
     ps = str(tm)
@@ -28,6 +29,7 @@ def printTime(t):
 
     return ps + ' \r'
 
+
 def main():
     client = MPDClient()
     host = os.getenv('MPD_HOST', 'localhost')
@@ -37,18 +39,19 @@ def main():
 
     currentTrack = client.status()['songid']
     while currentTrack == client.status()['songid']:
-        t = int(float(client.currentsong()['time']) - float(client.status()['elapsed']))
-        print (printTime(t), end='\r')
+        t = int(float(client.currentsong()[
+                'time']) - float(client.status()['elapsed']))
+        print(printTime(t), end='\r')
         sys.stdout.flush()
         time.sleep(0.25)
 
     client.close()
     client.disconnect()
 
-    print ('00:00')
+    print('00:00')
 
     return 0
 
+
 if __name__ == '__main__':
     sys.exit(main())
-

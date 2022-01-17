@@ -34,11 +34,13 @@ def from_epoch(epoch_time: int) -> str:
     time = int(epoch_time)
     return datetime.datetime.fromtimestamp(time)
 
+
 def all_bands(data: dict) -> list:
     bands = set()
     for key in data:
         bands |= set(data[key].keys())
     return list(bands)
+
 
 def generate_graph(data: dict) -> None:
     """ Generate graph with matplot """
@@ -67,7 +69,8 @@ def generate_graph(data: dict) -> None:
         len_x, len_y = len(timestamps), len(y_values[artist])
 
         if len_x > len_y:
-            print('This should never happen. Diff between length of artist', file=ERROR_FILE)
+            print('This should never happen. Diff between length of artist',
+                  file=ERROR_FILE)
             y_values[artist] += [0] * (len_x - len_y)
 
         if len_x < len_y:

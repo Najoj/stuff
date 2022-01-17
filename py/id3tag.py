@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 
 """
 Remove all tags but artist and title from given file. Only tested with Vorbis
@@ -110,7 +110,7 @@ def main():
             file = mutagen.File(arg)
             if not file:
                 continue
-            
+
             changed = False
             for tag in file:
                 if tag not in ('artist', 'title'):
@@ -129,8 +129,9 @@ def main():
             if changed:
                 # New filename
                 ext = arg.split('.')[-1]
-                filename = file['artist'][0] + ' - ' + file['title'][0] + '.' + ext
-                
+                filename = file['artist'][0] + ' - ' + \
+                    file['title'][0] + '.' + ext
+
                 answer = ''
                 while answer not in ('y', 'n'):
                     answer = input(f'Move {arg} to {filename}? [y/n]').lower()
@@ -143,4 +144,3 @@ def main():
 
 if '__main__' == __name__:
     main()
-
