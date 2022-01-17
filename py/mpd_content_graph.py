@@ -1,11 +1,13 @@
 """
-Meant to run ever so often to log how many song by artist X is available in the
+Meant to run ever so often to log how many songs by artist X is available in the
 current MPD playlist.
 
 Load and store from JSON file.
 
 TODO: Assert the same playlist is used
 """
+
+import datetime
 import os
 import sys
 import time
@@ -18,40 +20,60 @@ import musicpd
 # Constans
 HOME = os.getenv('HOME')
 FILE_NAME = '.mpd_graph.json'
+ERROR_FILE_NAME = '.mpd_graph.log'
 
-FILE = os.path.join(HOME, '.mpd_graph.json')
+FILE = os.path.join(HOME, FILE_NAME)
 FILE = os.path.abspath(FILE)
 
+ERROR_FILE = os.path.join(HOME, ERROR_FILE_NAME)
+ERROR_FILE = os.path.abspath(FILE)
+
+
+def from_epoch(epoch_time: int) -> str:
+    time = int(epoch_time)
+    return datetime.datetime.fromtimestamp(time)
 
 def generate_graph(data: dict) -> None:
     """ Generate graph with matplot """
     if not data:
-        print('No data to plot.', file=sys.stderr)
+        print('No data to plot.', file=ERROR_FILE)
         return
 
-    x_data = list(data.keys())
-    labels = list(data[x_data[0]].keys())
+    timestamps = list(data.keys())
+    int_timestamps = list(map(int, timestamps))
+    adjusted_timestamps = list(x-min(int_timestamps) for x in int_timestamps)
+    labels = list(data[timestamps[0]].keys())
 
     y_values = {}
     for stime in data:
-        for artist in data[stime]:
+        for artist in labels:
             if artist not in y_values:
                 y_values[artist] = []
-            y_values[artist].append(data[stime][artist])
+
+            if artist not in data[stime]:
+                y_values[artist].append(0)
+            else:
+                y_values[artist].append(data[stime][artist])
 
     for artist in labels:
-        len_x, len_y = len(x_data), len(y_values[artist])
+        len_x, len_y = len(timestamps), len(y_values[artist])
 
         if len_x > len_y:
+            print('This should never happen. Diff between length of artist', file=ERROR_FILE)
             y_values[artist] += [0] * (len_x - len_y)
 
         if len_x < len_y:
             print('This should never happen.')
             continue
 
-        plt.plot(x_data, y_values[artist], label=artist)
+        plt.plot(adjusted_timestamps, y_values[artist], label=artist)
 
-    plt.legend()
+    timestamps_labels = list(map(from_epoch, int_timestamps))
+
+    plt.xticks(adjusted_timestamps, timestamps_labels, rotation=45)
+    # Comented out for now.
+    # plt.legend(bbox_to_anchor=(0, 2, 1, 0), loc='lower left', mode='expand',
+            # ncol=int(len(labels)/5 + 0.5), fontsize='small')
     plt.show()
 
 
@@ -95,7 +117,7 @@ def load_json() -> dict:
     data = {}
 
     if not os.path.exists(FILE):
-        print(f'{FILE} does not exist. Create empty.', file=sys.stderr)
+        print(f'{FILE} does not exist. Create empty.', file=ERROR_FILE)
         with open(FILE, 'w', encoding='UTF-8') as file:
             file.close()
 
