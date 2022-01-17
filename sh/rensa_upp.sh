@@ -27,7 +27,7 @@ for arg in "$@"; do
         case "$arg" in
                 "-o")
                         if [ "$LENGTH" -ge "$LIMIT" ]; then
-                                >&2 echo "Spellistan är över $LIMIT. Rens!"
+                                >&2 echo "Spellistan är $LENGTH, vilket är över gränsen $LIMIT. Rens!"
                                 OSORT="false"
                                 ((OK=1))
                         else
