@@ -29,39 +29,21 @@ def printTime(t):
     return ps + ' \r'
 
 def main():
-    try:
-        i = 1
-        if len(sys.argv) == 2:
-            i = int(sys.argv[1])
+    client = MPDClient()
+    host = os.getenv('MPD_HOST', 'localhost')
+    port = os.getenv('MPD_PORT', '6600')
+    port = int(port)
+    client.connect(host, port)
 
-        client = MPDClient()
-        try: 
-            host = os.environ['MPD_HOST']
-        except KeyError:
-            host = 'localhost'
+    currentTrack = client.status()['songid']
+    while currentTrack == client.status()['songid']:
+        t = int(float(client.currentsong()['time']) - float(client.status()['elapsed']))
+        print (printTime(t), end='\r')
+        sys.stdout.flush()
+        time.sleep(0.25)
 
-        try: 
-            host = os.environ['MPD_PORT']
-        except KeyError:
-            port = 6600
-
-        client.connect(host, port)
-        currentTrack = client.status()['songid']
-
-        for _ in range(i):
-            while currentTrack == client.status()['songid']:
-                t = int(float(client.currentsong()['time']) - float(client.status()['elapsed']))
-                print (printTime(t), end='\r')
-                sys.stdout.flush()
-                time.sleep(0.25)
-
-
-        client.close()
-        client.disconnect()
-    except:
-        return 1
-
-
+    client.close()
+    client.disconnect()
 
     print ('00:00')
 
@@ -69,3 +51,4 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+
