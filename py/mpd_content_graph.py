@@ -15,6 +15,7 @@ import time
 import argparse
 import json
 import matplotlib.pyplot as plt
+import mplcursors
 import musicpd
 
 # Constans
@@ -33,6 +34,12 @@ def from_epoch(epoch_time: int) -> str:
     time = int(epoch_time)
     return datetime.datetime.fromtimestamp(time)
 
+def all_bands(data: dict) -> list:
+    bands = set()
+    for key in data:
+        bands |= set(data[key].keys())
+    return list(bands)
+
 def generate_graph(data: dict) -> None:
     """ Generate graph with matplot """
     if not data:
@@ -42,7 +49,8 @@ def generate_graph(data: dict) -> None:
     timestamps = list(data.keys())
     int_timestamps = list(map(int, timestamps))
     adjusted_timestamps = list(x-min(int_timestamps) for x in int_timestamps)
-    labels = list(data[timestamps[0]].keys())
+
+    labels = list(all_bands(data))
 
     y_values = {}
     for stime in data:
@@ -71,9 +79,8 @@ def generate_graph(data: dict) -> None:
     timestamps_labels = list(map(from_epoch, int_timestamps))
 
     plt.xticks(adjusted_timestamps, timestamps_labels, rotation=45)
-    # Comented out for now.
-    # plt.legend(bbox_to_anchor=(0, 2, 1, 0), loc='lower left', mode='expand',
-            # ncol=int(len(labels)/5 + 0.5), fontsize='small')
+    # Not sure how this works, but it does the job all right
+    mplcursors.cursor(hover=True)
     plt.show()
 
 
