@@ -28,7 +28,7 @@ int main(argc, argv)
 {
         uint start, stop, end = 0;
 
-        uint const size = 300;
+        uint const size = 500;
         uint count = 0;
 
         uint *list = (uint*)malloc(size*sizeof(uint));
