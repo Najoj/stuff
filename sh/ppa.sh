@@ -8,7 +8,7 @@
 # See if there is no argument at all.
 if [ $# -eq 0 ]; then
         grep ^\#\# "$0"
-                exit -1
+        exit 1
 fi
 
 # If there was a ppa url or an http url.
@@ -36,13 +36,14 @@ if [ $UID -eq 0 ]; then
                         | head -n 4 \
                         | tail -n 1) \
                         PPA added on $(date +"%F %T").\\n$DATA" >> /etc/apt/sources.list \
-                else 
-                        echo "FAILED" 1>&2 ; exit -1
-                fi
-        else
-                echo "Run:  $SERVER"
-                echo "and add the following to /etc/apt/sources.list:"
-                echo "$DATA"
+        else 
+                >&2 echo "FAILED"
+                exit 1
         fi
+else
+        echo "Run:  $SERVER"
+        echo "and add the following to /etc/apt/sources.list:"
+        echo "$DATA"
+fi
 
-        exit 0
+exit 0

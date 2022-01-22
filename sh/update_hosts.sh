@@ -33,7 +33,7 @@ echo "###### ${AVG} ######" >> "$NYHOSTS"
 
 echo -n "Laddar ned ny hosts-fil från someonewhocares.org till $TMP... "
 wget -q http://someonewhocares.org/hosts/zero/hosts -O "$TMP"  || \
-    (echo "Kunde inte hämta hosts-fil. Avslutar" 1>&2 && rm -v "$TMP" ; exit -1)
+    (echo "Kunde inte hämta hosts-fil. Avslutar" 1>&2 && rm -v "$TMP" ; exit 1)
 
 echo "och lägger den i $NYHOSTS."
 echo -e "##### SIDOR FRÅN http://someonewhocares.org/hosts/\\n" >> "$NYHOSTS"
@@ -46,7 +46,7 @@ sed s/\#0/0/g "$TMP" | grep ^"0.0.0.0" | grep -v "localhost" | sort -g | uniq >>
 
 echo -n "Laddar ned ny hosts-fil från mvps.org till $TMP... "
 wget -q http://winhelp2002.mvps.org/hosts.txt -O - | grep -v ^"#" > "$TMP"  || \
-    (echo "Kunde inte hämta hosts-fil. Avslutar" 1>&2 && rm -v "$TMP" ; exit -1)
+    (echo "Kunde inte hämta hosts-fil. Avslutar" 1>&2 && rm -v "$TMP" ; exit 1)
 
 echo "och lägger den i $NYHOSTS."
 echo -e "\\n\\n##### SIDOR FRÅN http://winhelp2002.mvps.org/hosts.txt\\n" >> "$NYHOSTS"
@@ -59,7 +59,7 @@ sed s/'127.0.0.1'/'0.0.0.0'/g "$TMP" | grep -v "localhost" | sort -g | uniq | gr
 
 echo -n "Laddar ned ny hosts-fil från sbc.io till $TMP... "
 wget -q http://sbc.io/hosts/alternates/porn/hosts -O - | grep -v ^"#" > "$TMP"  || \
-    (echo "Kunde inte hämta hosts-fil. Avslutar" 1>&2 && rm -v "$TMP" ; exit -1)
+    (echo "Kunde inte hämta hosts-fil. Avslutar" 1>&2 && rm -v "$TMP" ; exit 1)
 
 echo "och lägger den i $NYHOSTS."
 echo -e "\\n\\n##### SIDOR FRÅN http://sbc.io/hosts/alternates/porn/hosts\\n" >> "$NYHOSTS"
@@ -87,4 +87,4 @@ if ls -l $HOSTS.$(($(date +%Y ) - 1 ))* 2> /dev/null; then
 fi
 
 echo "Klar."
-exit 0
+

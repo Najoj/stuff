@@ -2,7 +2,7 @@
 command -v mpc > /dev/null || exit 1
 
 DIR="/media/musik"
-LIM=10
+LIM=8
 SHUFFLE="true"
 OSORT="false"
 # Have I an a varible to adjust limit easily, for temporary limits

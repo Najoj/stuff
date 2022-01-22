@@ -7,7 +7,7 @@ FLAG="${HOME}/src/flaggdagar"
 
 # Option to add days ahead
 DAYS_AHEAD=0
-if ! [ -z "$1" ]; then
+if [ -n "$1" ]; then
     DAYS_AHEAD=$1
 fi
 

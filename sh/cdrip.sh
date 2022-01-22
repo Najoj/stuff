@@ -35,13 +35,13 @@ done
 shift $(( OPTIND - 1 ))
 
 # Ser om något argument har givit och om det går att skapa mappen i så fall
-if ! [ -z "$1" ]; then
+if [ -n "$1" ]; then
     DIR=$1
-elif ! [ -z "$ARTIST" ] && ! [ -z "$ALBUM" ] ; then
+elif [ -n "$ARTIST" ] && [ -n "$ALBUM" ] ; then
     DIR="$ARTIST/$ALBUM"
-elif ! [ -z "$ARTIST" ]; then
+elif [ -n "$ARTIST" ]; then
     DIR="$ARTIST"
-elif ! [ -z "$ALBUM" ]; then
+elif [ -n "$ALBUM" ]; then
     DIR="$ALBUM"
 fi
 

@@ -36,7 +36,7 @@ FULL_FILE="$(echo "${ARTI_FILE}__${ALBU_FILE}" | sed s/".png"//)"
 
 ################################################################################
 # Artist and album
-if [ "$1" == "-f" ] && ! [ -z "$ALBUM" ]; then
+if [ "$1" == "-f" ] && [ -n "$ALBUM" ]; then
     if [ -z "$ALBUM" ]; then
         echo "Album finns ej." 1>&2
     else
