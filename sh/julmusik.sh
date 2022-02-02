@@ -3,6 +3,7 @@
 # List of directories relative mpd's music_directory.
 JULLISTA="/media/musik/.spellistor/jullista.m3u"
 SPELA_KLART="${HOME}/src/spela_klart"
+FREQ=20
 
 reqs=("$JULLISTA" "$SPELA_KLART")
 for req in "${reqs[@]}"; do
@@ -35,7 +36,7 @@ sort -u "$JULLISTA" | shuf | while read -r file; do
                 sed -i "/$file/d" "$JULLISTA"
         fi) 9> "$MPC_LOCK"
 
-        for _ in {1..10}; do
+        for ((i=0; i<FREQ; i++)); do
                 "$SPELA_KLART"
         done
 done

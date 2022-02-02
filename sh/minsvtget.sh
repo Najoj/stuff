@@ -11,7 +11,6 @@ echo -e '\033]2;'$TITLE'\007'
 
 TMP=".svtplay-dl-"
 
-
 # Remove stuck folders
 AGO=$(date --date="12 hours ago" +%s)
 find ${TMP}* -maxdepth 1 -type d 2> /dev/null | while read -r directory; do

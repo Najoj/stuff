@@ -8,7 +8,7 @@ fi
 
 ! command -v mpc > /dev/null && echo "\"mpc\" saknas." && exit 1
 
-for sh in   ${HOME}/src/spela_klart.py	\
+for sh in   ${HOME}/src/spela_klart	\
             ${HOME}/src/shutdown.sh 	; do
     [ ! -f "$sh" ] && echo "\"$sh\" saknas." && exit 2
 done
