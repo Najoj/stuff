@@ -79,7 +79,11 @@ def generate_graph(data: dict) -> None:
 
         plt.plot(adjusted_timestamps, y_values[artist], label=artist)
 
-    timestamps_labels = list(map(from_epoch, int_timestamps))
+    timestamps_labels_tmp = list(map(from_epoch, int_timestamps))
+    timestamps_labels = [''] * len(timestamps_labels_tmp)
+
+    timestamps_labels[0] = timestamps_labels_tmp[0]
+    timestamps_labels[-1] = timestamps_labels_tmp[-1]
 
     plt.xticks(adjusted_timestamps, timestamps_labels, rotation=45)
     # Not sure how this works, but it does the job all right
