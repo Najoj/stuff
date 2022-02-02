@@ -1,21 +1,21 @@
 /**
  * Used with a script of mine. Reformats printout from
- *      10 -> 1
- *      11 -> 1
- *      12 -> 1
- *      13 -> 1
- *      14 -> 1
- *      1 -> 2
- *      1 -> 3
- *      1 -> 4
- *      1 -> 5
- *      1 -> 6
+ *      50 -> 50
+ *      45 -> 50
+ *      21 -> 50
+ *      11 -> 50
+ *      1 -> 50
+ *      50 -> 10
+ *      50 -> 20
+ *      50 -> 30
+ *      50 -> 40
+ *      50 -> 50
  * to
- *      10 -> 6
- *      11 -> 5
- *      12 -> 4
- *      13 -> 3
- *      14 -> 2
+ *      1 < 10
+ *      11 < 20
+ *      21 < 30
+ *      45 > 40
+ *      50 = 50
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +27,7 @@ int main(argc, argv)
         char ** argv;
 {
         uint start, stop, end = 0;
+        uint first_run = (0 == 0);
 
         uint const size = 500;
         uint count = 0;
@@ -35,14 +36,14 @@ int main(argc, argv)
 
         while(0 < scanf("%u -> %u\n", &start, &stop))
         {
-                if(0 == end)
+                if(0 == end && first_run)
                 {
                         end = stop;
                         /*fprintf(stderr, "end: %u\n", end);*/
                 }
 
                 /*fprintf(stderr, "count: %u\n", count);*/
-                if(start == end)
+                if(start == end && !first_run)
                 {
                         count--;
                         char c = '=';
@@ -56,6 +57,7 @@ int main(argc, argv)
                         list[count] = start;
                         count++;
                 }
+                first_run = (0 != 0);
         }
 
         return 0;
