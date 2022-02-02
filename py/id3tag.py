@@ -129,8 +129,15 @@ def main():
             if changed:
                 # New filename
                 ext = arg.split('.')[-1]
-                filename = file['artist'][0] + ' - ' + \
-                    file['title'][0] + '.' + ext
+
+                artist = file['artist'][0]
+                title = file['title'][0]
+
+                artist_split = artist.split(' ')
+                if artist_split[0] == 'The':
+                    artist = ' '.join(artist_split[1:]) + ', The'
+
+                filename =  f'{artist} - {title}' 
 
                 answer = ''
                 while answer not in ('y', 'n'):
