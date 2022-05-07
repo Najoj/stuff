@@ -13,7 +13,7 @@ for req in "${reqs[@]}"; do
         fi
 done
 
-reqs=(mpc flock)
+reqs=(mpc flock sed sort shuf read)
 for req in "${reqs[@]}"; do
         if ! command -v "$req" &> /dev/null; then
                 >&2 echo "Programmet finns inte: $req"

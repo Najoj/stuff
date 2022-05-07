@@ -8,30 +8,6 @@ for URL in "$@"; do
                 [[ "${URL}" =~ http(s)?://(.*)\.torrent ]]; then
                 deluge-console "add ${URL}"
                 TXT="${URL}"
-
-        elif [[ "${URL}" =~ http(s)?://(www\.|m\.)?youtube\.com/watch\? ]]                 ||
-                [[ "${URL}" =~ http(s)?://(www\.|m\.)?youtube(-nocookie)?\.com/embed(ed)?/ ]] ||
-                [[ "${URL}" =~ http(s)?://(www\.|m\.)?youtu\.be/ ]]                           ||
-                [[ "${URL}" =~ http(s)?://invidio\.us/watch\? ]]; then
-                "${DIR}"/youtube.sh "${URL}" || RET=$((RET+1))
-                TXT=$(youtube-dl --get-filename "${URL}")
-
-        elif [[ "${URL}" =~ http(s)?://((www|player)\.)?vimeo.com/ ]] ||
-                [[ "${URL}" =~ http(s)?://(www\.)?metacafe.com/ ]] 
-                [[ "${URL}" =~ http(s)?://(www\.)?cjube.com/ ]] ||
-                [[ "${URL}" =~ http(s)?://(www\.)?dailymotion.com/ ]] ||
-                [[ "${URL}" =~ http://(www\.)?liveleak.com/view\?i= ]]; then
-                "${DIR}"/youtube.sh "${URL}" || RET=$((RET+1))
-                TXT=$(youtube-dl --get-filename "${URL}")
-        
-        elif [[ "${URL}" =~ http(s)?://((w|www)\.)?[A-Za-z0-9]*\.bandcamp.com/ ]]; then
-                "${DIR}"/youtube.sh -x --audio-format="vorbis" "${URL}" || RET=$((RET+1))
-                TXT=$(youtube-dl --get-filename "${URL}")
-
-        elif [[ "${URL}" =~ http(s)?://((w|www)\.)?soundcloud.com/ ]]; then
-                "${DIR}"/youtube.sh --audio-format=vorbis "${URL}" || RET=$((RET+1))
-                TXT=$(youtube-dl --get-filename "${URL}")
-
         elif [[ "${URL}" =~ http(s)?://sverigesradio\.se/topsy/ljudfil/podrss/[0-9]+(\.|\\-)[mM][pP]3 ]] || \
              [[ "${URL}" =~ http(s)?://sverigesradio\.se/topsy/ljudfil/srse/[0-9]+(\.|\\-)[mM][pP]3 ]]; then
                      "${DIR}"/sr.sh "${URL}" || RET=$((RET + 1))
@@ -42,7 +18,7 @@ for URL in "$@"; do
 
         elif [[ "${URL}" =~ http(s)?://(www\.)?(aftonbladet|comedycentral|di|dn|dplay|efn|expressen|kanal9play|tv4|svd|nickelodeon|ur|oppetarkiv|tv10play|tv3play|tv4play|tv6play|tv8play|urplay|svtplay)\.se ]]; then
                 export DISPLAY=":0"
-                urxvt -title 'svtget' -cd "$(pwd)" -e "${HOME}"/src/minsvtget.sh "${URL}" &
+                urxvt -title 'svtget' -cd "$(pwd)" -e "${DIR}"/minsvtget.sh "${URL}" &
                 disown
                 TXT="Öppnades i egent fönster: $?"
                 sleep 1
@@ -77,9 +53,19 @@ for URL in "$@"; do
                 "${HOME}"/src/minwget.sh "$URL" -O "$FILE"
                 TXT="film nedladdad"
         else
-                "${DIR}"/youtube.sh "${URL}" || RET=$((RET+1))
-                TXT=$(youtube-dl --get-filename "${URL}")
+                DURATION=$(youtube-dl --get-duration "$URL")
+                if [[ "$DURATION" =~ ^(.:)?..$ ]]; then
+                        "${DIR}"/minyoutube-dl.sh "${URL}" || RET=$((RET+1))
+                        TXT=$(youtube-dl --get-filename "${URL}")
+                else
+                        export DISPLAY=":0"
+                        urxvt -title 'youtube-dl' -cd "$(pwd)" -e "${DIR}"/minyoutube-dl.sh "${URL}" &
+                        disown
+                        TXT="Öppnades i egent fönster: $?"
+                fi
+
         fi
+
         TXT="$(echo "$TXT" | cut -c -80)"
         if [ $RET -eq $PRET ]; then
                 echo -e '\e[1;32m'"Klar med \"$TXT\""'\033[0m' | head - 1>&2
@@ -89,3 +75,4 @@ for URL in "$@"; do
 done
 
 exit $RET
+

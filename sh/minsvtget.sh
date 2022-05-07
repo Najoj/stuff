@@ -23,7 +23,7 @@ done
 
 # See if there are plenty of dowloads already running
 R=1
-while ! find ${TMP}* -maxdepth 1 -type d 2> /dev/null | wc -l | grep -E ^"[0-2]"$; do
+while ! find ${TMP}* -maxdepth 1 -type d 2> /dev/null | wc -l | grep -E ^"[0-1]"$; do
         echo -en '\r'
         date +%T | tr -d '\n'
 
@@ -33,17 +33,17 @@ while ! find ${TMP}* -maxdepth 1 -type d 2> /dev/null | wc -l | grep -E ^"[0-2]"
 done
 
 SHA=$(echo "$URL" | sha256sum | awk '{ print $1 }' )
-TMP="${TMP}${SHA}"
+TMP_SHA="${TMP}${SHA}"
 
 # See if folder already exists
-if [ -d "$TMP" ]; then
-        echo "$(date +%T)  Mappen \"$TMP\" finns redan."
+if [ -d "$TMP_SHA" ]; then
+        echo "$(date +%T)  Mappen \"$TMP_SHA\" finns redan."
         sleep 10
         exit 1
 fi
 
-mkdir -p "$TMP" 
-cd "$TMP" || exit 1
+mkdir -p "$TMP_SHA" 
+cd "$TMP_SHA" || exit 1
 
 # Dowload with 3 retries
 R=0
@@ -57,9 +57,9 @@ done
 # Move files and remove files
 if [ $R -lt $L ]; then
         mv -nv -- *.* ..
-        cd .. && rmdir "$TMP"
+        cd .. && rmdir "$TMP_SHA"
 else
-        cd .. && rm -rf "$TMP"
+        cd .. && rm -rf "$TMP_SHA"
 fi
 
 echo "$(date +%T)  Klar."

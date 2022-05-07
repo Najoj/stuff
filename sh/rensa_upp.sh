@@ -5,7 +5,7 @@ DIR="/media/musik"
 LIM=8
 SHUFFLE="true"
 OSORT="false"
-# Have I an a varible to adjust limit easily, for temporary limits
+# Have I as a varible to adjust limit easily, for temporary limits
 ((LIMIT=15000+I))
 ((OK=0))
 
@@ -180,8 +180,6 @@ done
 eval "$SHUFFLE" > /dev/null
 
 #################################
-
-echo "Klar!"
 
 exit "$OK"
 

@@ -43,12 +43,14 @@ function all_downloaded
                                 AGAIN=true
                         fi
                 done
-                PROG=minsvtget
-                if ! pgrep ${PROG} | wc -l | grep ^0$; then
-                        echo -- "$0" "Väntar på ${PROG}."
-                        sleep "${SLEEP_TIME}"
-                        AGAIN=true
-                fi
+                PROGS=(minsvtget youtube-dl)
+                for PROG in ${PROGS[*]}; do
+                        if ! pgrep "${PROG}" | wc -l | grep ^0$; then
+                                echo -- "$0" "Väntar på ${PROG}."
+                                sleep "${SLEEP_TIME}"
+                                AGAIN=true
+                        fi
+                done
         done
 }
 
@@ -120,5 +122,7 @@ case $WHAT in
                 echo "\"$WHAT\" is not possible. $HALT, $REBOOT, $SUSPEND, and $HIBERNATE are available options." 1>&2 && false
                 ;;
 esac
+
+echo "Stänger ned: $(date)"
 
 exit $?
