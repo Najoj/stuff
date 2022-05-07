@@ -34,7 +34,7 @@ int main(argc, argv)
 
         uint *list = (uint*)malloc(size*sizeof(uint));
 
-        while(0 < scanf("%u -> %u\n", &start, &stop))
+        while(2 == scanf("%u -> %u\n", &start, &stop))
         {
                 if(0 == end && first_run)
                 {
@@ -46,10 +46,8 @@ int main(argc, argv)
                 if(start == end && !first_run)
                 {
                         count--;
-                        char c = '=';
-                        if(list[count] < stop) c = '<';
-                        else if(list[count] > stop) c = '>';
-                        printf("%u %c %u\n", list[count], c, stop);
+                        int diff = list[count] - stop;
+                        printf("%'u - %'u = %'d\n", list[count], stop, diff);
                         fflush(stdout);
                 }
                 else
