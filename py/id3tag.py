@@ -126,6 +126,16 @@ def main():
 
             file.save()
 
+            # Move if changed
+            if not changed:
+                basename = os.path.basename(arg)
+                at = basename.split(' - ', 1)
+                if len(at) == 2:
+                    artist = at[0]
+                    title = at[1].rsplit('.')[0]
+
+                    changed = (artist == file['artist']) or (title == file['title'])
+
             if changed:
                 # New filename
                 ext = arg.split('.')[-1]
@@ -137,7 +147,7 @@ def main():
                 if artist_split[0] == 'The':
                     artist = ' '.join(artist_split[1:]) + ', The'
 
-                filename =  f'{artist} - {title}' 
+                filename =  f'{artist} - {title}.{ext}' 
 
                 answer = ''
                 while answer not in ('y', 'n'):
@@ -145,8 +155,8 @@ def main():
                 if answer == 'y':
                     try:
                         os.rename(arg, filename)
-                    except os.OSError:
-                        print(f'Could write to {filename}.')
+                    except OSError:
+                        print(f'Could not write to {filename}.')
 
 
 if '__main__' == __name__:
