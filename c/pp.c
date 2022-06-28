@@ -27,23 +27,23 @@ int main(argc, argv)
         char ** argv;
 {
         uint start, stop, end = 0;
-        uint first_run = (0 == 0);
 
         uint const size = 500;
         uint count = 0;
 
         uint *list = (uint*)malloc(size*sizeof(uint));
 
+        uint moved = -1;
+
         while(2 == scanf("%u -> %u\n", &start, &stop))
         {
-                if(0 == end && first_run)
+                if(0 == end && moved == 0)
                 {
+                        moved++;
                         end = stop;
                         /*fprintf(stderr, "end: %u\n", end);*/
                 }
-
-                /*fprintf(stderr, "count: %u\n", count);*/
-                if(start == end && !first_run)
+                if(start == end && moved > 0)
                 {
                         count--;
                         int diff = list[count] - stop;
@@ -52,12 +52,15 @@ int main(argc, argv)
                 }
                 else
                 {
+                        moved++;
                         list[count] = start;
                         count++;
                 }
-                first_run = (0 != 0);
         }
 
+        moved = moved == (-1) ? 0 : moved;
+        printf("Moved %d song%s\n", moved, moved == 1 ? "." : "s.");
+        
         return 0;
 }
 

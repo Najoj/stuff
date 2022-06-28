@@ -17,7 +17,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
-const int const main (argc, argv)
+int main (argc, argv)
 	const int argc;
 	const char *const *const argv;
 {
@@ -30,8 +30,7 @@ const int const main (argc, argv)
     int first_song_id = -1;
     int second_song_id = -1;
 
-    struct mpd_connection *client =
-        mpd_connection_new ("localhost", 6600, 2000);
+    struct mpd_connection *client = mpd_connection_new ("localhost", 6600, 2000);
     struct mpd_status *status = mpd_run_status (client);
 
     if (status != NULL)
@@ -43,9 +42,9 @@ const int const main (argc, argv)
     while (first_song_id == second_song_id)
     {
         int code;
-        if (code = mpd_run_idle (client))
+        if ((code = mpd_run_idle (client)))
         {
-            struct mpd_status *status = mpd_run_status (client);
+            status = mpd_run_status (client);
             if (status != NULL)
             {
                 second_song_id = mpd_status_get_song_id (status);
