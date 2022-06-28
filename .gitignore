@@ -1,6 +1,5 @@
 # Rust stuff
-rust/*/target/*
-rust/*/target/*/*
-rust/*/debug/*
-rust/*/Cargo.*
+.idea
+**/*.lock
+**/*.toml
 
