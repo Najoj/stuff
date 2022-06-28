@@ -7,6 +7,7 @@ else
 fi
 
 ! command -v mpc > /dev/null && echo "\"mpc\" saknas." && exit 1
+! command -v python3 > /dev/null && echo "\"python\" saknas." && exit 1
 
 for sh in   ${HOME}/src/spela_klart	\
             ${HOME}/src/shutdown.sh 	; do
@@ -15,7 +16,7 @@ done
 
 echo "Will \"${TODO}\"."
 
-"${HOME}"/src/spela_klart.py || exit 1
+python3 "${HOME}"/src/spela_klart.py || exit 1
 
 mpc pause
 
