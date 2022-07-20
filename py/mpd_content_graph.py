@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 import mplcursors
 import musicpd
 
-# Constans
+# Constants
 HOME = os.getenv('HOME')
 FILE_NAME = '.mpd_graph.json'
 ERROR_FILE_NAME = '.mpd_graph.log'
