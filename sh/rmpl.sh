@@ -3,6 +3,20 @@
 SPELA_KLART="/home/jojan/src/spela_klart"
 ROOT="/media/musik"
 
+_delete_file() {
+        # Deletes file from hard drive
+        #echo "rm file: $1"
+        "$SPELA_KLART"
+        flock -x "$MPC_LOCK" -c "rm \"$1\""
+}
+_remove_file() {
+        # Removes file from playlist
+        #echo "del file: $1"
+        flock -x "$MPC_LOCK" -c "$SPELA_KLART && mpc del \"$1\""
+}
+
+
+
 reqs=("$SPELA_KLART" "$MPC_LOCK" "$ROOT")
 for req in "${reqs[@]}"; do
         if ! [[ -e "$req" ]]; then
@@ -19,25 +33,36 @@ for req in "${reqs[@]}"; do
         fi
 done
 
-if [[ "$1" -eq "-f" ]]; then
-        force=true
+inverted=false
+if [ "$1" = "-f" ]; then
+        inverted=true
 fi
 
 # update playlist quietly
-if ! mpc -qw update; then
+if ! flock -x "$MPC_LOCK" -c "mpc -qw update"; then
         >&2 echo "Issue updating mpd playlist"
         exit 1
 fi
 
 # file to remove
-file_name=$(mpc -f "%file%" current)
+file_name="$ROOT/$(mpc -f "%file%" current)"
+ogg_file=${file_name%ogg}ogg
 # file position in list
 file_pos=$(mpc -f "%position%" current)
 
-if [ $force ] || [ -e "${file_name%ogg}ogg" ]; then
-        "$SPELA_KLART"
-        flock -x "$MPC_LOCK" -c "rm \"$ROOT\"/\"$file_name\""
+if $inverted; then
+        echo inverted
+        if [ -e "${file_name}" ]; then
+                _remove_file "$file_pos"
+        else
+                _delete_file "$file_name"
+
+        fi
 else
-        flock -x "$MPC_LOCK" -c "$SPELA_KLART && mpc del \"$file_pos\""
+        if [ -e "${ogg_file}" ]; then
+                _delete_file "$file_name"
+        else
+                _remove_file "$file_pos"
+        fi
 fi
 
