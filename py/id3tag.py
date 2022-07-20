@@ -90,7 +90,7 @@ def capitalise(lang: str, tag: str) -> str:
         capitalised = words[0].capitalize()
         capitalised += ' ' + ' '.join(x.lower() for x in words[1:])
 
-    return capitalised.strip().replace("´", "'")
+    return capitalised.strip().replace("´", "'").replace("’", "'")
 
 
 def main():
