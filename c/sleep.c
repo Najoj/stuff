@@ -180,25 +180,24 @@ int main(int argc, char **argv)
     /*
      * Look for arguments.
      */
-    int err = 0;
-    for (i = 1; i < argc; i++)
-    {
-        if ('-' == argv[i][0] && '\0' == argv[i][2])
+    /*int err = 0;*/
+    /*for (i = 1; i < argc; i++)*/
+    /*{*/
+        /*if ('-' == argv[i][0] && '\0' == argv[i][2])*/
 
-            switch (argv[i][1])
-            {
-                case 'e':
-
-                    break;
-                default:
-                    err = 1;
-            }
-    }
-    if (1 == err)
-    {
-        fprintf(stderr, "Invalid argument: \"%s\"\n", argv[i]);
-        return -1;
-    }
+            /*switch (argv[i][1])*/
+            /*{*/
+                /*case 'e':*/
+                    /*break;*/
+                /*default:*/
+                    /*err = 1;*/
+            /*}*/
+    /*}*/
+    /*if (1 == err)*/
+    /*{*/
+        /*fprintf(stderr, "Invalid argument: \"%s\"\n", argv[i]);*/
+        /*return -1;*/
+    /*}*/
 
     /*
      * Take every argument and parse it to seconds.
