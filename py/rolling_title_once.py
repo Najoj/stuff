@@ -13,7 +13,7 @@ from musicpd import MPDClient
 # Total width
 LENGTH = 31
 # Divider when exceeding limit
-DIVIDER = '     '
+DIVIDER = '    '
 
 
 def parser(client, title_string):
