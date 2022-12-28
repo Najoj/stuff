@@ -4,6 +4,8 @@
 """
 Remove all tags but artist and title from given file. Only tested with Vorbis
 files.
+
+Will make an attempt of capitalising letters propely.
 """
 
 import mutagen
@@ -41,8 +43,9 @@ def parent(word: str, first_word: bool) -> str:
 
     word = word.lower()
 
-    lowercased = ('a', 'an', 'in', 'of', 'on', 'the', 'and', 'at', 'to', 'for')
-    cap = first_word or word not in lowercased
+    lower_cased = ('a', 'an', 'and', 'as', 'at', 'but', 'for', 'nor', 'of', 'or', 'the', 'to', 'by')
+
+    cap = first_word or word not in lower_cased
     if cap:
         word = word.capitalize()
 
@@ -54,6 +57,28 @@ def parent(word: str, first_word: bool) -> str:
     return word
 
 
+def initialism(word):
+    """
+    >>> initialism('ramones')
+    'ramones'
+    >>> initialism('raMONes')
+    'raMONes'
+    >>> initialism('r.a.m.o.n.e.s.')
+    'R.A.M.O.N.E.S.'
+    >>> initialism('Ramones.')
+    'Ramones.'
+    >>> initialism('t.ex.')
+    't.ex.'
+    """
+    period = '.'
+    if period in word:
+        letters = word.split(period)
+        if 2 * len(letters) == len(word) + 2:
+            word = word.upper()
+
+    return word
+
+
 def capitalise(lang: str, tag: str) -> str:
     """
     Capitalise tag according to lang option
@@ -61,15 +86,17 @@ def capitalise(lang: str, tag: str) -> str:
     >>> capitalise('', ' the mAn in A cave OF Love ')
     'the mAn in A cave OF Love'
     >>> capitalise('e', 'the mAn in A cave OF Love')
-    'The Man in a Cave of Love'
+    'The Man In a Cave of Love'
     >>> capitalise('s', 'the Man In A Cave OF Love')
     'The man in a cave of love'
     >>> capitalise('', 'it´s a Man In A Cave OF Love')
     "it's a Man In A Cave OF Love"
     >>> capitalise('e', 'it´s a Man In A Cave OF Love')
-    "It's a Man in a Cave of Love"
+    "It's a Man In a Cave of Love"
     >>> capitalise('s', 'it´s a Man In A Cave OF Love')
     "It's a man in a cave of love"
+    >>> capitalise('e', 'it´s a Man In A Cave OF Love')
+    "It's a Man In a Cave of Love"
     """
     capitalised = tag
 
@@ -83,6 +110,7 @@ def capitalise(lang: str, tag: str) -> str:
         for word in words[1:]:
             word = word.lower()
             word = parent(word, False)
+            word = initialism(word)
             capitalised += f' {word}'
 
     elif lang == 's':
@@ -90,7 +118,16 @@ def capitalise(lang: str, tag: str) -> str:
         capitalised = words[0].capitalize()
         capitalised += ' ' + ' '.join(x.lower() for x in words[1:])
 
-    return capitalised.strip().replace("´", "'").replace("’", "'")
+    capitalised = capitalised.strip()
+    sanitised = translate_characters(capitalised)
+    return sanitised
+
+
+def translate_characters(sentence):
+    sentence = sentence.replace("´", "'")
+    sentence = sentence.replace("’", "'")
+    sentence = sentence.replace('…', '...')
+    return sentence
 
 
 def main():
