@@ -8,8 +8,8 @@ import copy
 import datetime
 import math
 
-veckodagar = mån, tis, ons, tor, fre, lör, sön = range(0, 7)
-månader = jan, feb, mar, apr, maj, jun, jul, aug, sep, okt, nov, dec = range(1, 13)
+veckodagar = man, tis, ons, tor, fre, loer, soen = range(0, 7)
+maanader = jan, feb, mar, apr, maj, jun, jul, aug, sep, okt, nov, dec = range(1, 13)
 
 
 def skottaar(year: int) -> bool:
@@ -107,8 +107,8 @@ class Date:
         while self.day > self._days_in_month[self.month]:
             self.day -= self._days_in_month[self.month]
             self.month += 1
-            if self.month > len(månader):
-                self.month -= len(månader)
+            if self.month > len(maanader):
+                self.month -= len(maanader)
                 self.year += 1
                 self._days_in_month[feb] = 28
                 if skottaar(self.year):
@@ -146,7 +146,7 @@ class Date:
             self.month -= 1
 
             if self.month < 1:
-                self.month += len(månader)
+                self.month += len(maanader)
                 self.year -= 1
                 self._days_in_month[feb] = 28
                 if skottaar(self.year):
@@ -174,6 +174,26 @@ class Date:
 
         return f'{m}/{d}/{y} [1]{yearly}{desc}'
 
+    def __lt__(self, other) -> bool:
+        if not type(other) == type(self):
+            return False
+
+        if other.year < self.year:
+            return True
+        elif other.year > self.year:
+            return False
+
+        if other.month < self.month:
+            return True
+        elif other.month > self.month:
+            return False
+
+        if other.day < self.day:
+            return True
+        elif other.day > self.day:
+            return False
+
+        return False
 
 def skaartorsdagen(year: int) -> Date:
     """
@@ -191,15 +211,15 @@ def skaartorsdagen(year: int) -> Date:
     (1988, 3, 31)
     """
     # Torsdagen före Påskdagen
-    _skärtorsdagen = paaskdagen(year)
-    _skärtorsdagen -= (sön - tor)
+    _skaertorsdagen = paaskdagen(year)
+    _skaertorsdagen -= (soen - tor)
 
-    _skärtorsdagen.description = 'Skärtorsdagen'
-    _skärtorsdagen.flag_day = False
-    _skärtorsdagen.red_day = True
+    _skaertorsdagen.description = 'Skärtorsdagen'
+    _skaertorsdagen.flag_day = False
+    _skaertorsdagen.red_day = True
 
-    assert _skärtorsdagen.day_of_week == tor
-    return _skärtorsdagen
+    assert _skaertorsdagen.day_of_week == tor
+    return _skaertorsdagen
 
 
 def laangfredagen(year: int) -> Date:
@@ -218,15 +238,15 @@ def laangfredagen(year: int) -> Date:
     (1988, 4, 1)
     """
     # Fredagen före Påskdagen
-    _långfredagen = paaskdagen(year)
-    _långfredagen -= (sön - fre)
+    _laangfredagen = paaskdagen(year)
+    _laangfredagen -= (soen - fre)
 
-    _långfredagen.description = 'Långfredgan'
-    _långfredagen.flag_day = False
-    _långfredagen.red_day = True
+    _laangfredagen.description = 'Långfredgan'
+    _laangfredagen.flag_day = False
+    _laangfredagen.red_day = True
 
-    assert _långfredagen.day_of_week == fre, _långfredagen.day_of_week
-    return _långfredagen
+    assert _laangfredagen.day_of_week == fre, _laangfredagen.day_of_week
+    return _laangfredagen
 
 
 def paaskafton(year: int) -> Date:
@@ -245,18 +265,18 @@ def paaskafton(year: int) -> Date:
     (1988, 4, 1)
     """
     # Lördagen före Påskdagen.
-    _påskafton = paaskdagen(year)
-    _påskafton -= (sön - lör)
+    _paaskafton = paaskdagen(year)
+    _paaskafton -= (soen - loer)
 
-    _påskafton.description = 'Påskafton'
-    _påskafton.flag_day = False
-    _påskafton.red_day = True
+    _paaskafton.description = 'Påskafton'
+    _paaskafton.flag_day = False
+    _paaskafton.red_day = True
 
-    assert _påskafton.day_of_week == lör
-    return _påskafton
+    assert _paaskafton.day_of_week == loer
+    return _paaskafton
 
 
-_påskdagen = None
+_paaskdagen = None
 
 
 def paaskdagen(year: int, force=False) -> Date:
@@ -276,8 +296,8 @@ def paaskdagen(year: int, force=False) -> Date:
     """
 
     # Första söndagen efter ecklesiastisk fullmåne, efter vårdagjämningen
-    global _påskdagen
-    if _påskdagen is None or _påskdagen.year != year:
+    global _paaskdagen
+    if _paaskdagen is None or _paaskdagen.year != year:
         # Gauss' Easter Algorithm
         a = year % 19
         b = year % 4
@@ -292,23 +312,23 @@ def paaskdagen(year: int, force=False) -> Date:
         day = (22 + d + e)
 
         if (d == 29) and (e == 6):
-            _påskdagen = Date(year, apr, 19)
+            _paaskdagen = Date(year, apr, 19)
         elif (d == 28) and (e == 6):
-            _påskdagen = Date(year, apr, 18)
+            _paaskdagen = Date(year, apr, 18)
         else:
             # If day > 31, move to April
             if day > 31:
                 day -= 31
-                _påskdagen = Date(year, apr, day)
+                _paaskdagen = Date(year, apr, day)
             else:
-                _påskdagen = Date(year, mar, day)
+                _paaskdagen = Date(year, mar, day)
 
-    _påskdagen.description = 'Påskdagen'
-    _påskdagen.flag_day = True
-    _påskdagen.red_day = True
+    _paaskdagen.description = 'Påskdagen'
+    _paaskdagen.flag_day = True
+    _paaskdagen.red_day = True
 
-    assert _påskdagen.day_of_week == sön, _påskdagen.day_of_week
-    return copy.copy(_påskdagen)
+    assert _paaskdagen.day_of_week == soen, _paaskdagen.day_of_week
+    return copy.copy(_paaskdagen)
 
 
 def annandag_paask(year: int) -> Date:
@@ -327,14 +347,14 @@ def annandag_paask(year: int) -> Date:
     (1988, 4, 4)
     """
     # Dagen efter påskdagen
-    _annandag_påsk = paaskdagen(year)
-    _annandag_påsk += 1
+    _annandag_paask = paaskdagen(year)
+    _annandag_paask += 1
 
-    _annandag_påsk.description = 'Annandag påsk'
-    _annandag_påsk.red_day = True
-    _annandag_påsk.flag_day = False
+    _annandag_paask.description = 'Annandag påsk'
+    _annandag_paask.red_day = True
+    _annandag_paask.flag_day = False
 
-    return _annandag_påsk
+    return _annandag_paask
 
 
 def kristi_himmelfaerdsdag(year: int) -> Date:
@@ -353,21 +373,21 @@ def kristi_himmelfaerdsdag(year: int) -> Date:
     (1988, 5, 14)
     """
     # Sjätte torsdagen efter påskdagen
-    _kristi_himmelfärdsdag = paaskdagen(year)
+    _kristi_himmelfaerdsdag = paaskdagen(year)
 
-    sixth = 1 if _kristi_himmelfärdsdag.day_of_week == tor else 0
+    sixth = 1 if _kristi_himmelfaerdsdag.day_of_week == tor else 0
     increment = 1
     while sixth != 6:
-        _kristi_himmelfärdsdag += increment
-        if _kristi_himmelfärdsdag.day_of_week == tor:
+        _kristi_himmelfaerdsdag += increment
+        if _kristi_himmelfaerdsdag.day_of_week == tor:
             sixth += 1
             increment = len(veckodagar)
 
-    _kristi_himmelfärdsdag.description = 'Kristi himmelfärdsdag'
-    _kristi_himmelfärdsdag.red_day = True
-    _kristi_himmelfärdsdag.flag_day = False
+    _kristi_himmelfaerdsdag.description = 'Kristi himmelfärdsdag'
+    _kristi_himmelfaerdsdag.red_day = True
+    _kristi_himmelfaerdsdag.flag_day = False
 
-    return _kristi_himmelfärdsdag
+    return _kristi_himmelfaerdsdag
 
 
 def pingstafton(year: int) -> Date:
@@ -413,11 +433,11 @@ def pingstdagen(year: int) -> Date:
     """
     # Sjunde söndagen efter påskdagen
     _pingstdagen = paaskdagen(year)
-    seventh = 1 if _pingstdagen.day_of_week == sön else 0
+    seventh = 1 if _pingstdagen.day_of_week == soen else 0
     increment = 1
     while seventh != 7:
         _pingstdagen += increment
-        if _pingstdagen.day_of_week == sön:
+        if _pingstdagen.day_of_week == soen:
             seventh += 1
             increment = len(veckodagar)
 
@@ -471,7 +491,7 @@ def midsommardagen(year: int) -> Date:
     """
     # Lördagen mellan 20 juni och 26 juni
     _midsommardagen = Date(year, jun, 20)
-    while _midsommardagen.day_of_week != lör:
+    while _midsommardagen.day_of_week != loer:
         _midsommardagen += 1
 
     _midsommardagen.description = 'Midsommardagen'
@@ -524,7 +544,7 @@ def alla_helgons_dag(year: int) -> Date:
     """
     # Lördagen som infaller under perioden från 31 oktober till 6 november
     _alla_helgons_dag = Date(year, okt, 31)
-    while _alla_helgons_dag.day_of_week != lör:
+    while _alla_helgons_dag.day_of_week != loer:
         _alla_helgons_dag += 1
 
     _alla_helgons_dag.description = 'Alla helgons dag'
@@ -534,13 +554,13 @@ def alla_helgons_dag(year: int) -> Date:
     return _alla_helgons_dag
 
 
-def valår(year):
+def valaar(year):
     """
     Only valid from 1994 and forward.
 
-    >>> valår(2022)
+    >>> valaar(2022)
     True
-    >>> valår(2023)
+    >>> valaar(2023)
     False
     """
     return 2 == year % 4
@@ -561,11 +581,11 @@ def valdagen(year):
     # Andra söndagen i september, vid valår
     _valdagen = Date(year, sep, 1, description='Valdagen', red=False, flag=True)
 
-    second = 1 if _valdagen.day_of_week == sön else 0
+    second = 1 if _valdagen.day_of_week == soen else 0
     increment = 1
     while second != 2:
         _valdagen += increment
-        if _valdagen.day_of_week == sön:
+        if _valdagen.day_of_week == soen:
             second += 1
             increment = len(veckodagar)
 
@@ -586,7 +606,7 @@ def main(aar: int):
         annandag_paask(aar),
 
         Date(aar, apr, 30, description='Valborgsmässoafton', red=True, flag=False),
-        Date(0, apr, 30, description='Konungens födelsedag', red=False, flag=True),
+        Date(1946, apr, 30, description='Konungens födelsedag', red=False, flag=True),
 
         Date(aar, maj, 1, description='Första maj', red=True, flag=True),
         Date(0, maj, 29, description='Veterandagen', red=False, flag=True),
@@ -600,7 +620,7 @@ def main(aar: int):
         midsommarafton(aar),
         midsommardagen(aar),
 
-        Date(0, jul, 14, description='Kronprinsessans födelsedag', red=False, flag=True),
+        Date(1977, jul, 14, description='Kronprinsessans födelsedag', red=False, flag=True),
         Date(0, aug, 8, description='Drottningens namnsdag', red=False, flag=True),
         Date(0, okt, 24, description='FN-dagen', red=False, flag=True),
         Date(0, nov, 6, description='Gustav Adolfsdagen', red=False, flag=True),
@@ -610,17 +630,17 @@ def main(aar: int):
 
         Date(0, dec, 10, description='Nobeldagen', red=False, flag=True),
 
-        Date(0, dec, 23, description='Drottningens födelsedag', red=False, flag=True),
+        Date(1943, dec, 23, description='Drottningens födelsedag', red=False, flag=True),
         Date(aar, dec, 24, description='Julafton', red=True, flag=False),
         Date(aar, dec, 25, description='Juldagen', red=True, flag=True),
         Date(aar, dec, 26, description='Annandag jul', red=True, flag=False),
         Date(aar, dec, 31, description='Nyårsafton', red=True, flag=False),
     ]
-    for date in dates:
-        print(date)
+    if valaar(aar):
+        dates.append(valdagen(aar))
 
-    if valår(aar):
-        print(valdagen(aar))
+    for date in sorted(dates, reverse=True):
+        print(date)
 
 
 if __name__ == '__main__':
