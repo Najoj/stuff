@@ -3,7 +3,8 @@
 # random position.
 
 if [ "${1+x}" ] && [ "$1" -ge 0 ]; then
-    N=$1
+    # Remove non-digits
+    N=${1/[^0-9]/}
 else
     >&2 echo "Need argument."
 fi
