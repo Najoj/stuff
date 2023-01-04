@@ -1,5 +1,8 @@
 #!/bin/bash
 
+SVTPLAYDL="${HOME}/src/svtplay-dl/svtplay-dl"
+
+WD=$(pwd)
 URL=$1
 if [ -z "${URL}" ]; then
         echo "No URL argument"
@@ -23,7 +26,7 @@ done
 
 # See if there are plenty of dowloads already running
 R=1
-while ! find ${TMP}* -maxdepth 1 -type d 2> /dev/null | wc -l | grep -E ^"[0-1]"$; do
+until find ${TMP}* -maxdepth 1 -type d 2> /dev/null | wc -l | grep -E ^"[0-1]"$; do
         echo -en '\r'
         date +%T | tr -d '\n'
 
@@ -48,7 +51,7 @@ cd "$TMP_SHA" || exit 1
 # Dowload with 3 retries
 R=0
 L=3
-while ! youtube-dl "${URL}" && [ $R -lt $L ]; do
+until "${SVTPLAYDL}" "${URL}" || [ $R -lt $L ]; do
         echo "$R/$L"
         sleep 5
         R=$((R+1))
@@ -56,7 +59,7 @@ done
 
 # Move files and remove files
 if [ $R -lt $L ]; then
-        mv -nv -- *.* ..
+        mv -nv -- *.* "$WD"
         cd .. && rmdir "$TMP_SHA"
 else
         cd .. && rm -rf "$TMP_SHA"
