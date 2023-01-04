@@ -63,7 +63,7 @@ if $OSORT; then
                 echo "den är tom." 
         else
                 echo "den är inte tom."
-                LIMITA=$(( (LIMIT-LENGTH) / 2))
+                LIMITA=$(( (LIMIT-LENGTH) / 3))
                 LIMITB=$((LIMIT-LENGTH-LIMITA))
 
                 # äldst
@@ -103,6 +103,14 @@ while read -r band; do
         mpc -w add "${newband#./}"
 done
 
+find .osorterat -maxdepth 1 -type f -name 'The *' -a '(' -name '*\.flac' -o -name '*\.ogg'  ')' | \
+while read -r band; do
+        newband="${band#./The }" 
+        newband="${newband// - /, The - }"
+        mv -v "${band}" "${newband}"
+done
+
+# Directories
 find . -maxdepth 1 -type d -name 'The *' | \
 while read -r dir; do
         newdir="${dir#./The }, The"

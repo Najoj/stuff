@@ -25,8 +25,7 @@ RESULT=()
 while IFS=$'\t' read -r nr title; do
         RESULT+=("$nr" "$title" "off")
 done < <(mpc -f "%position%\\t%artist% - %title% (%album%)" playlist | \
-        grep -Ei "$@" | shuf | sort -g | sed "s/!/\\!/g" | \
-        sed "s/?/\\?/g")
+        grep -Ei "$@" | sort -g | sed "s/!/\\!/g" | sed "s/?/\\?/g")
 
 LEN=${#RESULT[@]}
 # RESULT will contain three parts, thus the length divided by three will be the
@@ -37,7 +36,7 @@ if [ $LEN -eq 0 ]; then
         exit 1
 fi
 
-WHIPTAIL=(whiptail --fb --notags --radiolist --scrolltext "Välj låt:" 30 80 20)
+WHIPTAIL=(whiptail --fb --notags --radiolist --scrolltext "Välj låt med \"$@\":" 30 80 20)
 WHIPTAIL=("${WHIPTAIL[@]}" "${RESULT[@]}")
 
 if [ "$LEN" -eq 1 ]; then
@@ -53,8 +52,8 @@ fi
 # Position after currently playing
 TO=$(($(mpc -f "%position%" current)+1))
 
-# If moving forward a song which is placed before current one, take into account
-# the currently playing one
+# If moving forward a song which is located before current one, take into
+# account the currently playing one
 if [ "$FROM" -lt "$TO" ]; then
         ((TO-=1))
 fi

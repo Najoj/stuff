@@ -1,22 +1,27 @@
 #!/bin/bash
 # Clean up in ~/.lyrics which ncmpcpp creates.
 
-DIR="${HOME}/.lyrics/"
-TMP="${DIR}tmp/"
+DIR="${HOME}/.lyrics"
+TMP="${DIR}/tmp/"
 
 
-# Special case, though it could missmatch.
-for txt in "${DIR}"*.txt; do
-        grep ^Cancel "$txt" && rm "$txt"
+for txt in "${DIR}/"*.txt; do
+        # Remove special case, or
+        # remove rediculously long files
+        if grep ^Cancel "$txt" || \
+                wc -l "$txt" | grep -E "^[1-9][0-9]{2,}(.+)\.txt"; then
+                rm "$txt"
+        fi
 done
 
 # Save files which has songs in mpd
 mkdir "${TMP}"
 mpc -f "%artist% - %title%.txt" playlist | while read -r file; do
-    mv -v "${DIR}${file}" "${TMP}";
+    mv -v "${DIR}/${file}" "${TMP}";
 done
 
-rm "${DIR}"*.txt
+rm "${DIR}"/*.txt
 mv "${TMP}"*.txt "${DIR}"
 
 rmdir "${TMP}"
+

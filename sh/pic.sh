@@ -17,7 +17,7 @@ fi
 BASE="/media/musik/.omslag/"
 ARTIST=$(mpc -f "%artist%" | head -1)
 ALBUM=$( mpc -f "%album%"  | head -1)
-SIZE="100x100"
+SIZE="200x200"
 
 CURRENT="$BASE""CURRENT.png"
 CURRENT_MIRROR="$BASE""CURRENT_MIRROR.png"

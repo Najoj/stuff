@@ -5,14 +5,16 @@ ROOT="/media/musik"
 
 _delete_file() {
         # Deletes file from hard drive
-        #echo "rm file: $1"
+        echo -n "rm ${1}... "
         "$SPELA_KLART"
-        flock -x "$MPC_LOCK" -c "rm \"$1\""
+        flock -x "$MPC_LOCK" -c "rm -f -- \"$1\""
+        echo "done!"
 }
 _remove_file() {
         # Removes file from playlist
-        #echo "del file: $1"
+        echo -n "mpc del ${1}... "
         flock -x "$MPC_LOCK" -c "$SPELA_KLART && mpc del \"$1\""
+        echo "done!"
 }
 
 
@@ -36,12 +38,6 @@ done
 inverted=false
 if [ "$1" = "-f" ]; then
         inverted=true
-fi
-
-# update playlist quietly
-if ! flock -x "$MPC_LOCK" -c "mpc -qw update"; then
-        >&2 echo "Issue updating mpd playlist"
-        exit 1
 fi
 
 # file to remove
