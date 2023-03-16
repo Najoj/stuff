@@ -128,8 +128,8 @@ FILE="${HOME}/.updatedate.gz"
 EXTRA=$(gunzip -c "$FILE" | head -n 1)
 REGULAR=$(gunzip -c "$FILE" | tail -n 1)
 # Sekunder
-BIG_LIMIT=$(( 365*60*60*24 / 12  ))
-SMALL_LIMIT=$(( BIG_LIMIT / 3 ))
+BIG_LIMIT=$(( 365*60*60*24 / 4  ))
+SMALL_LIMIT=$(( BIG_LIMIT / 4 ))
 NOW=$(date +%s)
 
 # Lyckovariabel

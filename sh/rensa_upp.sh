@@ -2,12 +2,14 @@
 command -v mpc > /dev/null || exit 1
 
 DIR="/media/musik"
-LIM=8
 SHUFFLE="true"
 OSORT="false"
-# Have I as a varible to adjust limit easily, for temporary limits
-((LIMIT=15000+I))
+# Exit status
 ((OK=0))
+# Limit to get an artist directory
+((DIRLIMIT=8))
+# Playlist limit
+((LIMIT=16000))
 
 #################################
 #  Uppdaterar.                  #
@@ -103,13 +105,6 @@ while read -r band; do
         mpc -w add "${newband#./}"
 done
 
-find .osorterat -maxdepth 1 -type f -name 'The *' -a '(' -name '*\.flac' -o -name '*\.ogg'  ')' | \
-while read -r band; do
-        newband="${band#./The }" 
-        newband="${newband// - /, The - }"
-        mv -v "${band}" "${newband}"
-done
-
 # Directories
 find . -maxdepth 1 -type d -name 'The *' | \
 while read -r dir; do
@@ -149,7 +144,7 @@ find . -maxdepth 1 -name \*" - "\* -type f | \
     sed 's/ - /\n/' | grep -Ev "\\.(ogg|flac)"$ | sort -g | uniq  | \
 while read -r band; do
         N=$(find . -maxdepth 1 -name "${band#./} - *\\.*" -type f | wc -l)
-        if [ "$N" -ge "$LIM" ]; then
+        if [ "$N" -ge "$DIRLIMIT" ]; then
                 mkdir "${band}"
                 mv -v "${band} - "* "${band}/"
                 cd "${band}" || exit 1
@@ -171,7 +166,7 @@ find . -maxdepth 1 -type d -and -not -name '.*' -and -not -path "./lost+found" |
 while read -r band; do
         cd "${band}" || continue
         N=$(find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | wc -l)
-        if ! ls ./*/ &> /dev/null && [ "$N" -lt "$LIM" ]; then
+        if ! ls ./*/ &> /dev/null && [ "$N" -lt "$DIRLIMIT" ]; then
                 find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | \
                 while read -r title; do
                         mv -uv "${title}" ../"${band} - ${title#./}"    && \
