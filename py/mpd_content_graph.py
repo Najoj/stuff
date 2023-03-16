@@ -31,6 +31,15 @@ ERROR_FILE = os.path.join(HOME, ERROR_FILE_NAME)
 ERROR_FILE = os.path.abspath(FILE)
 
 
+def print_warning(message, file=None):
+    if file:
+        with open(file, 'a') as f:
+            f.write(message)
+            f.write('\n')
+    else:
+        print(message, file=sys.stderr)
+
+
 def from_epoch(epoch_time: int) -> str:
     time = int(epoch_time)
     return str(datetime.datetime.fromtimestamp(time))
@@ -46,7 +55,7 @@ def all_bands(data: dict) -> list:
 def generate_graph(data: dict, range: int) -> None:
     """ Generate graph with matplot """
     if not data:
-        print('No data to plot.', file=ERROR_FILE)
+        print_warning('No data to plot.', file=ERROR_FILE)
         return
 
     timestamps = list(k for k in data.keys() if int(k) >= range)
@@ -75,12 +84,12 @@ def generate_graph(data: dict, range: int) -> None:
         len_x, len_y = len(timestamps), len(y_values[artist])
 
         if len_x > len_y:
-            print('This should never happen. Diff between length of artist',
+            print_warning('This should never happen. Diff between length of artist',
                   file=ERROR_FILE)
             y_values[artist] += [0] * (len_x - len_y)
 
         if len_x < len_y:
-            print('This should never happen.')
+            print_warning('This should never happen.')
             continue
 
         plt.plot(adjusted_timestamps, y_values[artist], label=artist)
@@ -135,15 +144,15 @@ def save_json(data: dict) -> None:
 def load_json() -> dict:
     """ Read data from json file. """
     if not os.path.exists(FILE):
-        print(f'{FILE} does not exist. Create empty.', file=ERROR_FILE)
+        print_warning(f'{FILE} does not exist. Create empty.', file=ERROR_FILE)
         with open(FILE, 'w', encoding='UTF-8') as file:
             file.close()
 
     with open(FILE, 'r', encoding='UTF-8') as file:
         content = file.read()
-        # Should this really be necessary?
-        if not content:
-            content = '{}'
+
+    if not content:
+        content = '{}'
 
     data = json.loads(content)
     return data
@@ -165,13 +174,14 @@ def main(show_graph: bool, range: int) -> None:
         generate_graph(data, range)
 
 
-def _time_range(all_: bool, year: bool, month: bool, week: bool) -> int:
-    if not any([all_, year, month, week]):
+def _time_range(all_: bool, year: bool, month: bool, week: bool, day: bool) -> int:
+    if not any([all_, year, month, week, day]):
         month = True
     _seconds_in_day = 24 * 60 * 60
     _now = time.time()
 
     if all_:
+        # 100 years.
         days = 36500
     elif year:
         days = 365
@@ -179,6 +189,8 @@ def _time_range(all_: bool, year: bool, month: bool, week: bool) -> int:
         days = 30
     elif week:
         days = 7
+    elif day:
+        days = 1
     else:
         raise NotImplemented
 
@@ -203,6 +215,9 @@ def _parse_arguments():
     parser_.add_argument('--week', default=False, const=True,
                          action='store_const',
                          help='Plot data for last week.')
+    parser_.add_argument('--day', default=False, const=True,
+                         action='store_const',
+                         help='Plot data for last day.')
     parser_.add_argument('--cleanup', default=False, const=True,
                          action='store_const',
                          help='Clean up in .json file')
@@ -219,6 +234,7 @@ def _clean_up():
 
     with open(old_file, 'r') as f:
         old_content = json.load(f)
+
     with open(backup_file, 'w') as f:
         f.write(json.dumps(old_content))
 
@@ -251,5 +267,5 @@ if __name__ == '__main__':
     if args.cleanup:
         _clean_up()
     else:
-        time_range = _time_range(args.all, args.year, args.month, args.week)
+        time_range = _time_range(args.all, args.year, args.month, args.week, args.day)
         main(args.graph, range=time_range)

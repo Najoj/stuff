@@ -599,6 +599,9 @@ def main(aar: int):
         Date(0, jan, 6, description='Trettondedag jul', red=True, flag=False),
         Date(0, jan, 28, description='Konungens namnsdag', red=False, flag=True),
 
+        Date(0, mar, 10, description='Mario-dagen', red=False, flag=False),
+        Date(0, mar, 14, description='π-dagen', red=False, flag=False),
+
         skaartorsdagen(aar),
         laangfredagen(aar),
         paaskafton(aar),
