@@ -20,20 +20,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define uint unsigned int
-
 int main(argc, argv)
         int argc;
         char ** argv;
 {
-        uint start, stop, end = 0;
+        int start, stop, end = 0;
 
-        uint const size = 500;
-        uint count = 0;
+        int const size = 500;
+        int count = 0;
 
-        uint *list = (uint*)malloc(size*sizeof(uint));
+        int *list = (int*)malloc(size*sizeof(int));
 
-        uint moved = -1;
+        int moved = -1;
 
         while(2 == scanf("%u -> %u\n", &start, &stop))
         {
@@ -47,7 +45,7 @@ int main(argc, argv)
                 {
                         count--;
                         int diff = list[count] - stop;
-                        printf("%'u - %'u = %'d\n", list[count], stop, diff);
+                        printf("%'d - %'d = %'d\n", list[count], stop, diff);
                         fflush(stdout);
                 }
                 else
