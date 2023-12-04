@@ -42,15 +42,15 @@ function regular {
                 apt-get $Q --only-upgrade upgrade      --assume-yes         && \
                 apt-get $Q autoclean                   --assume-yes
             " 
-        python3 -m pip install --no-warn-script-location --upgrade pip
-        cabal update
+        #python3 -m pip install --no-warn-script-location --upgrade pip
+        #cabal update
 
         avsluta
 }
 
 function avsluta {
         $SAVE && date +%s | gzip - >> "$FILE"
-        sh "${HOME}/.oh-my-zsh/tools/upgrade.sh"
+        zsh "${HOME}/.oh-my-zsh/tools/upgrade.sh"
 }
 
 function check_update {
@@ -128,7 +128,7 @@ FILE="${HOME}/.updatedate.gz"
 EXTRA=$(gunzip -c "$FILE" | head -n 1)
 REGULAR=$(gunzip -c "$FILE" | tail -n 1)
 # Sekunder
-BIG_LIMIT=$(( 365*60*60*24 / 4  ))
+BIG_LIMIT=$(( 365*60*60*24 / 8  ))
 SMALL_LIMIT=$(( BIG_LIMIT / 4 ))
 NOW=$(date +%s)
 

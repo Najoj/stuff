@@ -1,6 +1,4 @@
 #!/bin/bash
-# Ignore unreachable code
-#shellcheck disable=SC2317
 ###############################################################################
 #
 # Various utilities which are commonly used in scripts.
@@ -14,27 +12,27 @@ function print_warning() {
         >&2 echo "$@"
 }
 
-function requried_programs() {
+function required_programs() {
         # Arguments are the names of programmes which are needed. Has to be
         # available in $PATH.
         # Return true on success, false otherwise.
         for req in "$@"; do
                 if ! command -v "$req" > /dev/null; then
                         print_warning "Program \"$req\" is missing."
-                        return $(false)
+                        return 1
                 fi
         done
-        return "$(true)"
+        return 0
 }
 
-function requried_files() {
+function required_files() {
         # Check for required files.
         # Return true on success, false otherwise.
         for req in "$@"; do
                 if ! [[ -e "$req" ]]; then
                         print_warning "File \"$req\" is missing."
-                        return $(false)
+                        return 1
                 fi
         done
-        return "$(true)"
+        return 0
 }

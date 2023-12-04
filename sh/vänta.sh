@@ -11,5 +11,3 @@ fi
 THEN=$(date +%s --date="$*")
 ${SLEEP} $((THEN-$(date +%s)))
 
-echo $((THEN-$(date +%s)))
-

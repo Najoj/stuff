@@ -2,6 +2,7 @@
 
 function manage
 {
+        url="${url%%\?*}"
         base=$(echo "${url##*//}" | cut -d\. -f1)
         mkdir "$base"
 
@@ -33,6 +34,7 @@ function manage
         cd "$wd" || cd ../..
         return 0
 }
+cd /media/musik/.osorterat/oklart || echo "Could not cd to oklart"
 
 wd=$(pwd)
 r=0

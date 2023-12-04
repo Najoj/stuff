@@ -1,12 +1,14 @@
 #!/bin/bash
 # Move the argument number of songs from the end of current MPD playlist to
 # random position.
-
-if [ "${1+x}" ] && [ "$1" -ge 0 ]; then
+N="${@: -1}"
+if [ "${N+x}" ]; then
     # Remove non-digits
     N=${1/[^0-9]/}
-else
-    >&2 echo "Need argument."
+fi
+if ! [ "${N+x}" ]; then
+    N=0
+    >&2 echo "Need argument:" $@
 fi
 
 mpc -wq update

@@ -36,7 +36,7 @@ for req in "${reqs[@]}"; do
 done
 
 inverted=false
-if [ "$1" = "-f" ]; then
+if [ "$1" = "-f" ] || [ "$1" = "-i" ]; then
         inverted=true
 fi
 
@@ -46,8 +46,8 @@ ogg_file=${file_name%ogg}ogg
 # file position in list
 file_pos=$(mpc -f "%position%" current)
 
+mpc -f "%artist% - %title%" current
 if $inverted; then
-        echo inverted
         if [ -e "${file_name}" ]; then
                 _remove_file "$file_pos"
         else
@@ -55,6 +55,7 @@ if $inverted; then
 
         fi
 else
+        # Only remove ogg files
         if [ -e "${ogg_file}" ]; then
                 _delete_file "$file_name"
         else

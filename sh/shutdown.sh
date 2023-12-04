@@ -8,7 +8,7 @@ if ! flock -n 8; then
         exit 1
 fi
 
-REQ_PROGRAMS="mpc whiptail systemctl dbus-send mocp"
+REQ_PROGRAMS="mpc mocp whiptail systemctl dbus-send mocp xscreensaver-command"
 REQ_SCRIPTS="ch_vol.sh"
 SLEEP_TIME="2m"
 
@@ -87,9 +87,10 @@ HIBERNATE="hibernate"
 SUSPEND="suspend"
 REBOOT="reboot"
 HALT="halt"
+LOCK="lock"
 
 if [ -z "$1" ]; then
-        WHAT=$(whiptail --noitem --defaultno --radiolist "What do you want to do today?" 10 30 4 "$SUSPEND" "" "$HIBERNATE" "" "$REBOOT" "" "$HALT" ""  3>&1 1>&2 2>&3)
+        WHAT=$(whiptail --noitem --defaultno --radiolist "What do you want to do today?" 10 30 5 "$SUSPEND" "" "$HIBERNATE" "" "$REBOOT" "" "$HALT" "" "$LOCK" "" 3>&1 1>&2 2>&3)
 else
         WHAT=$(echo "$1" | tr "[:upper:]" "[:lower:]")
 fi
@@ -117,6 +118,10 @@ case $WHAT in
         "$HIBERNATE")
                 forall
                 systemctl hibernate
+                ;;
+        "$LOCK")
+                forall
+                xscreensaver-command -lock
                 ;;
         *)
                 echo "\"$WHAT\" is not possible. $HALT, $REBOOT, $SUSPEND, and $HIBERNATE are available options." 1>&2 && false

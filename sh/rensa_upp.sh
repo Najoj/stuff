@@ -9,12 +9,13 @@ OSORT="false"
 # Limit to get an artist directory
 ((DIRLIMIT=8))
 # Playlist limit
-((LIMIT=16000))
+((LIMIT=16000+I))
 
 #################################
 #  Uppdaterar.                  #
 #################################
 
+echo ================================================================================
 echo -n "Uppdaterar databas..."
 mpc -w update > /dev/null || exit 1
 echo " klar!"
@@ -48,6 +49,7 @@ done
 
 #################################
 
+echo ================================================================================
 echo -n "Börjar med att säkerhetskopiera spellistan: "
 spellista="säkerhetskopia-$(date +%s)"
 echo "\"${spellista}\"" 
@@ -59,13 +61,14 @@ cd "$DIR" || exit 1
 #################################
 
 if $OSORT; then
+        echo ================================================================================
         echo -n "Undersöker .osorterat-mappen... "
         _LEN=$(find "${DIR}/.osorterat/" -maxdepth 1 -type f -and \( -name "*.flac" -or -name "*.ogg" \) | wc -l)
         if [ 0 = "$_LEN" ]; then
                 echo "den är tom." 
         else
                 echo "den är inte tom."
-                LIMITA=$(( (LIMIT-LENGTH) / 3))
+                LIMITA=$(( 2*(LIMIT-LENGTH) / 3))
                 LIMITB=$((LIMIT-LENGTH-LIMITA))
 
                 # äldst
@@ -80,7 +83,7 @@ if $OSORT; then
                         mpc -w add "${track#./}"
                 done | cat -n
 
-                # populära
+                # populära artister
                 echo "Lägger till $LIMITB filer på måfå." 
                 cd "${DIR}/.osorterat/" || exit 1
                 find . -maxdepth 1 -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
@@ -95,6 +98,7 @@ fi
 ################################
 
 cd "$DIR" || exit 1
+echo ================================================================================
 echo "Flyttar på band som börjar med \"The\"." 
 find . -maxdepth 1 -type f -name 'The *' -a '(' -name '*\.flac' -o -name '*\.ogg'  ')' | \
 while read -r band; do
@@ -117,6 +121,7 @@ done
 #################################
 
 cd "$DIR" || exit 1
+echo ================================================================================
 echo "Undersöker om några band redan har mappar."
 find . -maxdepth 1 -type f -name \*" - "\* | sed -E 's/ - .+//' | sort -u | \
 while read -r band; do
@@ -138,6 +143,7 @@ done
 #################################
 
 cd "$DIR" || exit 1
+echo ================================================================================
 echo "Undersöker om några band ska ha mappar."
 find . -maxdepth 1 -name \*" - "\* -type f | \
     grep -Ev '.(omslag|spellistor|osorterat|torrenter)' | \
@@ -161,6 +167,7 @@ done
 #################################
 
 cd "$DIR" || exit 2
+echo ================================================================================
 echo "Undersöker om några låtar ska nedgraderas."
 find . -maxdepth 1 -type d -and -not -name '.*' -and -not -path "./lost+found" | \
 while read -r band; do
