@@ -1,10 +1,20 @@
 #!/bin/bash
+#################################
+#  Rensar upp i min musikmapp.  #
+#################################
+
+#
+# WIP: 2024-05-04
+# TRY TO INCREASE THE SPEED OF THE SCRIPT BY HAVING FEWER mpc -w update
+#
+
 command -v mpc > /dev/null || exit 1
+shopt -s lastpipe
 
 DIR="/media/musik"
 SHUFFLE="true"
 OSORT="false"
-# 
+
 TMP="$(mktemp)"
 FORD="${HOME}/.fördelade"
 FRAM="${HOME}/.framflyttade"
@@ -14,6 +24,9 @@ FRAM="${HOME}/.framflyttade"
 ((DIRLIMIT=8))
 # Playlist limit
 ((LIMIT=16000+I))
+
+# Array in which to add files
+declare -a files_to_add
 
 #################################
 #  Uppdaterar.                  #
@@ -25,10 +38,6 @@ mpc -w update > /dev/null || exit 1
 echo " klar!"
 
 LENGTH=$(mpc playlist | wc -l)
-
-#################################
-#  Rensar upp i min musikmapp.  #
-#################################
 
 for arg in "$@"; do
         case "$arg" in
@@ -79,12 +88,14 @@ if $OSORT; then
                 echo "Lägger till $LIMITA gamla filer." 
                 cd "${DIR}/.osorterat/" || exit 1
 
+
                 find . -maxdepth 1 -type f -printf "%A@ %p\\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
                         | sort -n | cut -d\  -f2- | head -n "$LIMITA" \
                         | while read -r track; do
                         mv -v "${track}" "${DIR}"   && \
-                        mpc -qw update              && \
-                        mpc -w add "${track#./}"
+                        files_to_add+=("${track#./}")
+                        #mpc -qw update              && \
+                        #mpc -w add "${track#./}"
                 done | cat -n
 
                 # populära artister
@@ -93,11 +104,17 @@ if $OSORT; then
                 find . -maxdepth 1 -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
                         | shuf | tail -n $LIMITB | while read -r track; do
                         mv -v "${track}" "${DIR}"   && \
-                        mpc -qw update              && \
-                        mpc -w add "${track#./}"
+                        files_to_add+=("${track#./}")
+                        #mpc -qw update              && \
+                        #mpc -w add "${track#./}"
                 done | cat -n
         fi
 fi
+mpc -qw update
+for file in "${files_to_add[@]}"; do
+        mpc add "$file"
+done
+files_to_add=()
 
 ################################
 
@@ -109,8 +126,9 @@ while read -r band; do
         newband="${band#./The }" 
         newband="${newband// - /, The - }"
         mv -v "${band}" "${newband}"    && \
-        mpc -wq update                  && \
-        mpc -w add "${newband#./}"
+        files_to_add=("${newband#./}")
+        #mpc -wq update                  && \
+        #mpc -w add "${newband#./}"
 done
 
 # Directories
@@ -118,9 +136,16 @@ find . -maxdepth 1 -type d -name 'The *' | \
 while read -r dir; do
         newdir="${dir#./The }, The"
         mv -v "${dir}" "${newdir}"  && \
-        mpc -wq update              && \
-        mpc -w add "${newdir#./}"
+        files_to_add=("${newdir#./}")
+        #mpc -wq update              && \
+        #mpc -w add "${newdir#./}"
 done
+
+mpc -qw update
+for file in "${files_to_add[@]}"; do
+        mpc add "$file"
+done
+files_to_add=()
 
 #################################
 
@@ -137,13 +162,19 @@ while read -r band; do
                 find . -name "${band} - "\* | sed -E 's/.+ - //' | \
                 while read -r title; do
                         mv -v "${band} - ${title}" "${title}"   && \
-                        mpc -wq update                          && \
-                        mpc -w add "${band#./}/${title}"
+                        files_to_add+=("${band#./}/${title}")
+                        #mpc -wq update                          && \
+                        #mpc -w add "${band#./}/${title}"
                 done
         fi
         cd "$DIR" || exit 2
 done
 
+mpc -qw update
+for file in "${files_to_add[@]}"; do
+        mpc add "$file"
+done
+files_to_add=()
 #################################
 
 cd "$DIR" || exit 1
@@ -164,19 +195,23 @@ while read -r band; do
                 find . -maxdepth 1 -type f | while read -r bandtitle; do
                         title="${bandtitle#"${band}" - }"
                         mv -v "${bandtitle}" "${title}"     && \
-                        mpc -wq update
                         if $first; then
+                                mpc -wq update
                                 mpc -w insert "${band#./}/${title}"
                                 first=false
                         else
-                                mpc -w add "${band#./}/${title}"
+                                files_to_add+=("${band#./}/${title}")
                         fi
 
                 done
         fi
         cd "$DIR" || exit 2
 done
-
+mpc -qw update
+for file in "${files_to_add[@]}"; do
+        mpc add "$file"
+done
+files_to_add=()
 #################################
 
 cd "$DIR" || exit 2
@@ -193,22 +228,27 @@ while read -r band; do
                 find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | \
                 cut -c 3- | \
                 while read -r title; do
-                        mv -uv "${title}" ../"${band} - ${title#./}"    && \
-                        mpc -wq update
+                        mv -uv "${title}" ../"${band} - ${title#./}"
                         if $first; then
+                                mpc -wq update
                                 mpc -w insert "${band#./}/${title}"
                                 first=false
                         else
-                                mpc -w add "${band#./}/${title}"
+                                files_to_add+=("${band#./}/${title}")
                         fi
                 done
         fi
         cd "$DIR" || exit 2
         rmdir "${band}" 2> /dev/null
 done
+mpc -qw update
+for file in "${files_to_add[@]}"; do
+        mpc add "$file"
+done
+files_to_add=()
 
 #################################
-
+# Space to evaluate shuffle of playlist. This is now disabled.
 eval "$SHUFFLE" > /dev/null
 
 #################################
