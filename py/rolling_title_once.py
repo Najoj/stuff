@@ -11,9 +11,9 @@ import sys
 from musicpd import MPDClient
 
 # Total width
-LENGTH = 31
+LENGTH = 26
 # Divider when exceeding limit
-DIVIDER = '    '
+DIVIDER = '   '
 
 
 def parser(client, title_string):
@@ -40,6 +40,7 @@ def main():
         # Connect to the MPD server
         client = MPDClient()
         client.connect("localhost", 6600)
+        client.socket_timeout = 10 # seconds
         title_string = parser(client, str(sys.argv[1]))
 
     except TypeError:

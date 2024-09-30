@@ -195,18 +195,18 @@ class Date:
 
         return False
 
-def skaartorsdagen(year: int) -> Date:
+def skaertorsdagen(year: int) -> Date:
     """
-    >>> d = skaartorsdagen(2022)
+    >>> d = skaertorsdagen(2022)
     >>> d.year, d.month, d.day
     (2022, 4, 14)
-    >>> d = skaartorsdagen(2000)
+    >>> d = skaertorsdagen(2000)
     >>> d.year, d.month, d.day
     (2000, 4, 20)
-    >>> d = skaartorsdagen(1990)
+    >>> d = skaertorsdagen(1990)
     >>> d.year, d.month, d.day
     (1990, 4, 12)
-    >>> d = skaartorsdagen(1988)
+    >>> d = skaertorsdagen(1988)
     >>> d.year, d.month, d.day
     (1988, 3, 31)
     """
@@ -216,7 +216,7 @@ def skaartorsdagen(year: int) -> Date:
 
     _skaertorsdagen.description = 'Skärtorsdagen'
     _skaertorsdagen.flag_day = False
-    _skaertorsdagen.red_day = True
+    _skaertorsdagen.red_day = False
 
     assert _skaertorsdagen.day_of_week == tor
     return _skaertorsdagen
@@ -468,7 +468,7 @@ def midsommarafton(year: int) -> Date:
     _midsommarafton -= 1
 
     _midsommarafton.description = 'Midsommmarafton'
-    _midsommarafton.red_day = True
+    _midsommarafton.red_day = False
     _midsommarafton.flag_day = False
 
     return _midsommarafton
@@ -554,6 +554,41 @@ def alla_helgons_dag(year: int) -> Date:
     return _alla_helgons_dag
 
 
+def mors_dag(year: int) -> Date:
+    """
+    >>> d = mors_dag(2024)
+    >>> d.year, d.month, d.day
+    (2024, 5, 26)
+    """
+    # Sista söndagen i maj
+    _mors_dag = Date(year, maj, 31)
+    while _mors_dag.day_of_week != soen:
+        _mors_dag -= 1
+
+    _mors_dag.description = 'Mors dag'
+    _mors_dag.red_day = False
+    _mors_dag.flag_day = False
+
+    return _mors_dag
+
+
+def fars_dag(year: int) -> Date:
+    """
+    >>> d = fars_dag(2024)
+    >>> d.year, d.month, d.day
+    (2024, 11, 10)
+    """
+    # Andra söndagen i november
+    _fars_dag = Date(year, nov, 8)
+    while _fars_dag.day_of_week != soen:
+        _fars_dag += 1
+
+    _fars_dag.description = 'Fars dag'
+    _fars_dag.red_day = False
+    _fars_dag.flag_day = False
+
+    return _fars_dag
+
 def valaar(year):
     """
     Only valid from 1994 and forward.
@@ -599,10 +634,11 @@ def main(aar: int):
         Date(0, jan, 6, description='Trettondedag jul', red=True, flag=False),
         Date(0, jan, 28, description='Konungens namnsdag', red=False, flag=True),
 
+        Date(0, mar, 8, description='Internationella kvinnodagen', red=False, flag=False),
         Date(0, mar, 10, description='Mario-dagen', red=False, flag=False),
         Date(0, mar, 14, description='π-dagen', red=False, flag=False),
 
-        skaartorsdagen(aar),
+        skaertorsdagen(aar),
         laangfredagen(aar),
         paaskafton(aar),
         paaskdagen(aar),
@@ -613,6 +649,7 @@ def main(aar: int):
 
         Date(aar, maj, 1, description='Första maj', red=True, flag=True),
         Date(0, maj, 29, description='Veterandagen', red=False, flag=True),
+        mors_dag(aar),
 
         kristi_himmelfaerdsdag(aar),
         pingstafton(aar),
@@ -625,9 +662,13 @@ def main(aar: int):
 
         Date(1977, jul, 14, description='Kronprinsessans födelsedag', red=False, flag=True),
         Date(0, aug, 8, description='Drottningens namnsdag', red=False, flag=True),
+        Date(0, okt, 11, description='Internationella kvinnodagen', red=False, flag=False),
         Date(0, okt, 24, description='FN-dagen', red=False, flag=True),
         Date(0, nov, 6, description='Gustav Adolfsdagen', red=False, flag=True),
-
+        Date(0, nov, 19, description='Internationella mansdagen', red=False, flag=False),
+        Date(0, nov, 25, description='Internationella mansdagen', red=False, flag=False),
+        
+        fars_dag(aar),
         allhelgonaafton(aar),
         alla_helgons_dag(aar),
 

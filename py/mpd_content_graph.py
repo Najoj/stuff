@@ -8,15 +8,13 @@ TODO: Assert the same playlist is used
 """
 
 import argparse
-import copy
+import sys
 import datetime
 import json
 import os
 import shutil
 import time
 
-import matplotlib.pyplot as plt
-import mplcursors
 import musicpd
 
 # Constants
@@ -32,17 +30,18 @@ ERROR_FILE = os.path.abspath(FILE)
 
 
 def print_warning(message, file=None):
-    if file:
-        with open(file, 'a') as f:
-            f.write(message)
-            f.write('\n')
-    else:
-        print(message, file=sys.stderr)
+    if file is None:
+        file = ERROR_FILE
+
+    with open(file, 'a') as f:
+        f.write(message)
+        f.write('\n')
+    print(message, file=sys.stderr)
 
 
 def from_epoch(epoch_time: int) -> str:
-    time = int(epoch_time)
-    return str(datetime.datetime.fromtimestamp(time))
+    time_ = int(epoch_time)
+    return str(datetime.datetime.fromtimestamp(time_))
 
 
 def all_bands(data: dict) -> list:
@@ -57,6 +56,9 @@ def generate_graph(data: dict, range: int) -> None:
     if not data:
         print_warning('No data to plot.', file=ERROR_FILE)
         return
+
+    import matplotlib.pyplot as plt
+    import mplcursors
 
     timestamps = list(k for k in data.keys() if int(k) >= range)
     int_timestamps = list(map(int, timestamps))
@@ -85,7 +87,7 @@ def generate_graph(data: dict, range: int) -> None:
 
         if len_x > len_y:
             print_warning('This should never happen. Diff between length of artist',
-                  file=ERROR_FILE)
+                          file=ERROR_FILE)
             y_values[artist] += [0] * (len_x - len_y)
 
         if len_x < len_y:
@@ -95,15 +97,17 @@ def generate_graph(data: dict, range: int) -> None:
         plt.plot(adjusted_timestamps, y_values[artist], label=artist)
 
     timestamps_labels_tmp = list(map(from_epoch, int_timestamps))
-    timestamps_labels = [''] * len(timestamps_labels_tmp)
+    if len(timestamps_labels_tmp) > 1:
+        timestamps_labels = [''] * len(timestamps_labels_tmp)
+        timestamps_labels[0] = timestamps_labels_tmp[0]
+        timestamps_labels[-1] = timestamps_labels_tmp[-1]
 
-    timestamps_labels[0] = timestamps_labels_tmp[0]
-    timestamps_labels[-1] = timestamps_labels_tmp[-1]
-
-    plt.xticks(adjusted_timestamps, timestamps_labels, rotation=45)
-    # Not sure how this works, but it does the job all right
-    mplcursors.cursor(hover=True)
-    plt.show()
+        plt.xticks(adjusted_timestamps, timestamps_labels, rotation=45)
+        # Not sure how this works, but it does the job all right
+        mplcursors.cursor(hover=True)
+        plt.show()
+    else:
+        print('Not enough data to plot anything.', file=sys.stderr)
 
 
 def read_mpd(data: dict) -> dict:
@@ -124,10 +128,13 @@ def read_mpd(data: dict) -> dict:
     current_position = int(client.status()['song'])
 
     for song in client.playlistinfo()[current_position:]:
-        artist = song['artist']
-        if artist not in data[now]:
-            data[now][artist] = 0
-        data[now][artist] += 1
+        if 'artist' not in song:
+            print_warning('artist not in:' + str(song))
+        else:
+            artist = song['artist']
+            if artist not in data[now]:
+                data[now][artist] = 0
+            data[now][artist] += 1
 
     client.close()
     client.disconnect()
@@ -158,114 +165,91 @@ def load_json() -> dict:
     return data
 
 
-def main(show_graph: bool, range: int) -> None:
+def main(time_range: int) -> None:
     """ Do everything """
     # Load JSON file content
     data = load_json()
 
-    if not show_graph:
+    show_graph = time_range > 0
+    if show_graph:
+        time_range = int(time.time() - time_range + 0.5)
+        generate_graph(data, time_range)
+
+    else:
         # Read data from MPD into dictionary
         data = read_mpd(data)
-
         # Save data to JSON
         save_json(data)
-
-    else:
-        generate_graph(data, range)
-
-
-def _time_range(all_: bool, year: bool, month: bool, week: bool, day: bool) -> int:
-    if not any([all_, year, month, week, day]):
-        month = True
-    _seconds_in_day = 24 * 60 * 60
-    _now = time.time()
-
-    if all_:
-        # 100 years.
-        days = 36500
-    elif year:
-        days = 365
-    elif month:
-        days = 30
-    elif week:
-        days = 7
-    elif day:
-        days = 1
-    else:
-        raise NotImplemented
-
-    return int(_now - days * _seconds_in_day + 0.5)
 
 
 def _parse_arguments():
     global args
     parser_ = argparse.ArgumentParser()
-    parser_.add_argument('--graph', default=False, const=True,
-                         action='store_const',
-                         help='Wether to just show a graph')
-    parser_.add_argument('--all', default=False, const=True,
-                         action='store_const',
-                         help='Plot all data')
-    parser_.add_argument('--year', default=False, const=True,
-                         action='store_const',
-                         help='Plot all data')
-    parser_.add_argument('--month', default=False, const=True,
-                         action='store_const',
-                         help='Plot for the last 30 days. Default behaviour.')
-    parser_.add_argument('--week', default=False, const=True,
-                         action='store_const',
-                         help='Plot data for last week.')
-    parser_.add_argument('--day', default=False, const=True,
-                         action='store_const',
-                         help='Plot data for last day.')
+    parser_.add_argument('--graph', default=False, type=str,
+                         choices=['all', 'year', 'month', 'week', 'day'],
+                         help='Weather to just show a graph')
     parser_.add_argument('--cleanup', default=False, const=True,
                          action='store_const',
                          help='Clean up in .json file')
+
     args = parser_.parse_args()
     return args
 
 
 def _clean_up():
-    old_file = FILE
+    original_file = FILE
     new_file = FILE + '.clean'
     backup_file = FILE + '.backup'
 
-    shutil.copy(old_file, backup_file)
+    shutil.copy(original_file, backup_file)
 
-    with open(old_file, 'r') as f:
-        old_content = json.load(f)
+    with open(original_file, 'r') as f:
+        original_content = json.load(f)
 
     with open(backup_file, 'w') as f:
-        f.write(json.dumps(old_content))
+        f.write(json.dumps(original_content))
 
     new_content = {}
-    last_content = {}
-    _contents = []
-    last_key = None
+    previous_key = None
 
-    for key in old_content.keys():
-        _content = str(old_content[key])
-        if len(new_content) == 0:
-            new_content[key] = old_content[key]
-            _contents.append(_content)
-        elif _content not in _contents:
-            new_content[last_key] = last_content
-            new_content[key] = old_content[key]
-            _contents.append(_content)
+    for key in original_content.keys():
+        _content = original_content[key]
+        if new_content:
+            if _content == new_content[previous_key]:
+                print_warning('Not adding ' + key)
+            else:
+                print_warning('Adding ' + key)
+                new_content[key] = _content
+                previous_key = key
+        else:
+            print_warning('First key: ' + key)
+            new_content[key] = _content
+            previous_key = key
 
-        last_key = key
-        last_content = old_content[last_key]
+    last_key = list(original_content.keys())[-1]
+    if last_key not in new_content.keys():
+        new_content[last_key] = original_content[last_key]
+
 
     with open(new_file, 'w') as f:
         f.write(json.dumps(new_content))
 
-    shutil.copy(new_file, old_file)
+    shutil.copy(new_file, original_file)
 
 
 if __name__ == '__main__':
     args = _parse_arguments()
+
     if args.cleanup:
         _clean_up()
+
+    elif args.graph:
+        time_ranges = {'none': 0,
+                       'day': 24 * 60 * 60,
+                       'week': 24 * 60 * 60 * 7,
+                       'month': int(24 * 60 * 60 * 365.25 / 12),
+                       'year': int(24 * 60 * 60 * 365.25),
+                       'all': int(24 * 60 * 60 * 365.25) * 100}
+        main(time_range=time_ranges[args.graph])
     else:
-        time_range = _time_range(args.all, args.year, args.month, args.week, args.day)
-        main(args.graph, range=time_range)
+        main(0)

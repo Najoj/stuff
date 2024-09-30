@@ -54,4 +54,9 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    try:
+        exit_status = main()
+    except KeyboardInterrupt:
+        exit_status = 1
+
+    sys.exit(exit_status)
