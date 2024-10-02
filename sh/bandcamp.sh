@@ -4,12 +4,15 @@ function manage
 {
         url="${url%%\?*}"
         base=$(echo "${url##*//}" | cut -d\. -f1)
-        mkdir "$base"
+        if [ -z "${1+x}" ]; then
+                return  1
+        fi
+        mkdir -p "$base"
 
         nwd=${url##*/}
         fullwd="${base}/${nwd}"
 
-        mkdir "$fullwd" 
+        mkdir -p "$fullwd" 
         cd "$fullwd" || return 1
 
         #echo "$fullwd" 
@@ -37,7 +40,7 @@ function manage
 cd /media/musik/.osorterat/oklart || echo "Could not cd to oklart"
 
 wd=$(pwd)
-r=0
+((r=0))
 if [[ "$#" -gt 0 ]]; then
         for url in "${@}"; do
                 ((r+=$(manage "$url")))
