@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SVTPLAYDL="${HOME}/src/svtplay-dl/svtplay-dl"
+FLAGS="--merge-subtitle"
 
 WD=$(pwd)
 URL=$1
@@ -51,11 +52,22 @@ cd "$TMP_SHA" || exit 1
 # Dowload with 3 retries
 R=0
 L=3
-until "${SVTPLAYDL}" "${URL}" || [ $R -lt $L ]; do
+until "${SVTPLAYDL}" $FLAGS "${URL}" || [ $R -lt $L ]; do
         echo "$R/$L"
         sleep 5
         R=$((R+1))
 done
+
+if [ $R -ge $L ] && which mullvad-exclude; then
+        R=0
+        L=3
+        until mullvad-exclude "${SVTPLAYDL}" $FLAGS "${URL}" || [ $R -lt $L ]; do
+                echo "$R/$L"
+                sleep 5
+                R=$((R+1))
+        done
+fi
+
 
 # Move files and remove files
 if [ $R -lt $L ]; then
@@ -65,5 +77,5 @@ else
         cd .. && rm -rf "$TMP_SHA"
 fi
 
-echo "$(date +%T)  Klar."
-sleep 10
+echo "Klar."
+sleep 5
