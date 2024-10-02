@@ -16,16 +16,17 @@ fi
 
 for URL in "$@"; do
         PRET=$RET
-        if ! trurl --verify "$URL"; then
-                print_warning "\"$URL\" is invalid"
-                break
-        fi
-
         if [[ "${URL}" =~ magnet:\? ]] ||
                 [[ "${URL}" =~ http(s)?://(.*)\.torrent ]]; then
-                deluge-console "add ${URL}"
+                deluge-console "add \"${URL}\""
                 TXT="${URL}"
         else
+
+                if ! trurl --verify "$URL"; then
+                        print_warning "\"$URL\" is invalid"
+                        break
+                fi
+
                 URL=$(trurl --set scheme=https "$URL")
                 if [[ "${URL}" =~ http(s?):\/\/open\.spotify\.com\/(artist|track|album)\/[A-Za-z0-9]{10}(\\?.*)? ]]; then
                              "${DIR}"/spotify.sh "${URL}" || RET=$((RET + 1))
@@ -36,11 +37,12 @@ for URL in "$@"; do
 
                 elif [[ "${URL}" =~ http(s)?://sverigesradio\.se/topsy/ljudfil/podrss/[0-9]+(\.|\\-)[mM][pP]3 ]] || \
                      [[ "${URL}" =~ http(s)?://sverigesradio\.se/topsy/ljudfil/srse/[0-9]+(\.|\\-)[mM][pP]3 ]]; then
-                             "${DIR}"/sr.sh "${URL}" || RET=$((RET + 1))
-                             if [ "$?" == 3 ]; then
-                                     RET=$((RET - 1))
+                             if ! "${DIR}"/sr.sh "${URL}"; then
+                                     TXT="${URL} done"
+                             else
+                                     TXT="${URL} failed"
+                                     RET=$((RET + 1))
                              fi
-                             TXT=${URL}
 
                 elif [[ "${URL}" =~ http(s)?://(www\.)?(aftonbladet|comedycentral|di|dn|dplay|efn|expressen|kanal9play|tv4|svd|nickelodeon|ur|oppetarkiv|tv10play|tv3play|tv4play|tv6play|tv8play|urplay|svtplay)\.se ]]; then
                         export DISPLAY=":0"
@@ -80,7 +82,7 @@ for URL in "$@"; do
                         TXT="film nedladdad"
                 else
                         DURATION=$(youtube-dl --get-duration "$URL")
-                        if ! [[ "$DURATION" =~ ^(.+:)*([1-9].:)?..$ ]]; then
+                        if [[ "$DURATION" =~ ^1?.: ]]; then
                                 "${DIR}"/minyoutube-dl.sh "${URL}" || RET=$((RET+1))
                                 TXT=$(youtube-dl --get-filename "${URL}")
                         else
