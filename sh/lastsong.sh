@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+source "${HOME}/src/utils.sh"
 
 if [ -z "$1" ]; then
 	TODO=suspend
@@ -6,17 +8,19 @@ else
 	TODO=$1
 fi
 
-! command -v mpc > /dev/null && echo "\"mpc\" saknas." && exit 1
-! command -v python3 > /dev/null && echo "\"python\" saknas." && exit 1
+if ! required_files ${HOME}/src/spela_klart	\
+                    ${HOME}/src/shutdown.sh; then
+                    exit 1
+elif ! required_files ${HOME}/.mython/bin/python; then
+        PYTHON=${HOME}/.mython/bin/python
+else
+        PYTHON=python3
+fi
 
-for sh in   ${HOME}/src/spela_klart	\
-            ${HOME}/src/shutdown.sh 	; do
-    [ ! -f "$sh" ] && echo "\"$sh\" saknas." && exit 2
-done
 
 echo "Will \"${TODO}\"."
 
-python3 "${HOME}"/src/spela_klart.py || exit 1
+"$PYTHON" "${HOME}"/src/spela_klart.py || exit 1
 
 mpc pause
 
