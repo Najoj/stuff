@@ -11,6 +11,29 @@ comments.
 │   ├── barv2.c
 │   ├── bf.c
 │   ├── bftoc.c
+│   ├── cmake-build-debug
+│   │   ├── build.ninja
+│   │   ├── CMakeCache.txt
+│   │   ├── CMakeFiles
+│   │   │   ├── 3.22.3
+│   │   │   │   ├── CMakeCCompiler.cmake
+│   │   │   │   ├── CMakeDetermineCompilerABI_C.bin
+│   │   │   │   ├── CMakeSystem.cmake
+│   │   │   │   └── CompilerIdC
+│   │   │   │       ├── a.out
+│   │   │   │       └── CMakeCCompilerId.c
+│   │   │   ├── clion-environment.txt
+│   │   │   ├── clion-log.txt
+│   │   │   ├── cmake.check_cache
+│   │   │   ├── CMakeOutput.log
+│   │   │   ├── rules.ninja
+│   │   │   └── TargetDirectories.txt
+│   │   ├── cmake_install.cmake
+│   │   └── Testing
+│   │       └── Temporary
+│   │           └── LastTest.log
+│   ├── CMakeLists.txt
+│   ├── id3extract.c
 │   ├── new_sleep.c
 │   ├── pp.c
 │   ├── sleep.c
@@ -21,18 +44,17 @@ comments.
 ├── java
 │   └── luffarschack.java
 ├── py
+│   ├── count_lines.py
 │   ├── id3tag.py
 │   ├── kalender.py
 │   ├── mpd_content_graph.py
+│   ├── nerdle.py
 │   ├── rolling_title_once.py
 │   ├── rolling_title.py
 │   └── spela_klart.py
 ├── README.md
 ├── rust
 │   └── spela_klart
-│       ├── Cargo.lock
-│       ├── Cargo.toml
-│       └─── src
 └── sh
     ├── bandcamp.sh
     ├── cdrip.sh
@@ -43,7 +65,6 @@ comments.
     ├── dagar.sh
     ├── disc.sh
     ├── dvdrip.sh
-    ├── enskilda.sh
     ├── fixa_låtarna.sh
     ├── flytta_fram.sh
     ├── flytta_upp.sh
@@ -60,7 +81,6 @@ comments.
     ├── namnsdag.sh
     ├── new_agent.sh
     ├── nextsong.sh
-    ├── nofx.sh
     ├── nrss.sh
     ├── pic.sh
     ├── pip-upgrade.sh
@@ -71,18 +91,17 @@ comments.
     ├── rmpl.sh
     ├── shutdown.sh
     ├── spela_klart_album.sh
-    ├── spela_klart.sh
-    ├── sp.sh
     ├── ta_bort_dubletter_ur_mpd.sh
     ├── ta_bort_filer_som_inte_finns_ur_mpd.sh
     ├── ta_bort_låten_ur_listan.sh
     ├── text.sh
     ├── ud.sh
     ├── update_hosts.sh
+    ├── utils.sh
     ├── vecka.sh
     ├── veckor_gen.sh
     ├── vol.sh
     └── vänta.sh
 
-34 directories, 303 files
+41 directories, 407 files
 ```
