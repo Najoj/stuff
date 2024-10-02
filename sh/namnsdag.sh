@@ -38,9 +38,16 @@ DATE_ALL=${DATE_THIS//$YEAR/DETTA_ÅR}
 # Kollar om det är datumen finns i flaggdagsfilen
 PRE=""
 POST=""
-if grep "$DATE_THIS" "$FLAG" 1>&2 || grep "$DATE_ALL" "$FLAG" 1>&2 ; then
+if ! grep -q "$YEAR" "$FLAG"; then
+        echo "Uppdatera ${FLAG}!"
+fi
+if grep -q "$DATE_THIS" "$FLAG" || grep -q "$DATE_ALL" "$FLAG" ; then
     PRE="\\033[1;33m\\033[44m ⚑ "
     POST=" \\033[0m"
+fi
+
+if ! [[ "${NAMES}" =~ dag(en)? ]]; then
+        PRE="$PRE Namnsdag: "
 fi
 
 echo -e -n "${PRE}${NAMES}${POST}"
