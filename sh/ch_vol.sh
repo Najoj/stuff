@@ -4,7 +4,7 @@ command -v amixer grep gawk tr > /dev/null || exit 2
 
 arg=$(echo "$1" | tr "[:upper:]" "[:lower:]" )
 
-#alias amixer='amixer -c0'
+alias amixer='amixer -c0'
 
 #amixer  sset  Master   unmute
 #amixer  sset  Capture  unmute
@@ -18,7 +18,7 @@ case $arg in
         ;;
     n|normalise)
 
-        amixer set Master  40%
+        amixer set Master  50%
         ;;
     unmute|mute)
         amixer set Master toggle
