@@ -72,7 +72,6 @@ for i in $(seq 1 "${TRACKS}"); do
     echo -e "\\n===================="
     echo    "  Spår ${i} av ${TRACKS}."
     echo    "===================="
-    sleep 1m
 
     mkdir "tmp"
     cdparanoia -X "${i}" "tmp/${i}.wav"
