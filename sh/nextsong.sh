@@ -36,12 +36,13 @@ if [ $LEN -eq 0 ]; then
         exit 1
 fi
 
-WHIPTAIL=(whiptail --fb --notags --radiolist --scrolltext "Välj låt med \"$@\":" 30 80 20)
-WHIPTAIL=("${WHIPTAIL[@]}" "${RESULT[@]}")
 
 if [ "$LEN" -eq 1 ]; then
         FROM=$(echo "${RESULT[0]}" | cut -d\  -f 1)
 else
+        WHIPTAIL=(whiptail --fb --notags --radiolist --scrolltext "Välj låt med \"$@\":" 30 80 20)
+        WHIPTAIL=("${WHIPTAIL[@]}" "${RESULT[@]}")
+
         FROM=$(exec "${WHIPTAIL[@]}" 3>&1 1>&2 2>&3)
         if [ -z "$FROM" ]; then
                 err "No song chosen."
