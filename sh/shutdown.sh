@@ -43,7 +43,7 @@ function all_downloaded
                                 AGAIN=true
                         fi
                 done
-                PROGS=(minsvtget youtube-dl)
+                PROGS=(minsvtget spotdlsh youtube-dl)
                 for PROG in ${PROGS[*]}; do
                         if ! pgrep "${PROG}" | wc -l | grep ^0$; then
                                 echo -- "$0" "Väntar på ${PROG}."
@@ -56,10 +56,19 @@ function all_downloaded
 
 function await_halt
 {
+        BACKUP="${HOME}/src/backup.sh"
+        if [[ -e "$BACKUP" ]]; then
+                bash "$BACKUP" -f
+        fi
+        BACKUP="${HOME}/src/nas.sh"
+        if [[ -e "$BACKUP" ]]; then
+                bash "$BACKUP" -f
+        fi
+
         AGAIN=true
         while $AGAIN; do
                 AGAIN=false
-                for PID in youtube-dl svtget-dl; do
+                for PID in apt aptitude youtube-dl svtget-dl cdparanoia; do
                         if pgrep "${PID}" ; then
                                 id=$(pgrep "${PID}" | sed "s/\\n/\\ /")
                                 echo -- "$0" "Väntar på ${PID} (${id})."
@@ -101,6 +110,9 @@ fi
 
 case $WHAT in
         "$HALT")
+                # lock screen before waiting everything to finish, then halt
+                xscreensaver-command -lock
+                xscreensaver-command -lock
                 await_halt
                 forall
                 dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.PowerOff" boolean:true
@@ -112,16 +124,20 @@ case $WHAT in
                 #dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart
                 ;;
         "$SUSPEND")   # Suspend
+                # lock screen before waiting everything to finish, then hibernate
+                xscreensaver-command -lock
                 forall
                 systemctl suspend
                 ;;
         "$HIBERNATE")
+                # lock screen before waiting everything to finish, then hibernate
+                xscreensaver-command -lock
                 forall
                 systemctl hibernate
                 ;;
         "$LOCK")
-                forall
                 xscreensaver-command -lock
+                pause_player
                 ;;
         *)
                 echo "\"$WHAT\" is not possible. $HALT, $REBOOT, $SUSPEND, and $HIBERNATE are available options." 1>&2 && false
