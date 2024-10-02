@@ -72,19 +72,21 @@ if $OSORT; then
                 echo "den är tom." 
         else
                 echo "den är inte tom."
-                LIMITA=$(( 2*(LIMIT-LENGTH) / 3))
+                LIMITA=$(( (LIMIT-LENGTH) / 3))
                 LIMITB=$((LIMIT-LENGTH-LIMITA))
 
                 # äldst
                 echo "Lägger till $LIMITA gamla filer." 
                 cd "${DIR}/.osorterat/" || exit 1
 
-                find . -maxdepth 1 -type f -printf "%A@ %p\\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
+                find . -maxdepth 1 -type f -printf "%C@ %p\\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
                         | sort -n | cut -d\  -f2- | head -n "$LIMITA" \
                         | while read -r track; do
-                        mv -v "${track}" "${DIR}"   && \
-                        mpc -qw update              && \
-                        mpc -w add "${track#./}"
+                        if [[ -e "$track" ]]; then
+                            mv -v "${track}" "${DIR}"   && \
+                            mpc -qw update              && \
+                            mpc -w add "${track#./}"
+                        fi
                 done | cat -n
 
                 # populära artister
@@ -92,9 +94,11 @@ if $OSORT; then
                 cd "${DIR}/.osorterat/" || exit 1
                 find . -maxdepth 1 -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
                         | shuf | tail -n $LIMITB | while read -r track; do
-                        mv -v "${track}" "${DIR}"   && \
-                        mpc -qw update              && \
-                        mpc -w add "${track#./}"
+                        if [[ -e "$track" ]]; then
+                                mv -v "${track}" "${DIR}"   && \
+                                mpc -qw update              && \
+                                mpc -w add "${track#./}"
+                        fi
                 done | cat -n
         fi
 fi
@@ -161,18 +165,19 @@ while read -r band; do
                 mkdir "${band}"
                 mv -v "${band} - "* "${band}/"
                 cd "${band}" || exit 1
-                find . -maxdepth 1 -type f | while read -r bandtitle; do
-                        title="${bandtitle#"${band}" - }"
-                        mv -v "${bandtitle}" "${title}"     && \
-                        mpc -wq update
-                        if $first; then
-                                mpc -w insert "${band#./}/${title}"
-                                first=false
-                        else
-                                mpc -w add "${band#./}/${title}"
-                        fi
+                #find . -maxdepth 1 -type f | while read -r bandtitle | cut -c 3-; do
+                        #title="${bandtitle#"${band}" - }"
+                        #echo "$bandtitle -> $title"
+                        #mv -v "${bandtitle}" "${title}"     && \
+                        #mpc -wq update
+                        #if $first; then
+                                #mpc -w insert "${band#./}/${title}"
+                                #first=false
+                        #else
+                                #mpc -w add "${band#./}/${title}"
+                        #fi
 
-                done
+                #done
         fi
         cd "$DIR" || exit 2
 done
@@ -193,13 +198,13 @@ while read -r band; do
                 find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | \
                 cut -c 3- | \
                 while read -r title; do
-                        mv -uv "${title}" ../"${band} - ${title#./}"    && \
+                        mv -uv "${title}" ../"${band} - ${title#./}"
                         mpc -wq update
                         if $first; then
-                                mpc -w insert "${band#./}/${title}"
+                                mpc -w insert "${band#./} - ${title}"
                                 first=false
                         else
-                                mpc -w add "${band#./}/${title}"
+                                mpc -w add "${band#./} - ${title}"
                         fi
                 done
         fi
