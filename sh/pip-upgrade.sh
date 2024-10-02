@@ -1,10 +1,14 @@
 #!/bin/bash
-
-PIP="python3 -m pip"
+MYTHON="${HOME}/.mython/bin/python" 
+if [[ -e "$MYTHON" ]]; then
+        PIP="$MYTHON -m pip"
+else
+        PIP="python3 -m pip"
+fi
 $PIP install --upgrade pip
 # shellcheck disable=SC2086
-$PIP list --outdated --format=freeze    |\
-        grep -v '^\-e'                  |\
-        cut -d= -f1                     |\
-        xargs -n1 $PIP install --upgrade
+$PIP list --outdated    |\
+        tail -n+3       |\
+        cut -d' ' -f1   |\
+        xargs $PIP install --upgrade
 
