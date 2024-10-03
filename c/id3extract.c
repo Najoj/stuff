@@ -5,20 +5,24 @@
 #include <string.h>
 #include <vorbis/vorbisfile.h>
 
-void extract_vorbis_tag(OggVorbis_File *vf, const char *tag) {
+#define TRUE (0==0)
+#define FALSE (!(TRUE))
+
+int extract_vorbis_tag(OggVorbis_File *vf, const char *tag) {
     vorbis_comment *comment = ov_comment(vf, -1);
     if (comment) {
         size_t tag_len = strlen(tag);
         for (int i = 0; i < comment->comments; i++) {
             if (strncmp(comment->user_comments[i], tag, tag_len) == 0 && comment->user_comments[i][tag_len] == '=') {
                 printf("%s\n", comment->user_comments[i] + tag_len + 1);
-                return;
+                return TRUE;
             }
         }
-        printf("Taggen '%s' hittades inte.\n", tag);
+        fprintf(stderr, "Taggen '%s' hittades inte.\n", tag);
     } else {
-        printf("Inga Vorbis-kommentarer hittades.\n");
+        fprintf(stderr, "Inga Vorbis-kommentarer hittades.\n");
     }
+    return FALSE;
 }
 
 int main(int argc, char *argv[]) {
@@ -43,10 +47,12 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    extract_vorbis_tag(&vf, tag);
+    int return_code = 1;
+    if(extract_vorbis_tag(&vf, tag))
+           return_code = 0;
 
     /*ov_clear will do fclose */
     ov_clear(&vf);
 
-    return 0;
+    return return_code;
 }
