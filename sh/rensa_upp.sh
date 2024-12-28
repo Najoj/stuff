@@ -1,25 +1,40 @@
 #!/bin/bash
-command -v mpc > /dev/null || exit 1
+
+UTILS="${HOME}/src/utils.sh"
+[[ -e  "$UTILS" ]] || exit 1
+source "$UTILS"
 
 DIR="/media/musik"
 SHUFFLE="true"
 OSORT="false"
-# 
+ 
 TMP="$(mktemp)"
 FORD="${HOME}/.fördelade"
 FRAM="${HOME}/.framflyttade"
+ID3TAG="${HOME}/src/id3extract"
+
+required_files "$ID3TAG" "$FORD" "$FRAM" "$DIR" || exit 1
+required_programs mpc flock || exit 1
+
 # Exit status
 ((OK=0))
 # Limit to get an artist directory
 ((DIRLIMIT=8))
 # Playlist limit
-((LIMIT=16000+I))
+((LIMIT=17000+I))
+
+function clear_list {
+        file="${1}"
+        artist="$(${ID3TAG} artist "${DIR}/${file}")"
+        sed -i "/$artist/d" "$FORD"
+        sed -i "/$artist/d" "$FRAM"
+}
 
 #################################
 #  Uppdaterar.                  #
 #################################
 
-echo ================================================================================
+echo -e "\n================================================================================"
 echo -n "Uppdaterar databas..."
 mpc -w update > /dev/null || exit 1
 echo " klar!"
@@ -53,7 +68,7 @@ done
 
 #################################
 
-echo ================================================================================
+echo -e "\n================================================================================"
 echo -n "Börjar med att säkerhetskopiera spellistan: "
 spellista="säkerhetskopia-$(date +%s)"
 echo "\"${spellista}\"" 
@@ -65,7 +80,7 @@ cd "$DIR" || exit 1
 #################################
 
 if $OSORT; then
-        echo ================================================================================
+        echo -e "\n================================================================================"
         echo -n "Undersöker .osorterat-mappen... "
         _LEN=$(find "${DIR}/.osorterat/" -maxdepth 1 -type f -and \( -name "*.flac" -or -name "*.ogg" \) | wc -l)
         if [ 0 = "$_LEN" ]; then
@@ -79,7 +94,7 @@ if $OSORT; then
                 echo "Lägger till $LIMITA gamla filer." 
                 cd "${DIR}/.osorterat/" || exit 1
 
-                find . -maxdepth 1 -type f -printf "%C@ %p\\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
+                find . -maxdepth 1 -type f -printf "%A@ %p\\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
                         | sort -n | cut -d\  -f2- | head -n "$LIMITA" \
                         | while read -r track; do
                         if [[ -e "$track" ]]; then
@@ -106,7 +121,7 @@ fi
 ################################
 
 cd "$DIR" || exit 1
-echo ================================================================================
+echo -e "\n================================================================================"
 echo "Flyttar på band som börjar med \"The\"." 
 find . -maxdepth 1 -type f -name 'The *' -a '(' -name '*\.flac' -o -name '*\.ogg'  ')' | \
 while read -r band; do
@@ -129,7 +144,7 @@ done
 #################################
 
 cd "$DIR" || exit 1
-echo ================================================================================
+echo -e "\n================================================================================"
 echo "Undersöker om några band redan har mappar."
 find . -maxdepth 1 -type f -name \*" - "\* | sed -E 's/ - .+//' | sort -u | \
 while read -r band; do
@@ -144,6 +159,7 @@ while read -r band; do
                         mpc -wq update                          && \
                         mpc -w add "${band#./}/${title}"
                 done
+                mpc -wq update
         fi
         cd "$DIR" || exit 2
 done
@@ -151,7 +167,7 @@ done
 #################################
 
 cd "$DIR" || exit 1
-echo ================================================================================
+echo -e "\n================================================================================"
 echo "Undersöker om några band ska ha mappar."
 find . -maxdepth 1 -name \*" - "\* -type f | \
     grep -Ev '.(omslag|spellistor|osorterat|torrenter)' | \
@@ -160,24 +176,27 @@ while read -r band; do
         N=$(find . -maxdepth 1 -name "${band#./} - *\\.*" -type f | wc -l)
         if [ "$N" -ge "$DIRLIMIT" ]; then
                 first=true
-                grep -Ev "${band}" "${FORD}" > "${TMP}" && mv "$TMP" "$FORD"
-                grep -Ev "${band}" "${FRAM}" > "${TMP}" && mv "$TMP" "$FRAM"
                 mkdir "${band}"
-                mv -v "${band} - "* "${band}/"
+                mv -v "${band} - "* "${band}/" || break
                 cd "${band}" || exit 1
-                #find . -maxdepth 1 -type f | while read -r bandtitle | cut -c 3-; do
-                        #title="${bandtitle#"${band}" - }"
-                        #echo "$bandtitle -> $title"
-                        #mv -v "${bandtitle}" "${title}"     && \
-                        #mpc -wq update
-                        #if $first; then
-                                #mpc -w insert "${band#./}/${title}"
-                                #first=false
-                        #else
-                                #mpc -w add "${band#./}/${title}"
-                        #fi
+                find . -maxdepth 1 -type f | cut -c 3- | while read -r bandtitle; do
+                        title="${bandtitle#"${band}" - }"
+                        if [ -n "$title" ]; then
+                                echo "$bandtitle -> $title"
+                                (mv -v "${bandtitle}" "${title}"     && \
+                                 mpc -wq update) || continue
+                                if $first; then
+                                        mpc -w insert "${band#./}/${title}"
+                                        clear_list "${band#./}/${title}"
+                                        first=false
+                                else
+                                        mpc -w add "${band#./}/${title}"
+                                fi
+                        else
+                                echo "$bandtitle gave empty title"
+                        fi
 
-                #done
+                done
         fi
         cd "$DIR" || exit 2
 done
@@ -185,7 +204,7 @@ done
 #################################
 
 cd "$DIR" || exit 2
-echo ================================================================================
+echo -e "\n================================================================================"
 echo "Undersöker om några låtar ska nedgraderas."
 find . -maxdepth 1 -type d -and -not -name '.*' -and -not -path "./lost+found" | \
 while read -r band; do
@@ -193,8 +212,8 @@ while read -r band; do
         N=$(find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | wc -l)
         if ! ls ./*/ &> /dev/null && [ "$N" -lt "$DIRLIMIT" ]; then
                 first=true
-                grep -Ev "${band}" "${FORD}" > "${TMP}" && mv "$TMP" "$FORD"
-                grep -Ev "${band}" "${FRAM}" > "${TMP}" && mv "$TMP" "$FRAM"
+                grep -Fv "${band#./}" "${FORD}" > "${TMP}" && mv "$TMP" "$FORD"
+                grep -Fv "${band#./}" "${FRAM}" > "${TMP}" && mv "$TMP" "$FRAM"
                 find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | \
                 cut -c 3- | \
                 while read -r title; do
@@ -202,6 +221,7 @@ while read -r band; do
                         mpc -wq update
                         if $first; then
                                 mpc -w insert "${band#./} - ${title}"
+                                clear_list "${band#./} - ${title}"
                                 first=false
                         else
                                 mpc -w add "${band#./} - ${title}"
