@@ -78,7 +78,7 @@ move_up "$original_last_file"
 ################################################################################
 #  Add new and shuffle
 original_last_file=$(mpc -f "%file%" playlist | tail -n1)
-/home/jojan/src/rensa_upp.sh -o
+bash /home/jojan/src/rensa_upp.sh -o
 move_up "$original_last_file"
 
 
