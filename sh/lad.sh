@@ -12,6 +12,7 @@ for URL in "$@"; do
         elif [[ "${URL}" =~ magnet ]]; then
                 $LADDANED "$URL"
         else
+                echo "$URL" >> "$FIL"
                 echo "$URL" >> ~/.youtube
         fi
 done

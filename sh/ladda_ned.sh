@@ -83,11 +83,11 @@ for URL in "$@"; do
                 else
                         DURATION=$(youtube-dl --get-duration "$URL")
                         if [[ "$DURATION" =~ ^1?.: ]]; then
-                                "${DIR}"/minyoutube-dl.sh "${URL}" || RET=$((RET+1))
+                                "${DIR}"/youtube.sh "${URL}" || RET=$((RET+1))
                                 TXT=$(youtube-dl --get-filename "${URL}")
                         else
                                 export DISPLAY=":0"
-                                urxvt -title 'youtube-dl' -cd "${HOME}" -e "${DIR}"/minyoutube-dl.sh "${URL}" &
+                                urxvt -title 'youtube-dl' -cd "${HOME}" -e "${DIR}"/youtube.sh "${URL}" &
                                 disown
                                 TXT="Öppnades i egent fönster: $?"
                         fi
