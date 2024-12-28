@@ -8,11 +8,14 @@ SPELA_KLART="${HOME}/src/spela_klart"
 if ! required_files "$JULLISTA" "$SPELA_KLART"; then
         exit 1
 fi
+if ! required_programs mpc flock grep sort shuf read; then
+        exit 1
+fi
 
-FREQ_L=10
-FREQ_H=5
+FREQ_L=12
+FREQ_H=6
 
-DAY=$(date +%d)
+DAY=$(date +%_d)
 MONTH=$(date +%m)
 
 if [[ $MONTH -lt 12 ]]; then
@@ -28,22 +31,6 @@ else
         exit 1
 fi
 
-
-reqs=("$JULLISTA" "$SPELA_KLART")
-for req in "${reqs[@]}"; do
-        if ! [[ -e "$req" ]]; then
-                >&2 echo "Filen finns inte: $req"
-                exit 1
-        fi
-done
-
-reqs=(mpc flock grep sort shuf read)
-for req in "${reqs[@]}"; do
-        if ! command -v "$req" &> /dev/null; then
-                >&2 echo "Programmet finns inte: $req"
-                exit 1
-        fi
-done
 
 MPC_LOCK="/home/jojan/.mpc_lock"
 N=$(sort -u "$JULLISTA" | sort -u | wc -l)
@@ -69,7 +56,7 @@ sort -u "$JULLISTA" | shuf | while read -r file; do
                         "$SPELA_KLART" && echo -n .
                 done
         fi
-        DAY=$(date +%d)
+        DAY=$(date +%_d)
         if [[ $DAY -lt 12 ]]; then
                 FREQ=$FREQ_L
         elif [[ $DAY -lt 24 ]]; then
