@@ -15,7 +15,8 @@ _remove_file() {
         # Removes file from playlist
         echo -n "mpc del ${1}... "
         san1="$(echo "$1" | tr '[:punct:]' '.')"
-        flock -x "$MPC_LOCK" -c "$SPELA_KLART && mpc -f \"%position% %file%\" playlist | grep -E \" ${san1}$\" | cut -d\" \" -f1 | xargs mpc del"
+        "$SPELA_KLART"
+        flock -x "$MPC_LOCK" -c "mpc -f \"%position% %file%\" playlist | grep -E \" ${san1}$\" | cut -d\" \" -f1 | xargs mpc del"
         echo "done!"
 }
 
