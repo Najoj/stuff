@@ -1,7 +1,6 @@
 /* gcc id3extract.c -lvorbisfile -logg */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <vorbis/vorbisfile.h>
 

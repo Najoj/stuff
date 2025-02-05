@@ -58,6 +58,10 @@ int main (argc, argv)
                         first_song_id = mpd_status_get_song_id (status);
                         second_song_id = first_song_id;
                 }
+                else
+                {
+                        fprintf (stderr, "Could not get status of songs.\n");
+                }
 
                 while (first_song_id == second_song_id)
                 {
