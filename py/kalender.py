@@ -172,7 +172,7 @@ class Date:
         elif self.flag_day:
             desc += ' (flaggdag)'
 
-        return f'{m}/{d}/{y} [1]{yearly}{desc}'
+        return f'{m:02d}/{d:02d}/{y:02d} [1]{yearly}{desc}'
 
     def __lt__(self, other) -> bool:
         if not type(other) == type(self):
@@ -629,41 +629,51 @@ def valdagen(year):
 
 def main(aar: int):
     dates = [
+        ## Januari
+        # Varje år
         Date(0, jan, 1, description='Nyårsdagen', red=True, flag=True),
         Date(0, jan, 5, description='Trettondagsafton', red=True, flag=False),
         Date(0, jan, 6, description='Trettondedag jul', red=True, flag=False),
         Date(0, jan, 28, description='Konungens namnsdag', red=False, flag=True),
-
+        ## Februari
+        ## Mars
+        # Varje år
         Date(0, mar, 8, description='Internationella kvinnodagen', red=False, flag=False),
         Date(0, mar, 10, description='Mario-dagen', red=False, flag=False),
         Date(0, mar, 14, description='π-dagen', red=False, flag=False),
-
+        # April, typ
         skaertorsdagen(aar),
         laangfredagen(aar),
         paaskafton(aar),
         paaskdagen(aar),
         annandag_paask(aar),
-
-        Date(aar, apr, 30, description='Valborgsmässoafton', red=True, flag=False),
+        # Varje år
+        Date(0, apr, 30, description='Valborgsmässoafton', red=True, flag=False),
         Date(1946, apr, 30, description='Konungens födelsedag', red=False, flag=True),
-
-        Date(aar, maj, 1, description='Första maj', red=True, flag=True),
+        ## Maj
+        # Varje år
+        Date(0, maj, 1, description='Första maj', red=True, flag=True),
+        # Varje år
         Date(0, maj, 29, description='Veterandagen', red=False, flag=True),
         mors_dag(aar),
-
+        ## April, juni
         kristi_himmelfaerdsdag(aar),
         pingstafton(aar),
         pingstdagen(aar),
-
+        ## Juni
         Date(aar, jun, 6, description='Sveriges nationaldag', red=True, flag=True),
-
         midsommarafton(aar),
         midsommardagen(aar),
-
+        # Juli
         Date(1977, jul, 14, description='Kronprinsessans födelsedag', red=False, flag=True),
+        ## Augusti
+        # Varje år
         Date(0, aug, 8, description='Drottningens namnsdag', red=False, flag=True),
+        ## September
+        ## Oktober
         Date(0, okt, 11, description='Internationella kvinnodagen', red=False, flag=False),
         Date(0, okt, 24, description='FN-dagen', red=False, flag=True),
+        ## November
         Date(0, nov, 6, description='Gustav Adolfsdagen', red=False, flag=True),
         Date(0, nov, 19, description='Internationella mansdagen', red=False, flag=False),
         Date(0, nov, 25, description='Internationella mansdagen', red=False, flag=False),
@@ -671,14 +681,14 @@ def main(aar: int):
         fars_dag(aar),
         allhelgonaafton(aar),
         alla_helgons_dag(aar),
-
-        Date(0, dec, 10, description='Nobeldagen', red=False, flag=True),
-
+        ## December
         Date(1943, dec, 23, description='Drottningens födelsedag', red=False, flag=True),
-        Date(aar, dec, 24, description='Julafton', red=True, flag=False),
-        Date(aar, dec, 25, description='Juldagen', red=True, flag=True),
-        Date(aar, dec, 26, description='Annandag jul', red=True, flag=False),
-        Date(aar, dec, 31, description='Nyårsafton', red=True, flag=False),
+        # Varje år
+        Date(0, dec, 10, description='Nobeldagen', red=False, flag=True),
+        Date(0, dec, 24, description='Julafton', red=True, flag=False),
+        Date(0, dec, 25, description='Juldagen', red=True, flag=True),
+        Date(0, dec, 26, description='Annandag jul', red=True, flag=False),
+        Date(0, dec, 31, description='Nyårsafton', red=True, flag=False),
     ]
     if valaar(aar):
         dates.append(valdagen(aar))

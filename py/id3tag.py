@@ -150,7 +150,7 @@ def main():
 
             changed = False
             for tag in file:
-                if tag not in ('artist', 'title'):
+                if tag not in ('artist', 'title', 'artistsort', 'info'):
                     print(f'{arg}: Remove tag {tag}')
                     file.pop(tag)
                 else:
@@ -160,6 +160,12 @@ def main():
                     if before != after:
                         changed = True
                         print(f'{before} -> {after}')
+
+            artist = file['artist'][0]
+            artist_split = artist.split(' ')
+            if artist_split[0] == 'The':
+                artistsort = ' '.join(artist_split[1:]) + ', The'
+                file['artistsort'] = artistsort
 
             file.save()
 
@@ -191,7 +197,10 @@ def main():
                     answer = input(f'Move {arg} to {filename}? [y/n]').lower()
                 if answer == 'y':
                     try:
-                        os.rename(arg, filename)
+                        if os.path.exists(filename):
+                            print(f'{filename} already exist. Will not overwrite.')
+                        else:
+                            os.rename(arg, filename)
                     except OSError:
                         print(f'Could not write to {filename}.')
 
