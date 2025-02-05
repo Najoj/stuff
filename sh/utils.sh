@@ -46,15 +46,22 @@ function car () {
 
 	if [ $# -ne 2 ]
 	then
-		echo "Usage: compare_and_replace file1 file2"
-		echo "if stat -c of file1 is greater than file2,"
+        echo "Usage: car \"$1\" \"$2\""
+		echo "if stat -c of file1 is greater than that of file2,"
 		echo "replace file2 with file1, otherwise remove file1"
         echo "Optional first argument -f suppress promt, instead forces removals"
 		return 1
 	fi
 
-	file_1="$(realpath "$1")" 
-	file_2="$(realpath "$2")" 
+    file_1="$(realpath "$1")" 
+    filename="$(basename -- "$file_1")"
+    file_2="$(realpath "$2")" 
+
+    if [[ -d "$file_2" ]]; then
+            file_2="${file_2}/${filename}"
+            print_warning "$file_2 is a directory. Using $filename in directory."
+    fi
+
 	if [ "$file_1" = "$file_2" ]
 	then
 		echo "The two files provided are the same."
@@ -68,8 +75,8 @@ function car () {
 		mv $FORCE -v "$file_2" "$file_1"
 	elif [ ! -f "$file_1" ] || [ ! -f "$file_2" ]
 	then
-		echo "Usage: compare_and_replace file1 file2"
-		echo "if stat -c of file1 is greater than file2,"
+        echo "Usage: car \"$1\" \"$2\""
+		echo "if stat -c of file1 is greater than that of file2,"
 		echo "replace file2 with file1, otherwise remove file1"
 		return 1
 	else

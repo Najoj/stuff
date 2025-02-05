@@ -1,8 +1,10 @@
 #!/bin/bash
 
-UTILS="${HOME}/src/utils.sh"
+UTILS="/home/jojan/src/utils.sh"
 [[ -e  "$UTILS" ]] || exit 1
+# shellcheck source=src/utils.sh
 source "$UTILS"
+
 
 DIR="/media/musik"
 SHUFFLE="true"
@@ -21,7 +23,11 @@ required_programs mpc flock || exit 1
 # Limit to get an artist directory
 ((DIRLIMIT=8))
 # Playlist limit
-((LIMIT=17000+I))
+if [ -z ${MAX_PLAYLIST_LENGTH+x} ]; then
+        ((LIMIT=MAX_PLAYLIST_LENGTH+I))
+else
+        ((LIMIT=20000+I))
+fi
 
 function clear_list {
         file="${1}"
@@ -98,7 +104,7 @@ if $OSORT; then
                         | sort -n | cut -d\  -f2- | head -n "$LIMITA" \
                         | while read -r track; do
                         if [[ -e "$track" ]]; then
-                            mv -v "${track}" "${DIR}"   && \
+                            car "${track}" "${DIR}/${track}"   && \
                             mpc -qw update              && \
                             mpc -w add "${track#./}"
                         fi
@@ -110,7 +116,7 @@ if $OSORT; then
                 find . -maxdepth 1 -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
                         | shuf | tail -n $LIMITB | while read -r track; do
                         if [[ -e "$track" ]]; then
-                                mv -v "${track}" "${DIR}"   && \
+                                car "${track}" "${DIR}/${track}"   && \
                                 mpc -qw update              && \
                                 mpc -w add "${track#./}"
                         fi
@@ -127,7 +133,7 @@ find . -maxdepth 1 -type f -name 'The *' -a '(' -name '*\.flac' -o -name '*\.ogg
 while read -r band; do
         newband="${band#./The }" 
         newband="${newband// - /, The - }"
-        mv -v "${band}" "${newband}"    && \
+        mv -vn "${band}" "${newband}"    && \
         mpc -wq update                  && \
         mpc -w add "${newband#./}"
 done
@@ -136,7 +142,7 @@ done
 find . -maxdepth 1 -type d -name 'The *' | \
 while read -r dir; do
         newdir="${dir#./The }, The"
-        mv -v "${dir}" "${newdir}"  && \
+        mv -vn "${dir}" "${newdir}"  && \
         mpc -wq update              && \
         mpc -w add "${newdir#./}"
 done
@@ -149,13 +155,13 @@ echo "Undersöker om några band redan har mappar."
 find . -maxdepth 1 -type f -name \*" - "\* | sed -E 's/ - .+//' | sort -u | \
 while read -r band; do
         if ls -d "${band}/" &> /dev/null ; then
-                mv -v "${band} - "* "${band}/"
+                mv -uvn "${band} - "* "${band}/"
                 cd "${band}" || break
                 # Remove inital ./
                 band=${band#./}
                 find . -name "${band} - "\* | sed -E 's/.+ - //' | \
                 while read -r title; do
-                        mv -v "${band} - ${title}" "${title}"   && \
+                        mv -vn "${band} - ${title}" "${title}"   && \
                         mpc -wq update                          && \
                         mpc -w add "${band#./}/${title}"
                 done
@@ -177,13 +183,13 @@ while read -r band; do
         if [ "$N" -ge "$DIRLIMIT" ]; then
                 first=true
                 mkdir "${band}"
-                mv -v "${band} - "* "${band}/" || break
+                mv -vn "${band} - "* "${band}/" || break
                 cd "${band}" || exit 1
                 find . -maxdepth 1 -type f | cut -c 3- | while read -r bandtitle; do
-                        title="${bandtitle#"${band}" - }"
+                        title="$(echo "$bandtitle" | sed s/"${band#./} - "//)"
                         if [ -n "$title" ]; then
-                                echo "$bandtitle -> $title"
-                                (mv -v "${bandtitle}" "${title}"     && \
+                                #echo "$bandtitle -> $title"
+                                (car "${bandtitle}" "${title}"     && \
                                  mpc -wq update) || continue
                                 if $first; then
                                         mpc -w insert "${band#./}/${title}"
@@ -193,7 +199,7 @@ while read -r band; do
                                         mpc -w add "${band#./}/${title}"
                                 fi
                         else
-                                echo "$bandtitle gave empty title"
+                                print_warning "$bandtitle gave empty title"
                         fi
 
                 done
@@ -217,7 +223,7 @@ while read -r band; do
                 find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | \
                 cut -c 3- | \
                 while read -r title; do
-                        mv -uv "${title}" ../"${band} - ${title#./}"
+                        car "${title}" ../"${band} - ${title#./}"
                         mpc -wq update
                         if $first; then
                                 mpc -w insert "${band#./} - ${title}"

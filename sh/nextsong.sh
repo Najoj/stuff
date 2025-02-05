@@ -25,7 +25,7 @@ RESULT=()
 while IFS=$'\t' read -r nr title; do
         RESULT+=("$nr" "$title" "off")
 done < <(mpc -f "%position%\\t%artist% - %title% (%album%)" playlist | \
-        grep -Ei "$@" | sort -g | sed "s/!/\\!/g" | sed "s/?/\\?/g")
+        grep -Ei -- "$@" | sort -g | sed "s/!/\\!/g" | sed "s/?/\\?/g")
 
 LEN=${#RESULT[@]}
 # RESULT will contain three parts, thus the length divided by three will be the

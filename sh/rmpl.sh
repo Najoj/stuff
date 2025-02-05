@@ -1,65 +1,36 @@
 #!/bin/bash
+command -v mpc > /dev/null || exit 1
 
-SPELA_KLART="/home/jojan/src/spela_klart"
 ROOT="/media/musik"
-cd "$ROOT" || exit 1
+DELETE_ME="${HOME}/.mpc_delete_me"
 
-_delete_file() {
-        # Deletes file from hard drive
-        echo -n "rm ${1}... "
-        "$SPELA_KLART"
-        flock -x "$MPC_LOCK" -c "rm -f -- \"$1\" && mpc -wq update"
-        echo "done!"
-}
-_remove_file() {
-        # Removes file from playlist
-        echo -n "mpc del ${1}... "
-        san1="$(echo "$1" | tr '[:punct:]' '.')"
-        "$SPELA_KLART"
-        flock -x "$MPC_LOCK" -c "mpc -f \"%position% %file%\" playlist | grep -E \" ${san1}$\" | cut -d\" \" -f1 | xargs mpc del"
-        echo "done!"
-}
+if [[ $# == 0 ]]; then
+        mpc -f "%file%" current >> "$DELETE_ME"
+elif [[ ! -e "$DELETE_ME" ]]; then
+        true
+elif [[ "$1" == "undo" ]]; then
+        CURRENT="$(mpc -f "%file%" current)" 
+        grep -vF "$CURRENT" "$DELETE_ME" > "$DELETE_ME".tmp
+        wc -l "$DELETE_ME" "$DELETE_ME".tmp
+        mv "$DELETE_ME".tmp "$DELETE_ME" 
+elif [[ "$1" == "cleanup" ]]; then
+        CURRENT=$(mpc -f "%file%" current)
+        grep -Fv "$CURRENT" "$DELETE_ME" | sort -u | \
+        while read -r file; do
+                echo "$file"
+                if [ "${file: -4}" == ".ogg" ]; then
+                        rm "${ROOT}/${file}"
+                elif [ "${file: -5}" == ".flac" ]; then
+                        mpc -f "%position% %file%" playlist |\
+                                grep -F "$file" |\
+                                tac |\
+                                while read -r pos _; do
+                                        mpc del "$pos"
+                                done
+                fi
 
-
-
-reqs=("$SPELA_KLART" "$MPC_LOCK" "$ROOT")
-for req in "${reqs[@]}"; do
-        if ! [[ -e "$req" ]]; then
-                >&2 echo "Required file does not exist: $req"
-                exit 1
-        fi
-done
-
-reqs=(mpc flock rm)
-for req in "${reqs[@]}"; do
-        if ! command -v "$req" &> /dev/null; then
-                >&2 echo "Required program not found: $req"
-                exit 1
-        fi
-done
-
-inverted=false
-if [ "$1" = "-f" ] || [ "$1" = "-i" ]; then
-        inverted=true
-fi
-
-# file to remove
-file_name="$(mpc -f "%file%" current)"
-ogg_file=${file_name%ogg}ogg
-
-if $inverted; then
-        if [ -e "${file_name}" ]; then
-                _remove_file "$file_name"
-        else
-                _delete_file "$ogg_file"
-
-        fi
-else
-        # Only remove ogg files
-        if [ -e "${ogg_file}" ]; then
-                _delete_file "$file_name"
-        else
-                _remove_file "$file_name"
-        fi
+        done
+        mv "$DELETE_ME" "$DELETE_ME".backup
+        grep "$DELETE_ME".backup "$CURRENT" >> "$DELETE_ME" 2> /dev/null || true
 fi
 

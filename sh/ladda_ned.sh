@@ -51,7 +51,8 @@ for URL in "$@"; do
                         TXT="Öppnades i egent fönster: $?"
                         sleep 1
 
-                elif [[ "${URL}" =~ (\.)[mM][pP]3 ]]; then
+                elif [[ "${URL}" =~ (\.)[mM][pP]3 ]]   || \
+                        [[ "${URL}" =~ (\.)[mM][pP]3\? ]]; then
                         "${DIR}"/sr.sh "${URL}" || RET=$((RET + 1))
                         TXT=${URL}
 

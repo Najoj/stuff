@@ -14,6 +14,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # Arguments
+no_args="true"
 while getopts "a:t:A:T:f:" option; do
         case "${option}"
                 in
@@ -24,7 +25,13 @@ while getopts "a:t:A:T:f:" option; do
                 T) time=${OPTARG//[$?!]/\.};;
                 *) >&2 echo "faulty flag: ${option}"; exit 1;;
         esac
+        no_args="false"
 done
+
+if $no_args; then
+        >&2 echo "need argument"
+        exit 1
+fi
 
 # Formats
 mpc_format="%artist% - %title% (%album%) %time%"

@@ -29,9 +29,16 @@ move_up()
         fi
 }
 
+# Update list, just in case
 mpc -qw update
 
-LENGTH_BEFORE=$(mpc playlist | wc -l)
+################################################################################
+#  Remove files which does not exist
+script="${HOME}/src/rmpl.sh"
+if [ -e "$script" ]; then
+        echo "Tar bort oönskade låtar..."
+        "$script" cleanup
+fi
 
 ################################################################################
 #  Remove files which does not exist
@@ -48,6 +55,9 @@ if [ -e "$script" ]; then
         echo "Tar bort dubletter... "
         "$script"
 fi
+
+# For printout in end, save length before adding files
+LENGTH_BEFORE=$(mpc playlist | wc -l)
 
 ################################################################################
 # Remove played files from .osorterat catalogue, up until current song
