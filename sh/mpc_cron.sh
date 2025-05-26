@@ -1,5 +1,6 @@
 #!/bin/bash
 # This script runs once in a while and does some things with mpd
+source "${HOME}/src/utils.sh"
 
 ################################################################################
 #  Given one argument, continue to move one song up to random position until
@@ -67,7 +68,6 @@ echo -n "Lägger in spelade från .osorterat"
 mpc -f "%file%" playlist | \
         head -n $((current_position-1)) | \
         grep --color=never ".osorterat/" | \
-        tac | \
         while read -r file; do
                 cd /media/musik/ || break
 
@@ -75,7 +75,7 @@ mpc -f "%file%" playlist | \
                 BASE="$(basename "$file")"
 
                 newfile="$DIR/../$BASE"
-                mv "/media/musik/$file" "/media/musik/$newfile"
+                car "/media/musik/$file" "/media/musik/$newfile"
 
                 mpc -qw update
                 REAL="$(realpath "$DIR/../$BASE")"
@@ -88,7 +88,7 @@ move_up "$original_last_file"
 ################################################################################
 #  Add new and shuffle
 original_last_file=$(mpc -f "%file%" playlist | tail -n1)
-bash /home/jojan/src/rensa_upp.sh -o
+bash ${HOME}/src/rensa_upp.sh -o
 move_up "$original_last_file"
 
 
@@ -133,7 +133,7 @@ move_up "$original_last_file"
 ################################################################################
 #  Adjust songs titles
 original_last_file=$(mpc -f "%file%" playlist | tail -n1)
-/home/jojan/src/fixa_låtarna.sh
+${HOME}/src/fixa_låtarna.sh
 move_up "$original_last_file"
 
 ################################################################################

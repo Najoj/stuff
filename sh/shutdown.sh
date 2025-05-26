@@ -92,11 +92,12 @@ function pause_player
         "${HOME}"/src/ch_vol.sh normalise >  /dev/null &
 }
 
-HIBERNATE="hibernate"
-SUSPEND="suspend"
-REBOOT="reboot"
 HALT="halt"
+HIBERNATE="hibernate"
 LOCK="lock"
+REBOOT="reboot"
+SHUTDOWN="shutdown"
+SUSPEND="suspend"
 
 if [ -z "$1" ]; then
         WHAT=$(whiptail --noitem --defaultno --radiolist "What do you want to do today?" 10 30 5 "$SUSPEND" "" "$HIBERNATE" "" "$REBOOT" "" "$HALT" "" "$LOCK" "" 3>&1 1>&2 2>&3)
@@ -109,7 +110,7 @@ if [ -z "$WHAT" ]; then
 fi
 
 case $WHAT in
-        "$HALT")
+        "$HALT" | "$SHUTDOWN")
                 # lock screen before waiting everything to finish, then halt
                 xscreensaver-command -lock
                 xscreensaver-command -lock

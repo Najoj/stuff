@@ -32,7 +32,7 @@ else
 fi
 
 
-MPC_LOCK="/home/jojan/.mpc_lock"
+MPC_LOCK="${HOME}/.mpc_lock"
 N=$(sort -u "$JULLISTA" | sort -u | wc -l)
 I=0
 sort -u "$JULLISTA" | shuf | while read -r file; do

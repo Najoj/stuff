@@ -7,6 +7,7 @@ title="(.+)"
 album="(.*)"
 time="(.+)"
 freq="(.*)"
+file="(.+)"
 
 if [ $# -eq 0 ]; then
         >&2 echo "Arguments must exist"
@@ -15,7 +16,7 @@ fi
 
 # Arguments
 no_args="true"
-while getopts "a:t:A:T:f:" option; do
+while getopts "a:t:A:T:F:f:" option; do
         case "${option}"
                 in
                 a) artist=${OPTARG//[$?!]/\.};;
@@ -23,6 +24,7 @@ while getopts "a:t:A:T:f:" option; do
                 f) freq=${OPTARG//[$?!]/\.};;
                 t) title=${OPTARG//[$?!]/\.};;
                 T) time=${OPTARG//[$?!]/\.};;
+                F) file=${OPTARG//[$?!]/\.};;
                 *) >&2 echo "faulty flag: ${option}"; exit 1;;
         esac
         no_args="false"
@@ -34,8 +36,8 @@ if $no_args; then
 fi
 
 # Formats
-mpc_format="%artist% - %title% (%album%) %time%"
-grep_format="$artist - $title \($album\) $time"
+mpc_format="%artist% - %title% (%album%) %time% (%file%)"
+grep_format="$artist - $title \($album\) $time \($file\)"
 
 
 playlist_length=$(mpc playlist | wc -l)
@@ -76,7 +78,6 @@ mpc -f "%position% ${mpc_format}" playlist  | \
                 mpc mv "$pos" "$playlist_length"
                 echo "$pos -> $playlist_length"
         done
-
 # Move up last songs
 i=1
 n=$(echo "$c + $i * $f" | bc | cut -d'.' -f1)

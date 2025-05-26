@@ -8,6 +8,8 @@ URL=$1
 if [ -z "${URL}" ]; then
         echo "No URL argument"
         exit 2
+else
+        URL="$(trurl --url "$URL" --trim query=info)"
 fi
 
 TITLE="svtget" # ÄNDRA INTE
@@ -52,16 +54,16 @@ cd "$TMP_SHA" || exit 1
 # Dowload with 3 retries
 R=0
 L=3
-until "${SVTPLAYDL}" $FLAGS "${URL}" || [ $R -lt $L ]; do
+until "${SVTPLAYDL}" $FLAGS "${URL}" || [ $R -gt $L ]; do
         echo "$R/$L"
         sleep 5
         R=$((R+1))
 done
 
-if [ $R -ge $L ] && which mullvad-exclude; then
+if [ $R -ge $L ] && command -v mullvad-exclude; then
         R=0
         L=3
-        until mullvad-exclude "${SVTPLAYDL}" $FLAGS "${URL}" || [ $R -lt $L ]; do
+        until mullvad-exclude "${SVTPLAYDL}" $FLAGS "${URL}" || [ $R -gt $L ]; do
                 echo "$R/$L"
                 sleep 5
                 R=$((R+1))
@@ -70,12 +72,9 @@ fi
 
 
 # Move files and remove files
-if [ $R -lt $L ]; then
-        mv -nv -- *.* "$WD"
-        cd .. && rmdir "$TMP_SHA"
-else
-        cd .. && rm -rf "$TMP_SHA"
-fi
+mv -nv -- *.* "$WD"
+cd .. && rmdir "$TMP_SHA"
 
 echo "Klar."
 sleep 5
+

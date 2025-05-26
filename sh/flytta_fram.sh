@@ -24,7 +24,7 @@ c=$(mpc -f "%position%" current)
 success=false
 mpc -f "%position% $what" playlist | \
         grep --color=never -E "^[1-9]([0-9]*) ${match}$" | \
-        cut -d" " -f1 | while read -r pos; do
+        while read -r pos content; do
         if [ "$pos" -gt "$((c+j))" ]; then
                 ((n=c+i))
                 ((i+=j))

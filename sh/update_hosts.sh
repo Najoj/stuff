@@ -74,6 +74,9 @@ cp "$TMP" "$NYHOSTS"
 
 rm -v "$TMP"
 
+wc -l "$NYHOSTS" $HOSTS | head -n2 | read newl oldl
+printf "%'d nya rader\n" "$((newl-oldl))"
+echo
 if [ $UID -ne 0 ]; then
     echo "Kopierar inte $NYHOSTS till $HOSTS."
 else

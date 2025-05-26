@@ -13,7 +13,7 @@ for txt in "${DIR}/"*.txt; do
         # remove rediculously long files
         if grep -q ^Cancel "$txt"; then
                 rm "$txt"
-        elif grep -q 'How to Fromat Lyrics' "$txt"; then
+        elif grep -q 'How to Format Lyrics' "$txt"; then
                 rm "$txt"
         elif grep -q '1 Cancel' "$txt"; then
                 rm "$txt"

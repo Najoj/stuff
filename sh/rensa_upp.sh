@@ -1,6 +1,6 @@
 #!/bin/bash
 
-UTILS="/home/jojan/src/utils.sh"
+UTILS="${HOME}/src/utils.sh"
 [[ -e  "$UTILS" ]] || exit 1
 # shellcheck source=src/utils.sh
 source "$UTILS"
@@ -21,7 +21,7 @@ required_programs mpc flock || exit 1
 # Exit status
 ((OK=0))
 # Limit to get an artist directory
-((DIRLIMIT=8))
+((DIRLIMIT=6))
 # Playlist limit
 if [ -z ${MAX_PLAYLIST_LENGTH+x} ]; then
         ((LIMIT=MAX_PLAYLIST_LENGTH+I))
@@ -89,19 +89,16 @@ if $OSORT; then
         echo -e "\n================================================================================"
         echo -n "Undersöker .osorterat-mappen... "
         _LEN=$(find "${DIR}/.osorterat/" -maxdepth 1 -type f -and \( -name "*.flac" -or -name "*.ogg" \) | wc -l)
-        if [ 0 = "$_LEN" ]; then
-                echo "den är tom." 
-        else
-                echo "den är inte tom."
-                LIMITA=$(( (LIMIT-LENGTH) / 3))
+        if ls "${DIR}/.osorterat/"*.ogg > /dev/null || ls "${DIR}/.osorterat/"*.flac > dev/null; then
+                cd "${DIR}/.osorterat/" || exit 1
+
+                LIMITA=$(( (LIMIT-LENGTH) / 2))
                 LIMITB=$((LIMIT-LENGTH-LIMITA))
 
                 # äldst
                 echo "Lägger till $LIMITA gamla filer." 
-                cd "${DIR}/.osorterat/" || exit 1
-
-                find . -maxdepth 1 -type f -printf "%A@ %p\\n" -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
-                        | sort -n | cut -d\  -f2- | head -n "$LIMITA" \
+                find . -maxdepth 1 -type f -printf "%T+ %p\n" \
+                        | sort | cut -d' ' -f 2- | head -n "$LIMITA" \
                         | while read -r track; do
                         if [[ -e "$track" ]]; then
                             car "${track}" "${DIR}/${track}"   && \
@@ -186,6 +183,7 @@ while read -r band; do
                 mv -vn "${band} - "* "${band}/" || break
                 cd "${band}" || exit 1
                 find . -maxdepth 1 -type f | cut -c 3- | while read -r bandtitle; do
+                        # shellcheck disable=SC2001
                         title="$(echo "$bandtitle" | sed s/"${band#./} - "//)"
                         if [ -n "$title" ]; then
                                 #echo "$bandtitle -> $title"

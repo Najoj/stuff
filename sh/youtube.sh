@@ -12,7 +12,7 @@ required_files "$COOKIES" "$SETTINGS" || exit 1
 USERNAME="$(head -1 "$SETTINGS")"
 PASSWORD="$(tail -1 "$SETTINGS")"
 
-SLEEP="/home/jojan/src/sleep"
+SLEEP="${HOME}/src/sleep"
 [ -f $SLEEP ] || SLEEP="sleep"
 
 WAIT="5s"
