@@ -99,10 +99,11 @@ def capitalise(lang: str, tag: str) -> str:
     "It's a Man In a Cave of Love"
     """
     capitalised = tag
+    if not tag:
+        pass
 
-    if lang == 'e':
+    elif lang == 'e':
         words = tag.split()
-
         word = words[0]
         word = parent(word, True)
         capitalised = word
@@ -153,6 +154,9 @@ def main():
                 if tag not in ('artist', 'title', 'artistsort', 'info'):
                     print(f'{arg}: Remove tag {tag}')
                     file.pop(tag)
+                elif tag == 'info':
+                    # Keep as is
+                    pass
                 else:
                     before = file[tag][0]
                     after = capitalise(lang, before)
@@ -166,6 +170,10 @@ def main():
             if artist_split[0] == 'The':
                 artistsort = ' '.join(artist_split[1:]) + ', The'
                 file['artistsort'] = artistsort
+
+            if ('artistsort' in file and 'artist' in file
+                and file['artistsort'] == file['artist']):
+                file['artistsort'] = ''
 
             file.save()
 
@@ -183,12 +191,15 @@ def main():
                 # New filename
                 ext = arg.split('.')[-1]
 
-                artist = file['artist'][0]
+                artist = file['artist'][0] 
+                if 'artistsort' in file:
+                    artist = file['artistsort'][0] 
                 title = file['title'][0]
 
                 artist_split = artist.split(' ')
                 if artist_split[0] == 'The':
                     artist = ' '.join(artist_split[1:]) + ', The'
+                    file['artistsort'][0] = artist
 
                 filename =  f'{artist} - {title}.{ext}' 
 

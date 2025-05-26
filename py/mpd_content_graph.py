@@ -26,7 +26,7 @@ FILE = os.path.join(HOME, FILE_NAME)
 FILE = os.path.abspath(FILE)
 
 ERROR_FILE = os.path.join(HOME, ERROR_FILE_NAME)
-ERROR_FILE = os.path.abspath(FILE)
+ERROR_FILE = os.path.abspath(ERROR_FILE)
 
 
 def print_warning(message, file=None):

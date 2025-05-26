@@ -48,6 +48,8 @@ def get_day_of_week(year, month, day):
     5
     >>> get_day_of_week(2022, 7, 24)
     6
+    >>> get_day_of_week(2022, 7, 25)
+    0
 
     :param day:
     :param month:
@@ -55,7 +57,8 @@ def get_day_of_week(year, month, day):
     :return:
     """
     _date = f'{day} {month} {year}'
-    return datetime.datetime.strptime(_date, '%d %m %Y').weekday()
+    _datetime = datetime.datetime.strptime(_date, '%d %m %Y')
+    return _datetime.weekday()
 
 
 class Date:
@@ -190,9 +193,7 @@ class Date:
 
         if other.day < self.day:
             return True
-        elif other.day > self.day:
-            return False
-
+        #elif other.day > self.day:
         return False
 
 def skaertorsdagen(year: int) -> Date:
