@@ -45,13 +45,13 @@ int main (argc, argv)
                 iterations = it;
         }
 
+        struct mpd_connection *client = mpd_connection_new ("localhost", 6600, 2000);
+        struct mpd_status *status = mpd_run_status (client);
+
         for (it = 0; it < iterations; it++)
         {
                 int first_song_id = -1;
                 int second_song_id = -1;
-
-                struct mpd_connection *client = mpd_connection_new ("localhost", 6600, 2000);
-                struct mpd_status *status = mpd_run_status (client);
 
                 if (status != NULL)
                 {
@@ -84,10 +84,12 @@ int main (argc, argv)
                                 return EXIT_FAILURE;
                         }
                 }
-                if (client != NULL)
-                {
-                        mpd_connection_free (client);
-                }
+        }
+        if (client != NULL)
+        {
+                /* Try to start of song */
+                (void)mpd_run_seek_current(client, 0, true);
+                mpd_connection_free (client);
         }
 
         return EXIT_SUCCESS;
