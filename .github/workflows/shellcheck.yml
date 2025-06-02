@@ -9,7 +9,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Install dependencies
       run: |
-        apt instell shellcheck
+        apt install shellcheck
     - name: Analysing the code with Shellcheck
       run: |
         shellcheck $(git ls-files '*.sh')
