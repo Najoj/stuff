@@ -8,7 +8,7 @@ fi
 
 function manage
 {
-        url="$(trurl --qtrim "*" "$url")
+        url="$(trurl --qtrim "*" "$url")"
         base=$(echo "${url##*//}" | cut -d\. -f1)
         if [ -z "${1+x}" ]; then
                 return  1

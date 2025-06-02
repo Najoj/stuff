@@ -209,7 +209,7 @@ for at_key in all_songs:
                 continue
 
         if dw == 'w':
-            print('Will whitelist"' + at_key + '"')
+            print('Will whitelist "' + at_key + '"')
             _whitelist([all_songs[at_key][num]])
         if dw == 'd':
             print('Will delete "' + str(all_songs[at_key][num]) + '"')
