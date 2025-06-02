@@ -1,0 +1,17 @@
+name: Shellcheck
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install dependencies
+      run: |
+        apt instell shellcheck
+    - name: Analysing the code with Shellcheck
+      run: |
+        shellcheck $(git ls-files '*.sh')
+
+
