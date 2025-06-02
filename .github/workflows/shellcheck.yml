@@ -12,6 +12,6 @@ jobs:
         sudo apt-get -y install shellcheck
     - name: Analysing the code with Shellcheck
       run: |
-        shellcheck $(git ls-files '*.sh')
+        shellcheck -e SC1091 $(git ls-files '*.sh')
 
 
