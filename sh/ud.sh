@@ -1,5 +1,4 @@
 #!/bin/bash -e
-VERSION="2021.12.12"
 
 function lock {
         NAME=$(basename "$0")
@@ -166,9 +165,6 @@ else
                         EXTRA=$(zcat "$FILE" | head -n 1)
                         EXTRAL=$((EXTRA+BIG_LIMIT-NOW))
                         echo $EXTRAL
-                        ;;
-                -v)
-                        echo "$VERSION"
                         ;;
                 -w)
                         if [ -e "$FILE" ]; then
