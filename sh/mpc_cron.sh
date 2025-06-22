@@ -88,7 +88,7 @@ move_up "$original_last_file"
 ################################################################################
 #  Add new and shuffle
 original_last_file=$(mpc -f "%file%" playlist | tail -n1)
-bash ${HOME}/src/rensa_upp.sh -o
+"${HOME}/src/rensa_upp.sh" -o
 move_up "$original_last_file"
 
 
@@ -133,11 +133,13 @@ move_up "$original_last_file"
 ################################################################################
 #  Adjust songs titles
 original_last_file=$(mpc -f "%file%" playlist | tail -n1)
-${HOME}/src/fixa_låtarna.sh
+"${HOME}/src/fixa_låtarna.sh"
 move_up "$original_last_file"
 
 ################################################################################
 #  Done 
+run_python "${HOME}/src/mpdups.py"
+
 echo "Klar!"
 LENGTH_AFTER=$(mpc playlist | wc -l)
 LENGTH_DIFF=$((LENGTH_AFTER - LENGTH_BEFORE))
