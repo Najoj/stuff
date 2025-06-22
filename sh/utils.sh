@@ -90,3 +90,39 @@ function car () {
 		fi
 	fi
 }
+
+function run_python() {
+        SCRIPT="$1"
+        PYTHON="${HOME}/.mython/bin/python3"
+        if ! [[ -e "$PYTHON" ]]; then
+                print_warnig "Python not found: $PYTHON"
+                PYTHON="python3"
+        fi
+        if ! [[ -e "$SCRIPT" ]]; then
+                print_warnig "Script not found: $PYTHON"
+                return 1
+        fi
+        "$PYTHON" "$SCRIPT"
+}
+
+pyexec() {
+    # Check if the argument is provided
+    if [ -z "$1" ]; then
+            print_warning "Usage: $0 <file_to_check>"
+            return 1
+    elif ! [ -e "$1" ]; then
+            print_warning "$1 does not exist"
+            return 1
+    fi
+    MYTHON="${HOME}/.mython/bin/python3"
+    # Check if MYTHON is a file
+    if [[ -e "$MYTHON" ]]; then
+            "$MYTHON" "${@:1}"
+    elif which python3 > /dev/null; then
+            python3 "${@:1}"
+    else
+            print_warning "No Python found"
+            return 1
+    fi
+    return "$?"
+}
