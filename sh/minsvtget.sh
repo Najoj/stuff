@@ -29,12 +29,14 @@ done
 
 # See if there are plenty of dowloads already running
 R=1
+it=0
 until find ${TMP}* -maxdepth 1 -type d 2> /dev/null | wc -l | grep -E ^"[0-1]"$; do
+((it++))
         echo -en '\r'
         date +%T | tr -d '\n'
 
         R=$(((RANDOM % 60 + R) % 300))
-        echo -en "  Väntar $R sekunder..."
+        echo -en "($it)  Väntar $R sekunder..."
         sleep $R
 done
 
