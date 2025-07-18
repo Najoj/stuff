@@ -35,7 +35,7 @@ function all_downloaded
         AGAIN=true
         while $AGAIN; do
                 AGAIN=false
-                for PID in curl wget ffmpeg apt-get; do
+                for PID in rsync curl wget ffmpeg apt-get; do
                         if pidof  ${PID} ; then
                                 id=$(pidof ${PID} | tr " " ",")
                                 echo "$0" "Väntar på ${PID} (${id})."
@@ -45,11 +45,11 @@ function all_downloaded
                 done
                 PROGS=(minsvtget spotdlsh youtube-dl)
                 for PROG in ${PROGS[*]}; do
-                        if ! pgrep "${PROG}" | wc -l | grep ^0$; then
+                        while pidof "${PROG}"; do
                                 echo -- "$0" "Väntar på ${PROG}."
                                 sleep "${SLEEP_TIME}"
                                 AGAIN=true
-                        fi
+                        done
                 done
         done
 }
@@ -147,4 +147,5 @@ esac
 
 echo "Stänger ned: $(date)"
 
-exit $?
+exit
+
