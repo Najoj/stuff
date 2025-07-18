@@ -38,6 +38,8 @@ function required_files() {
 }
 
 function car () {
+
+    # FORCE is used as flag by mv. If -f flag is not given, use interactive.
     FORCE=-i
     if [[ $1 == "-f" ]]; then
             FORCE=-f
@@ -46,7 +48,7 @@ function car () {
 
 	if [ $# -ne 2 ]
 	then
-        echo "Usage: car \"$1\" \"$2\""
+        echo "Usage: car [-f] \"file1\" \"file2\""
 		echo "if stat -c of file1 is greater than that of file2,"
 		echo "replace file2 with file1, otherwise remove file1"
         echo "Optional first argument -f suppress promt, instead forces removals"
@@ -62,19 +64,17 @@ function car () {
             print_warning "$file_2 is a directory. Using $filename in directory."
     fi
 
-	if [ "$file_1" = "$file_2" ]
-	then
+	if [ "$file_1" = "$file_2" ]; then
 		echo "The two files provided are the same."
 		echo "Will not continue."
 		return 1
-	elif [ -f "$file_1" ] && [ ! -f "$file_2" ]
-	then
+
+	elif [ -f "$file_1" ] && [ ! -f "$file_2" ]; then
 		mv $FORCE -v "$file_1" "$file_2"
-	elif [ ! -f "$file_1" ] && [ -f "$file_2" ]
-	then
+	elif [ ! -f "$file_1" ] && [ -f "$file_2" ]; then
 		mv $FORCE -v "$file_2" "$file_1"
-	elif [ ! -f "$file_1" ] || [ ! -f "$file_2" ]
-	then
+
+	elif [ ! -f "$file_1" ] || [ ! -f "$file_2" ]; then
         echo "Usage: car \"$1\" \"$2\""
 		echo "if stat -c of file1 is greater than that of file2,"
 		echo "replace file2 with file1, otherwise remove file1"
