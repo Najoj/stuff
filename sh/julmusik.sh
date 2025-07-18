@@ -1,6 +1,26 @@
 #!/bin/bash
 source "${HOME}/src/utils.sh"
 
+# Not before December
+DAY=$(date +%_d)
+MONTH=$(date +%m)
+if [[ $MONTH -lt 12 ]]; then
+        echo "Inte ens december, dumsnut!"
+        exit 1
+elif [[ $DAY -gt 24 ]]; then
+        echo "Julafton har redan varit, dumbom!"
+        exit 1
+fi
+
+# Song frequency changes
+FREQ_L=12
+FREQ_H=6
+if [[ $DAY -le 12 ]]; then
+        FREQ=$FREQ_L
+elif [[ $DAY -le 24 ]]; then
+        FREQ=$FREQ_H
+fi
+
 # List of directories relative mpd's music_directory.
 JULLISTA="/media/musik/.spellistor/jullista.m3u"
 SPELA_KLART="${HOME}/src/spela_klart"
@@ -9,25 +29,6 @@ if ! required_files "$JULLISTA" "$SPELA_KLART"; then
         exit 1
 fi
 if ! required_programs mpc flock grep sort shuf read; then
-        exit 1
-fi
-
-FREQ_L=12
-FREQ_H=6
-
-DAY=$(date +%_d)
-MONTH=$(date +%m)
-
-if [[ $MONTH -lt 12 ]]; then
-        echo "Inte ens december, dumsnut!"
-        exit 1
-fi
-if [[ $DAY -lt 12 ]]; then
-        FREQ=$FREQ_L
-elif [[ $DAY -lt 24 ]]; then
-        FREQ=$FREQ_H
-else
-        echo "Julafton har redan varit, dumbom!"
         exit 1
 fi
 
