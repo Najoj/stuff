@@ -64,7 +64,7 @@ LENGTH_BEFORE=$(mpc playlist | wc -l)
 # Remove played files from .osorterat catalogue, up until current song
 current_position=$(mpc -f "%position%" current)
 original_last_file=$(mpc -f "%file%" playlist | tail -n1)
-echo -n "Lägger in spelade från .osorterat"
+echo "Lägger in spelade från .osorterat:"
 mpc -f "%file%" playlist | \
         head -n $((current_position-1)) | \
         grep --color=never ".osorterat/" | \
@@ -137,8 +137,13 @@ original_last_file=$(mpc -f "%file%" playlist | tail -n1)
 move_up "$original_last_file"
 
 ################################################################################
+#  Duplicated songs script
+echo -n "Duplicerade: "
+run_python "${HOME}/src/mpdups.py" | grep -c "These look the same:"
+echo ""
+
+################################################################################
 #  Done 
-run_python "${HOME}/src/mpdups.py"
 
 echo "Klar!"
 LENGTH_AFTER=$(mpc playlist | wc -l)
