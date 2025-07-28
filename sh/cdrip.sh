@@ -1,13 +1,10 @@
 #!/bin/bash
+source "${HOME}/src/utils.sh" || exit 1
 
 # Ser om awk, cdparanoia och flac finns.
-REQ=(awk cdparanoia flac)
-for p in ${REQ[*]}; do
-        if ! command -v "$p" &> /dev/null ; then
-                echo "$p krävs."
-                exit 1
-        fi
-done
+if ! required_programs awk cdparanoia flac; then
+        exit 1
+fi
 
 ARTIST=""
 ALBUM=""
