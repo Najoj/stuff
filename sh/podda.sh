@@ -1,11 +1,38 @@
 #!/bin/bash
 source "${HOME}/src/utils.sh" || exit 1
 
-SPELA_KLART="${HOME}/spela_klart"
+SPELA_KLART="${HOME}/src/spela_klart"
+SLEEP="${HOME}/src/sleep"
 MOCP_LOCK="${HOME}/.moc/lock"
 
-required_programs mpc mocp sleep
-required_files "$SPELA_KLART"
+if [[ -e "$MOCP_LOCK" ]]; then
+        print_warning "Skriptet körs redan"
+        exit 1
+fi
+
+if ! required_programs mpc mocp sleep trap; then
+        exit 1
+fi
+if ! required_files "$SPELA_KLART"; then
+        exit 1
+fi
+
+END=10
+if [[ $# == 1 ]]; then
+        if [[ $1 -ge 0 ]]; then
+                END=$1
+        else
+                print_warning "\"$1\" är ingen siffra"
+        fi
+fi
+
+cleanup() {
+        rm -f "$MOCP_LOCK"
+        mocp -P
+        mpc pause
+        exit 1
+}
+trap cleanup SIGINT
 
 mpc -w pause 
 mocp -U
@@ -14,16 +41,17 @@ while true; do
         C=$O
         while [[ "$O" == "$C" ]]; do
                 touch "$MOCP_LOCK"
-                mocp -Q "((%ts)-(%cs))" | bc | xargs ~/src/sleep 1
+                WAIT=$(mocp -Q "((%ts)-(%cs)) + 1" | bc )
+                $SLEEP "$WAIT"
                 C=$(mocp -Q "%file")
         done
 
         mocp -P
         rm -f "$MOCP_LOCK"
 
-        for i in {1..10}; do
+        for ((i=1; i<=END; i++)); do
                 echo -n "$i "
-                ~/src/spela_klart || break
+                "$SPELA_KLART"
         done
 
         mpc -w pause
