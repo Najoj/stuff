@@ -3,9 +3,7 @@ command -v mpc > /dev/null || exit 1
 
 ROOT="/media/musik"
 DELETE_ME="${HOME}/.mpc_delete_me"
-if [[ ! -e "$DELETE_ME" ]]; then
-        touch "$DELETE_ME"
-fi
+touch "$DELETE_ME"
 
 if [[ $# == 0 ]]; then
         mpc -f "%file%" current >> "$DELETE_ME"
@@ -33,6 +31,6 @@ elif [[ "$1" == "cleanup" ]]; then
                         fi
 
                 done
-                mv "$DELETE_ME" "$DELETE_ME".backup
-                grep "$DELETE_ME".backup "$CURRENT" >> "$DELETE_ME" 2> /dev/null || true
+                cp "$DELETE_ME" "$DELETE_ME".backup
+                grep "$DELETE_ME".backup "$CURRENT" > "$DELETE_ME" 2> /dev/null || true
 fi
