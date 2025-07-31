@@ -37,9 +37,10 @@ function required_files() {
         return 0
 }
 
+# Compare sizes of the given inputs. Keep the greater file at $2.
+# $2 could be a directory, then check for the same basename of $1 in $2.
 function car () {
-
-    # FORCE is used as flag by mv. If -f flag is not given, use interactive.
+    # FORCE is used as flag by mv. If -f flag is not given, use interactive (-i).
     FORCE=-i
     if [[ $1 == "-f" ]]; then
             FORCE=-f
@@ -105,24 +106,23 @@ function run_python() {
         "$PYTHON" "$SCRIPT"
 }
 
-pyexec() {
-    # Check if the argument is provided
-    if [ -z "$1" ]; then
-            print_warning "Usage: $0 <file_to_check>"
-            return 1
-    elif ! [ -e "$1" ]; then
-            print_warning "$1 does not exist"
-            return 1
-    fi
-    MYTHON="${HOME}/.mython/bin/python3"
-    # Check if MYTHON is a file
-    if [[ -e "$MYTHON" ]]; then
-            "$MYTHON" "${@:1}"
-    elif which python3 > /dev/null; then
-            python3 "${@:1}"
-    else
-            print_warning "No Python found"
-            return 1
-    fi
-    return "$?"
+# Sanitize before regex usage
+function sanitize_regex() {
+    local input="$1"
+    local sanitized
+    # Escape special regex characters
+    # shellcheck disable=SC2016
+    sanitized=$(printf '%s\n' "$input" | sed 's/[.*+?[^$(){}|\\]/\\&/g')
+    echo "$sanitized"
+}
+
+# Waits for current song in MPD to finish
+function spela_klart() {
+        num=$1
+        if [[ -z "${num}" ]]; then
+                ((num=1))
+        fi
+        for ((i=0; i<num; i++)); do
+                mpc current --wait > /dev/null
+        done
 }
