@@ -113,28 +113,30 @@ void countdown()
     short first = 0;
     while ((seconds | minutes | hours | days) != 0)
     {
-
-        if (option == 0b1000)
+        if (first == 0)
+        {
+                first = 1;
+        }
+        elif (option == 0b1000)
         {
             printf("\r%id %02ih %02im %02is ", days, hours, minutes,
                     seconds);
         }
         else if (option == 0b0100)
         {
-            for(int i = 0; first > 0 && i < 9; i++) putchar('\b');
+            for(int i = 0; i < 9; i++) putchar('\b');
             printf("%02i:%02i:%02i ", hours, minutes, seconds);
         }
         else if (option == 0b0010)
         {
-            for(int i = 0; first > 0 && i < 6; i++) putchar('\b');
+            for(int i = 0; i < 6; i++) putchar('\b');
             printf("%02i:%02i ", minutes, seconds);
         }
         else if (option == 0b0001)
         {
-            for(int i = 0; first > 0 && i < 4; i++) putchar('\b');
+            for(int i = 0; i < 4; i++) putchar('\b');
             printf("%02is ", seconds);
         }
-        first = 1;
 
         fflush(stdout);
         sleep(SECOND);
@@ -167,7 +169,8 @@ void countdown()
         {
             seconds--;
         }
-    }
+    }   /* End while loop */
+
     putchar('\r');
     for(seconds = 80; seconds > -1; --seconds )
         putchar(' ');
