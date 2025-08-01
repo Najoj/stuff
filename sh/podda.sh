@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 source "${HOME}/src/utils.sh" || exit 1
 
 SPELA_KLART="${HOME}/src/spela_klart"
@@ -34,8 +34,14 @@ cleanup() {
 }
 trap cleanup SIGINT
 
+MPD_TIME=$(mpc status "%currenttime%" | sed 's/:/*60+/' | bc)
+if [[ "$MPD_TIME" -ge 1 ]]; then
+        "$SPELA_KLART"
+fi
+
 mpc -w pause 
-mocp -U
+mocp -U || mocp -p
+
 while true; do
         O=$(mocp -Q "%file")
         C=$O
@@ -49,10 +55,7 @@ while true; do
         mocp -P
         rm -f "$MOCP_LOCK"
 
-        for ((i=1; i<=END; i++)); do
-                echo -n "$i "
-                "$SPELA_KLART"
-        done
+        "$SPELA_KLART" $END
 
         mpc -w pause
         mocp -U
