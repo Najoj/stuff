@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 DIR="/home/$USER/.lyrics"
 FILE="$(mpc -qf "%artist% - %title%.txt" current)"

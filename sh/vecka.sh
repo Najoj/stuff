@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # File with weeks
 REDDAYS="${HOME}/src/rödadagar"

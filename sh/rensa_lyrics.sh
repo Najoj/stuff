@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Clean up in ~/.lyrics which ncmpcpp creates.
 
 DIR="${HOME}/.lyrics"

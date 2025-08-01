@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ -z "${SLEEP}" ]; then
     if [ -e "${HOME}"/src/sleep ]; then

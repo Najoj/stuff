@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 for req in df grep gawk; do
         if ! command -v "$req" > /dev/null; then

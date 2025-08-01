@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 NAME=$(basename "$0")
 LOCK="/tmp/$NAME.lock"

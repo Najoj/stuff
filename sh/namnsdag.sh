@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Lista med namnsdagar i ordning.
 FILE="${HOME}/src/namnsdagar"

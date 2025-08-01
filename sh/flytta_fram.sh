@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Option to ensure success is changed saved from loop
 shopt -s lastpipe
 

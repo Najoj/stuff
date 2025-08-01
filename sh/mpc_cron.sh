@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # This script runs once in a while and does some things with mpd
 source "${HOME}/src/utils.sh"
 

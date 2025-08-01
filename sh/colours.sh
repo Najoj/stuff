@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #   This file echoes a bunch of colour codes to the
 #   terminal to demonstrate what's available.  Each

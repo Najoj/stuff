@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Move the argument number of songs from the end of current MPD playlist to
 # random position.
 N="${@: -1}"

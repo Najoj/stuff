@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ## This is a script to add Ubuntu PPA repositories in Debian.
 ## Use as  $0 ppa:ubuntu-mozilla-daily/ppa
 ##  or as  $0 https://launchpad.net/~ubuntu-mozilla-daily/+archive/ppa

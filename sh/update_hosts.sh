@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Uppdaterar /etc/hosts
 # Skript uppdaterat 2023-12-04
 

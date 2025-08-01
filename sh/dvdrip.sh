@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Ser om mencoder finns.
 if ! command -v mencoder &> /dev/null ; then

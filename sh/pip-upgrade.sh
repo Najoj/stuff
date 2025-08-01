@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 MYTHON="${HOME}/.mython/bin/python" 
 if [[ -e "$MYTHON" ]]; then
         PIP="$MYTHON -m pip"

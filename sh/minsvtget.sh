@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 SVTPLAYDL="${HOME}/src/svtplay-dl/svtplay-dl"
 FLAGS="--merge-subtitle"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 MOCP_LOCK="${HOME}/.moc/lock"
 if ! [[ -e "$MOCP_LOCK" ]]; then

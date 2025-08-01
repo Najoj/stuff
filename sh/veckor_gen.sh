@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Give year as argument.
 if [ -z "$1" ]; then

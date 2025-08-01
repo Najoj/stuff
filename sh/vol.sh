@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 if amixer get Master | grep "\\[off\\]" > /dev/null ; then
     echo 0

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 command -v mpc grep mktemp > /dev/null || exit 1
 
 UNIKA=$(mktemp)

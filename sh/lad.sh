@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 LADDANED="${HOME}/src/ladda_ned.sh"
 FIL="${HOME}/.laddaned"

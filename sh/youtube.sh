@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 source "${HOME}/src/utils.sh"
 
 echo "$@" | grep -E "/(channel|user)/" && exit 1

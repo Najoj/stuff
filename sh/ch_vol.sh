@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 command -v amixer grep gawk tr > /dev/null || exit 2
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [[ "$1" =~ http(s)?://(www.)?(youtube|vimeo|sverigesradio|svtplay|efukt|odysee) ]]; then
         "${HOME}/src/lad.sh" "$1"

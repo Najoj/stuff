@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 REQ=(grep head sed shuf tr wget)
 for req in "${REQ[@]}"; do
