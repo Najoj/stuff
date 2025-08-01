@@ -1,23 +1,12 @@
-#!/bin/bash
-err() {
-        echo "$@" >&2 
-}
+#!/usr/bin/env bash
+source "${HOME}/src/utils.sh"
 
-REQ=(mpc whiptail)
-for r in "${REQ[@]}"; do
-        if ! command -v "$r" > /dev/null; then
-                err "$r is missing" 
-                exit 1
-        fi
-done
-
-if ! mpc -qw update; then
-        err "Could not update MPD's database."
+if ! required_programs mpc whiptail; then
         exit 1
 fi
 
 if [ -z "$*" ]; then
-        err "No input."
+        print_warning "No input."
         exit 1
 fi
 
@@ -32,7 +21,7 @@ LEN=${#RESULT[@]}
 # number of songs found.
 LEN=$((LEN/3))
 if [ $LEN -eq 0 ]; then
-        err "No results."
+        print_warning "No results."
         exit 1
 fi
 
@@ -45,7 +34,7 @@ else
 
         FROM=$(exec "${WHIPTAIL[@]}" 3>&1 1>&2 2>&3)
         if [ -z "$FROM" ]; then
-                err "No song chosen."
+                print_warning "No song chosen."
                 exit 1
         fi
 fi
