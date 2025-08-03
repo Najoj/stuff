@@ -12,7 +12,7 @@ jobs:
         sudo apt-get -y install shellcheck
     - name: Analysing the code with Shellcheck (errors)
       run: |
-        shellcheck -e SC1091 --neverity=error $(git ls-files '*.sh')
+        shellcheck -e SC1091 --severity=error $(git ls-files '*.sh')
     - name: Analysing the code with Shellcheck (non-fatal)
       run: |
-        shellcheck -e SC1091 --neverity=error $(git ls-files '*.sh') || true
+        shellcheck -e SC1091 $(git ls-files '*.sh') || true
