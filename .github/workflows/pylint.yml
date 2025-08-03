@@ -2,12 +2,27 @@ name: Pylint
 
 on: [push]
 
+env:
+  CHANGED
+
 jobs:
-  build:
+  check-modified:
+    outputs:
+      changed: $CHANGED
+    runs-on: ubuntu-latest
+        run: |
+          if [ -n "$(git ls-files -m '*.py')" ]; then
+            echo "true" >> $CHANGED
+          else
+            echo "false" >> $CHANGED
+          fi
+
+  pylint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10"]
+    if: $CHANGED == 'true'
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
