@@ -55,7 +55,7 @@ while true; do
         mocp -P
         rm -f "$MOCP_LOCK"
 
-        "$SPELA_KLART" $END
+        "$SPELA_KLART" "$END"
 
         mpc -w pause
         mocp -U
