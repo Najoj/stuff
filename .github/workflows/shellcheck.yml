@@ -2,13 +2,10 @@ name: Shellcheck
 
 on: [push]
 
-env:
-  CHANGED: 'false'
-
 jobs:
   check-modified:
     outputs:
-      changed: $CHANGED
+      changed: ${{ steps.check.outputs.changed }}
     runs-on: ubuntu-latest
     steps:
       - run: |
@@ -19,7 +16,8 @@ jobs:
           fi
   build:
     runs-on: ubuntu-latest
-    if: ${{ env.CHANGED }} == 'true'
+    
+    if: ${{ steps.check.outputs.changed == 'true' }}
     steps:
     - uses: actions/checkout@v4
     - name: Install dependencies
