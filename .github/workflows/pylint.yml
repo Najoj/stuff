@@ -20,7 +20,7 @@ jobs:
         pip install pylint
     - name: Analysing errors the code with pylint
       run: |
-        pylint -E $(git ls-files '*.py')
+        pylint -E $(git ls-files -m '*.py')
     - name: Analysing the code with pylint (non-fatal)
       run: |
-        pylint --exit-zero $(git ls-files '*.py')
+        pylint --exit-zero $(git ls-files -m '*.py')
