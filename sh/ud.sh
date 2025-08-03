@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+source "${HOME}/src/utils.sh" || exit 1
 
 function lock {
         NAME=$(basename "$0")
@@ -113,14 +114,9 @@ function updatedates {
         fi
 }
 
-REQUIRED=(fdupes apt-cache apt-get bc zcat gunzip date echo grep head less sed
-          flock)
-for software in ${REQUIRED[*]}; do
-        if ! command -v "$software" > /dev/null; then
-                echo "$software not found." >&2
-                exit 2
-        fi
-done
+if ! required_programs fdupes apt-cache apt-get bc zcat gunzip date echo grep head less sed flock; then
+        exit 1
+fi
 
 # Filer
 FILE="${HOME}/.updatedate.gz"
