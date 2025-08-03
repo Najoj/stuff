@@ -2,9 +2,23 @@ name: Shellcheck
 
 on: [push]
 
+env:
+  CHANGED
+
 jobs:
+  check-modified:
+    outputs:
+      changed: $CHANGED
+    runs-on: ubuntu-latest
+        run: |
+          if [ -n "$(git ls-files -m '*.sh')" ]; then
+            echo "true" >> $CHANGED
+          else
+            echo "false" >> $CHANGED
+          fi
   build:
     runs-on: ubuntu-latest
+    if: $CHANGED == 'true'
     steps:
     - uses: actions/checkout@v4
     - name: Install dependencies
