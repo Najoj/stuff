@@ -4,30 +4,32 @@ on: [push]
 
 jobs:
   check-modified:
+    runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.check.outputs.changed }}
-    runs-on: ubuntu-latest
     steps:
-    - run: |
-        if [ -n "$(git ls-files -m '*.sh')" ]; then
-          echo 'true' >> $GITHUB_ENV
-        else
-          echo 'false' >> $GITHUB_ENV
-        fi
+      - name: Check for modified shell scripts
+        id: check
+        run: |
+          if [ -n "$(git ls-files -m '*.sh')" ]; then
+            echo "::set-output name=changed::true"
+          else
+            echo "::set-output name=changed::false"
+          fi
 
   shellcheck:
     runs-on: ubuntu-latest
     needs: check-modified
-    if: ${{ steps.check.outputs.changed == 'true' }}
+    if: ${{ needs.check-modified.outputs.changed == 'true' }}
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Install dependencies
-      run: |
-        sudo apt-get -y install shellcheck
-    - name: Analysing the code with Shellcheck (errors)
-      run: |
-        shellcheck -e SC1091 --severity=error $(git ls-files -m '*.sh')
-    - name: Analysing the code with Shellcheck (non-fatal)
-      run: |
-        shellcheck -e SC1091 $(git ls-files -m '*.sh') || true
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get -y install shellcheck
+      - name: Analysing the code with Shellcheck (errors)
+        run: |
+          shellcheck -e SC1091 --severity=error $(git ls-files -m '*.sh')
+      - name: Analysing the code with Shellcheck (non-fatal)
+        run: |
+          shellcheck -e SC1091 $(git ls-files -m '*.sh') || true
