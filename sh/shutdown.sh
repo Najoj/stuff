@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+source "${HOME}/src/utils.sh" || exit 1
 
 NAME=$(basename "$0")
 LOCK="/tmp/$NAME.lock"
@@ -12,16 +13,12 @@ REQ_PROGRAMS="mpc mocp whiptail systemctl dbus-send mocp xscreensaver-command"
 REQ_SCRIPTS="ch_vol.sh"
 SLEEP_TIME="2m"
 
-for prog in $REQ_PROGRAMS; do
-        (! hash "${prog}") && echo "\"${prog}\" saknas." && exit 1
-done
-
-for script in $REQ_SCRIPTS; do
-        if ! [ -f "${HOME}/src/${script}" ]; then
-                echo "\"${script}\" saknas." 1>&2
-                exit 1
-        fi
-done
+if ! required_programs "$REQ_PROGRAMS"; then
+        exit 1
+fi
+if ! required_files "$REQ_SCRIPTS"; then
+        exit 1
+fi
 
 function forall
 {
@@ -44,6 +41,7 @@ function all_downloaded
                         fi
                 done
                 PROGS=(minsvtget spotdlsh youtube-dl)
+                # shellcheck disable=SC2048
                 for PROG in ${PROGS[*]}; do
                         while pidof "${PROG}"; do
                                 echo -- "$0" "Väntar på ${PROG}."
