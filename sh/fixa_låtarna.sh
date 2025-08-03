@@ -8,7 +8,7 @@ find . -name "* ($i).ogg" -type f | \
         while read -r old; do
                 TO=$((i-1))
                 for j in $(seq 1 $TO); do
-                        new="${old% ($i).ogg} ($j).ogg"
+                        new="${old% ("$i").ogg} ($j).ogg"
                         if ! [ -f "$new" ]; then
                                 INSERT="${new#./}"
                                 echo "$INSERT"
