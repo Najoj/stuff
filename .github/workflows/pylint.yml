@@ -1,29 +1,25 @@
 name: Pylint
 
 on: [push]
-
-env:
-  CHANGED: 'false'
-
 jobs:
   check-modified:
     outputs:
-      changed: $CHANGED
+      changed: ${{ steps.check.outputs.changed }}
     runs-on: ubuntu-latest
     steps:
-     - run: |
-         if [ -n "$(git ls-files -m '*.py')" ]; then
-           echo "true" >> $CHANGED
-         else
-           echo "false" >> $CHANGED
-         fi
-
+      - run: |
+          if [ -n "$(git ls-files -m '*.py')" ]; then
+            echo 'true' >> $GITHUB_ENV
+          else
+            echo 'false' >> $GITHUB_ENV
+          fi
+  
   pylint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10"]
-    if: ${{ env.CHANGED }} == 'true'
+    if: ${{ steps.check.outputs.changed == 'true' }}
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
@@ -40,3 +36,4 @@ jobs:
     - name: Analysing the code with pylint (non-fatal)
       run: |
         pylint --exit-zero $(git ls-files -m '*.py')
+        
