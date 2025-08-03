@@ -74,7 +74,8 @@ cp "$TMP" "$NYHOSTS"
 
 rm -v "$TMP"
 
-wc -l "$NYHOSTS" $HOSTS | head -n2 | read newl oldl
+newl=$(wc -l "$NYHOSTS" | cut -d' ' -f1)
+oldl=$(wc -l "$HOSTS"   | cut -d' ' -f1)
 printf "%'d nya rader\n" "$((newl-oldl))"
 echo
 if [ $UID -ne 0 ]; then
