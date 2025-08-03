@@ -10,11 +10,11 @@ jobs:
     steps:
       - run: |
           if [ -n "$(git ls-files -m '*.sh')" ]; then
-            echo 'true' >> $CHANGED
+            echo 'true' >> $GITHUB_ENV
           else
-            echo 'false' >> $CHANGED
+            echo 'false' >> $GITHUB_ENV
           fi
-  build:
+  pylint:
     runs-on: ubuntu-latest
     
     if: ${{ steps.check.outputs.changed == 'true' }}

@@ -1,6 +1,7 @@
 name: Pylint
 
 on: [push]
+
 jobs:
   check-modified:
     outputs:
@@ -19,6 +20,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10"]
+
     if: ${{ steps.check.outputs.changed == 'true' }}
     steps:
     - uses: actions/checkout@v4
