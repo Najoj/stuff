@@ -12,11 +12,9 @@ jobs:
         id: check
         run: |
           if [ -n "$(git ls-files -m '*.py')" ]; then
-            echo "changed=true" >> $GITHUB_ENV
-            echo "::set-output name=changed::true"
+            echo "changed=true" >> $GITHUB_OUTPUT
           else
-            echo "changed=false" >> $GITHUB_ENV
-            echo "::set-output name=changed::false"
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
   pylint:
