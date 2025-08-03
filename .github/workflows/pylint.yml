@@ -8,12 +8,12 @@ jobs:
       changed: ${{ steps.check.outputs.changed }}
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          if [ -n "$(git ls-files -m '*.py')" ]; then
-            echo 'true' >> $GITHUB_ENV
-          else
-            echo 'false' >> $GITHUB_ENV
-          fi
+    - run: |
+        if [ -n "$(git ls-files -m '*.py')" ]; then
+          echo 'true' >> $GITHUB_ENV
+        else
+          echo 'false' >> $GITHUB_ENV
+        fi
   
   pylint:
     runs-on: ubuntu-latest
