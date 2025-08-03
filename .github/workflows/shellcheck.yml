@@ -19,7 +19,7 @@ jobs:
           fi
   build:
     runs-on: ubuntu-latest
-    if: $CHANGED == 'true'
+    if: ${{ env.CHANGED }} == 'true'
     steps:
     - uses: actions/checkout@v4
     - name: Install dependencies
