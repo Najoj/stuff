@@ -10,7 +10,7 @@ def parse_arguments() -> (str, str, str):
     parser.add_argument('left', type=str,
                         help='Dominant file, to be merged into')
     parser.add_argument('right', type=str,
-                        help='Flie to merge lines from')
+                        help='File to merge lines from')
     parser.add_argument('--output', type=str, default=None, required=False)
     argv = sys.argv[1:]
     parsed = parser.parse_args(argv)
@@ -61,10 +61,10 @@ def main(_left_file, _right_file, _output_file) -> int:
         else:
             print('oh-no')
 
-    if output_file is None:
+    if _output_file is None:
         sys.stdout.writelines(_output_file_content)
     else:
-        with open(output_file, 'w+') as f:
+        with open(_output_file, 'w+') as f:
             f.writelines(_output_file_content)
     return 0
 
