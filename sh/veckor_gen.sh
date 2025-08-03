@@ -51,7 +51,7 @@ done
 
 # Other months
 for M in $FEB 31 30 31 30 31 31 30 31 30; do
-    for i in $(seq -w 1 $M); do
+    for i in $(seq -w 1 "$M"); do
         SEQ="$SEQ $i"
     done
 done
@@ -69,7 +69,7 @@ A=1
 B=18
 C=19
 D=21
-for i in $(seq -w $SW $EW); do
+for i in $(seq -w "$SW" "$EW"); do
     echo -en "v$i  $(echo "$SEQ" | cut -c $A-$B | sed "s/^[ ]*//g")"
     echo -e  "Rs $(echo "$SEQ" | cut -c $C-$D | sed "s/^[ ]*//g")Re"
 

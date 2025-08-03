@@ -6,14 +6,14 @@ echo "$@" | grep -E "/(channel|user)/" && exit 1
 COOKIES="${HOME}/.ytdlc"
 SETTINGS="${HOME}/.yts"
 
-required_programs youtube-dl || exit 1
+required_programs youtube-dl sleep || exit 1
 required_files "$COOKIES" "$SETTINGS" || exit 1
 
 USERNAME="$(head -1 "$SETTINGS")"
 PASSWORD="$(tail -1 "$SETTINGS")"
 
 SLEEP="${HOME}/src/sleep"
-[ -f $SLEEP ] || SLEEP="sleep"
+[ -f "$SLEEP" ] || SLEEP="sleep"
 
 WAIT="5s"
 ((LIM=5))
