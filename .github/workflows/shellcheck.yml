@@ -3,18 +3,19 @@ name: Shellcheck
 on: [push]
 
 env:
-  CHANGED
+  CHANGED: 'false'
 
 jobs:
   check-modified:
     outputs:
       changed: $CHANGED
     runs-on: ubuntu-latest
-        run: |
+    steps:
+      - run: |
           if [ -n "$(git ls-files -m '*.sh')" ]; then
-            echo "true" >> $CHANGED
+            echo 'true' >> $CHANGED
           else
-            echo "false" >> $CHANGED
+            echo 'false' >> $CHANGED
           fi
   build:
     runs-on: ubuntu-latest
