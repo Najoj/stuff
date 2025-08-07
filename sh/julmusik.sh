@@ -3,7 +3,7 @@ source "${HOME}/src/utils.sh"
 
 # Not before December
 DAY=$(date +%_d)
-MONTH=$(date +%m)
+MONTH=$(date +%_m)
 if [[ $MONTH -lt 12 ]]; then
         echo "Inte ens december, dumsnut!"
         exit 1
