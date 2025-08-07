@@ -10,10 +10,10 @@ if ! flock -n 8; then
 fi
 
 REQ_PROGRAMS="mpc mocp whiptail systemctl dbus-send mocp xscreensaver-command"
-REQ_SCRIPTS="ch_vol.sh"
+REQ_SCRIPTS="${HOME}/src/ch_vol.sh"
 SLEEP_TIME="2m"
 
-if ! required_programs "$REQ_PROGRAMS"; then
+if ! required_programs $REQ_PROGRAMS; then
         exit 1
 fi
 if ! required_files "$REQ_SCRIPTS"; then
@@ -110,7 +110,6 @@ fi
 case $WHAT in
         "$HALT" | "$SHUTDOWN")
                 # lock screen before waiting everything to finish, then halt
-                xscreensaver-command -lock
                 xscreensaver-command -lock
                 await_halt
                 forall
