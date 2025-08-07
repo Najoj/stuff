@@ -22,7 +22,7 @@ MOCP_STATE="$(mocp -Q%state)"
 MPD_STATE="$(mpc status "%state%")"
 
 MOCP_TIME="$(mocp -Q%cs)"
-MPD_TIME="$(mpc -f "%time%" current | sed 's/:/*60+/' | bc)"
+MPD_TIME="$(mpc status "%currenttime%" | sed 's/:/*60+/' | bc)"
 
 if [ "$MPD_STATE" == "$MPD_PAUSE" ] && [ "$MOCP_STATE" == "$MOCP_PAUSE" ]; then
         # Both are paused. See which one was probably playing.
