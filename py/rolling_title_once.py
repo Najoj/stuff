@@ -11,7 +11,7 @@ import sys
 from musicpd import MPDClient
 
 # Total width
-LENGTH = 26
+LENGTH = 38
 # Divider when exceeding limit
 DIVIDER = '   '
 
