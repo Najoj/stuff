@@ -3,3 +3,4 @@
 /rust/**/target/
 /rust/**/*.lock
 /c/cmake-build-debug/
+a.out
