@@ -35,3 +35,8 @@ mv    "${TMP}"/*.txt "${DIR}"
 
 rmdir "${TMP}"
 
+if which tidy; then
+        for txt in "$DIR"/*; do
+                tidy -m -utf8 "$txt"
+        done
+fi
