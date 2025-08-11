@@ -16,6 +16,7 @@ class Song:
 
     def __str__(self):
         return self.filename
+
     def __int__(self):
         return self.position
 
@@ -24,6 +25,7 @@ class Song:
 
     def __repr__(self):
         return str(self)
+
 
 def print_warning(message):
     print(message, file=sys.stderr)
@@ -41,6 +43,7 @@ def _whitelist(files: list) -> int:
             nof_whitelisted += 1
     return nof_whitelisted - len(files)
 
+
 def _delete(files: list) -> int:
     _ogg = '.ogg'
     _flac = '.flac'
@@ -48,7 +51,7 @@ def _delete(files: list) -> int:
 
     ogg_files = [f for f in files if str(f)[-len(_ogg):] == _ogg]
     flac_files = [f for f in files if str(f)[-len(_flac):] == _flac]
-    sorted(flac_files, key=lambda x : x.position, reverse=False)
+    sorted(flac_files, key=lambda x: x.position, reverse=False)
 
     client = musicpd.MPDClient()
     client.connect(host, port)
@@ -73,10 +76,12 @@ def _delete(files: list) -> int:
 
     return nof_deleted - len(files)
 
+
 def sanitize(string: str) -> str:
     string = string.lower().replace(' and ', '').replace(' och ', '')
-    string = re.sub('\W+', '', string, flags=re.U)
+    string = re.sub(r'\W+', '', string, flags=re.U)
     return string
+
 
 ASK = False
 IGNORE_WHITELIST = False
@@ -105,11 +110,13 @@ else:
     whitelisted = []
 
 # Must be customised
-_CONFIG_FILE=os.path.join(os.getenv('HOME'), '.mpdconf')
+_CONFIG_FILE = os.path.join(os.getenv('HOME'), '.mpdconf')
 assert os.path.isfile(_CONFIG_FILE), f'Config file {_CONFIG_FILE} not found'
 
 # get port, address, & music_directory
 config = None
+
+
 def get_from_config(setting: str, default=None) -> str:
     global config
     if config is None or not config:
@@ -123,7 +130,7 @@ def get_from_config(setting: str, default=None) -> str:
                     config[key] = val
                 else:
                     pass
-                
+
     value = None
     if setting in config:
         value = config[setting]
@@ -132,6 +139,7 @@ def get_from_config(setting: str, default=None) -> str:
     if value is None:
         return default
     return value
+
 
 music_directory = get_from_config('music_directory')
 host = get_from_config('bind_to_address', 'localhost')
