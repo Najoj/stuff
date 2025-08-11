@@ -5,6 +5,13 @@ SPELA_KLART="${HOME}/src/spela_klart"
 SLEEP="${HOME}/src/sleep"
 MOCP_LOCK="${HOME}/.moc/lock"
 
+if [[ "$1" == "--kill" ]]; then
+        < "$MOCP_LOCK" xargs kill
+        rm "$MOCP_LOCK"
+        mocp --pause
+        exit $?
+fi
+
 if [[ -e "$MOCP_LOCK" ]]; then
         print_warning "Skriptet körs redan"
         exit 1
@@ -28,7 +35,7 @@ fi
 
 cleanup() {
         rm -f "$MOCP_LOCK"
-        mocp -P
+        mocp --pause
         mpc pause
         exit 1
 }
@@ -46,8 +53,10 @@ while true; do
         O=$(mocp -Q "%file")
         C=$O
         while [[ "$O" == "$C" ]]; do
-                touch "$MOCP_LOCK"
+                echo "$$" > "$MOCP_LOCK"
                 WAIT=$(mocp -Q "((%ts)-(%cs)) + 1" | bc )
+                WAIT=$((WAIT%1800))
+
                 $SLEEP "$WAIT"
                 C=$(mocp -Q "%file")
         done
