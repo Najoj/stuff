@@ -37,7 +37,7 @@ for URL in "$@"; do
 
                 elif [[ "${URL}" =~ http(s)?://sverigesradio\.se/topsy/ljudfil/podrss/[0-9]+(\.|\\-)[mM][pP]3 ]] || \
                      [[ "${URL}" =~ http(s)?://sverigesradio\.se/topsy/ljudfil/srse/[0-9]+(\.|\\-)[mM][pP]3 ]]; then
-                             if ! "${DIR}"/sr.sh "${URL}"; then
+                             if "${DIR}"/sr.sh "${URL}"; then
                                      TXT="${URL} done"
                              else
                                      TXT="${URL} failed"
