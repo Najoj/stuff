@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
-# Option to ensure success is changed saved from loop
+# Option to ensure `success` is changed saved from loop
 shopt -s lastpipe
 
-mpc -wq update
+if [[ "$1" == "--no-update" ]]; then
+        shift
+else
+        mpc -wq update
+fi
 
 if [ "$1" ]; then
         what="%$1%"
