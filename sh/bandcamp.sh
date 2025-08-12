@@ -27,7 +27,7 @@ function manage
         ((retries=5))
         ((count=0))
         #echo "$url"
-        until youtube-dl -x -ci --audio-format=vorbis "$url"; do
+        until youtube-dl --ignore-config -x -ci --audio-format=vorbis "$url"; do
                 if [[ "$retries" -le "$count" ]]; then
                         break
                 fi
