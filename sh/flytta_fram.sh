@@ -2,6 +2,8 @@
 # Option to ensure `success` is changed saved from loop
 shopt -s lastpipe
 
+source "${HOME}/src/utils.sh"
+
 if [[ "$1" == "--no-update" ]]; then
         shift
 else
@@ -19,7 +21,7 @@ if [ "$2" ]; then
 else
         match="$(mpc -f "$what" current)"
 fi
-match="$(echo "${match}" | tr '!?'"$'\(\)" '.')"
+match="$(sanitize_regex "${match}")"
 
 c=$(mpc -f "%position%" current)
 ((j=$((RANDOM % 7 + 5))))
