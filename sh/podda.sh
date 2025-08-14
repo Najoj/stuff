@@ -6,10 +6,7 @@ SLEEP="${HOME}/src/sleep"
 MOCP_LOCK="${HOME}/.moc/lock"
 
 if [[ "$1" == "--kill" ]]; then
-        < "$MOCP_LOCK" xargs kill
-        rm "$MOCP_LOCK"
-        mocp --pause
-        exit $?
+        cleanup 0
 fi
 
 if [[ -e "$MOCP_LOCK" ]]; then
@@ -34,10 +31,17 @@ if [[ $# == 1 ]]; then
 fi
 
 cleanup() {
-        rm -f "$MOCP_LOCK"
         mocp --pause
         mpc pause
-        exit 1
+        if [[ "$MOCP_LOCK" ]]; then
+                < "$MOCP_LOCK" xargs kill
+                rm "$MOCP_LOCK"
+        fi
+        if [[ -z ${1} ]]; then
+                exit "$1"
+        else
+                exit 1
+        fi
 }
 trap cleanup SIGINT
 
@@ -55,7 +59,7 @@ while true; do
         while [[ "$O" == "$C" ]]; do
                 echo "$$" > "$MOCP_LOCK"
                 WAIT=$(mocp -Q "((%ts)-(%cs)) + 1" | bc )
-                WAIT=$((WAIT%1800))
+                WAIT=$((WAIT%900))
 
                 $SLEEP "$WAIT"
                 C=$(mocp -Q "%file")
