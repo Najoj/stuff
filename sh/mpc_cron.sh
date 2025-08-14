@@ -43,17 +43,10 @@ fi
 
 ################################################################################
 #  Remove files which does not exist
+#  Remove duplicated entries
 script="${HOME}/src/ta_bort_filer_som_inte_finns_ur_mpd.sh"
 if [ -e "$script" ]; then
-        echo "Tar filer som inte finns... "
-        "$script"
-fi
-
-################################################################################
-#  Remove duplicated entries
-script="${HOME}/src/ta_bort_dubletter_ur_mpd.sh"
-if [ -e "$script" ]; then
-        echo "Tar bort dubletter... "
+        echo "Tar filer som inte finns och dubletter... "
         "$script"
 fi
 
