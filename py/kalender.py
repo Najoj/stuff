@@ -672,12 +672,12 @@ def main(aar: int):
         Date(0, aug, 8, description='Drottningens namnsdag', red=False, flag=True),
         ## September
         ## Oktober
-        Date(0, okt, 11, description='Internationella kvinnodagen', red=False, flag=False),
+        Date(0, okt, 11, description='Internationella flickdagen', red=False, flag=False),
         Date(0, okt, 24, description='FN-dagen', red=False, flag=True),
         ## November
         Date(0, nov, 6, description='Gustav Adolfsdagen', red=False, flag=True),
         Date(0, nov, 19, description='Internationella mansdagen', red=False, flag=False),
-        Date(0, nov, 25, description='Internationella mansdagen', red=False, flag=False),
+        Date(0, nov, 25, description='Internationella dagen mot våld mot kvinnor', red=False, flag=False),
         
         fars_dag(aar),
         allhelgonaafton(aar),
