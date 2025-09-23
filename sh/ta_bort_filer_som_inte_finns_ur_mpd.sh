@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 command -v mpc grep mktemp > /dev/null || exit 1
 cd /media/musik || exit 1
+
+UNIKA=$(mktemp)
 mpc -f "%position% %file%" playlist | tac | \
         while IFS=' ' read -r pos file; do 
                 if ! [ -e "$file" ]; then
@@ -11,8 +13,8 @@ mpc -f "%position% %file%" playlist | tac | \
                         mpc del "$pos"
                 else 
                         echo "$file" >> "$UNIKA"
-                fi; 
+                fi
         done
-
+rm -f "$UNIKA"
 
 exit 0

@@ -131,9 +131,9 @@ move_up "$original_last_file"
 
 ################################################################################
 #  Duplicated songs script
-echo -n "Duplicerade: "
-run_python "${HOME}/src/mpdups.py" | grep -c "These look the same:"
-echo ""
+#echo -n "Duplicerade: "
+#run_python "${HOME}/src/mpdups.py" | grep -c "These look the same:"
+#echo ""
 
 ################################################################################
 #  Done 

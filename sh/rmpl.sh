@@ -32,5 +32,5 @@ elif [[ "$1" == "cleanup" ]]; then
 
                 done
                 cp "$DELETE_ME" "$DELETE_ME".backup
-                grep "$DELETE_ME".backup "$CURRENT" > "$DELETE_ME" 2> /dev/null || true
+                grep -F "$CURRENT" "$DELETE_ME".backup > "$DELETE_ME" 2> /dev/null || true
 fi
