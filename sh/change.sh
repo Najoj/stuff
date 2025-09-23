@@ -6,6 +6,7 @@
 
 NEXT="${HOME}/.moc/next"
 PLAYED="${HOME}/.moc/spelade"
+LOCK="${HOME}/.moc/lock"
 
 current="$1"
 previous=$(head -1 "${NEXT}")
@@ -20,6 +21,11 @@ echo "$current" > "${NEXT}"
 STOP="${HOME}/.moc/stopp"
 if [[ -e "$STOP" ]]; then
         mocp --pause
+fi
+
+# Remove lock from podda.sh
+if [[ -e "$LOCK" ]]; then
+        rm "$LOCK"
 fi
 
 exit 0

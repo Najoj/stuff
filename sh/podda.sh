@@ -9,6 +9,10 @@ if [[ "$1" == "--kill" ]]; then
         cleanup 0
 fi
 
+if [[ "$1" == "--force" ]]; then
+        rm -f "$MOCP_LOCK"
+fi
+
 if [[ -e "$MOCP_LOCK" ]]; then
         print_warning "Skriptet körs redan"
         exit 1
@@ -35,19 +39,19 @@ cleanup() {
         mpc pause
         if [[ "$MOCP_LOCK" ]]; then
                 < "$MOCP_LOCK" xargs kill
-                rm "$MOCP_LOCK"
+                rm -f "$MOCP_LOCK"
         fi
-        if [[ -z ${1} ]]; then
-                exit "$1"
-        else
+        if [[ -z "${1}" ]]; then
                 exit 1
+        else
+                exit "$1"
         fi
 }
 trap cleanup SIGINT
 
 MPD_TIME=$(mpc status "%currenttime%" | sed 's/:/*60+/' | bc)
 if [[ "$MPD_TIME" -ge 1 ]]; then
-        "$SPELA_KLART"
+        "$SPELA_KLART" || exit 1
 fi
 
 mpc -w pause 
@@ -58,17 +62,28 @@ while true; do
         C=$O
         while [[ "$O" == "$C" ]]; do
                 echo "$$" > "$MOCP_LOCK"
-                WAIT=$(mocp -Q "((%ts)-(%cs)) + 1" | bc )
-                WAIT=$((WAIT%900))
+                WAIT=$(mocp -Q "((%ts)-(%cs))" | bc )
+                STATE="$(mocp -Q"%state")"
 
-                $SLEEP "$WAIT"
+                if [[ "${STATE}" == "PASUE" ]] && [[ "$WAIT" -lt 60 ]]; then
+                        WAIT=60
+                else
+                        WAIT=$((WAIT%900))
+                fi
+                
+                # Sleep and wait 1 second extra
+                $SLEEP "$WAIT" 1
                 C=$(mocp -Q "%file")
         done
 
         mocp -P
         rm -f "$MOCP_LOCK"
-
-        "$SPELA_KLART" "$END"
+        
+        for((i=0;i<END;i++)) {
+                printf "\r%d / %d " "$i" "$END"
+                "$SPELA_KLART" 
+        }
+        echo ""
 
         mpc -w pause
         mocp -U
