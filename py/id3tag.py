@@ -148,6 +148,12 @@ def main():
             file = mutagen.File(arg)
             if not file:
                 continue
+            elif 'artist' not in file:
+                print(f'Artist tag is missing from {arg}')
+                continue
+            elif 'title' not in file:
+                print(f'Title tag is missing from {arg}')
+                continue
 
             changed = False
             for tag in file:
