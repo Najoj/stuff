@@ -7,6 +7,8 @@ import random
 
 import musicpd
 
+DEBUG = False
+
 
 class Song:
     def __init__(self, filename, _at_key, list_position):
@@ -53,8 +55,7 @@ def _delete(files: list) -> int:
     flac_files = [f for f in files if str(f)[-len(_flac):] == _flac]
     sorted(flac_files, key=lambda x: x.position, reverse=False)
 
-    client = musicpd.MPDClient()
-    client.connect(host, port)
+    client.connect()
     for flac_file in flac_files:
         if DEBUG:
             print_warning('Delete: ' + flac_file.position)
@@ -90,7 +91,6 @@ if len(sys.argv) <= 2 and '--ask' in sys.argv[1:]:
 if len(sys.argv) <= 2 and '--ignore-wl' in sys.argv[1:]:
     IGNORE_WHITELIST = True
 
-DEBUG = False
 WHITELIST = os.path.join(os.getenv('HOME'), '.mpdups_whitelisted')
 if os.path.exists(WHITELIST) and not IGNORE_WHITELIST:
     with open(WHITELIST) as wl:
@@ -149,7 +149,12 @@ assert music_directory is not None, f'No music directory found in {_CONFIG_FILE}
 
 # Connect to MPD
 client = musicpd.MPDClient()
-client.connect(host, port)
+client.connect('localhost', port)
+#try:
+#    client.connect(host, port)
+#except ConnectionError:
+
+
 client.update(True)
 
 all_songs = {}
