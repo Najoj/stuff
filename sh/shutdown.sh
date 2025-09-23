@@ -85,8 +85,9 @@ function remove_stuff
 function pause_player
 {
         mocp --pause
-        mpc pause
-        mpc --wait update && mpc --wait save "säkerhetskopia-$(date +%s)"
+        mpc --wait pause
+        mpc --wait update
+        mpc --wait save "säkerhetskopia-$(date +%s)"
         "${HOME}"/src/ch_vol.sh normalise >  /dev/null &
 }
 
@@ -143,6 +144,8 @@ case $WHAT in
 esac
 
 echo "Stänger ned: $(date)"
+
+mpc pause
 
 exit
 

@@ -14,7 +14,8 @@ if ! required_programs deluge-console youtube-dl trurl; then
         exit 1
 fi
 
-for URL in "$@"; do
+# shellcheck disable=SC2068
+for URL in $@; do
         PRET=$RET
         if [[ "${URL}" =~ magnet:\? ]] ||
                 [[ "${URL}" =~ http(s)?://(.*)\.torrent ]]; then

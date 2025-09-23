@@ -96,9 +96,9 @@ function updatedates {
         if [ "$NEXT_EXTRA" -le "$NOW" ]; then
                 echo "nu"
         else
-                date --date=@"$NEXT_EXTRA" +"%a %_d %B %Y, klockan %T" \
-                        | sed "s/$(date +"%a %_d %B %Y")/i dag/" \
-                        | sed "s/$(date --date @"$TOMORROW" +"%a %_d %B %Y")/i morgon/" \
+                date --date=@"$NEXT_EXTRA" +"%a %_d %b %Y, klockan %T" \
+                        | sed "s/$(date +"%a %_d %b %Y")/i dag/" \
+                        | sed "s/$(date --date @"$TOMORROW" +"%a %_d %b %Y")/i morgon/" \
                         | sed "s/$(date +" %Y")//"
 
         fi
@@ -107,9 +107,9 @@ function updatedates {
         if [ "$NEXT_REGULAR" -le "$NOW" ]; then
                 echo "nu"
         else
-                date --date=@"$NEXT_REGULAR" +"%a %_d %B %Y, klockan %T" \
-                        | sed "s/$(date +"%a %_d %B %Y")/i dag/" \
-                        | sed "s/$(date --date @"$TOMORROW" +"%a %_d %B %Y")/i morgon/" \
+                date --date=@"$NEXT_REGULAR" +"%a %_d %b %Y, klockan %T" \
+                        | sed "s/$(date +"%a %_d %b %Y")/i dag/" \
+                        | sed "s/$(date --date @"$TOMORROW" +"%a %_d %b %Y")/i morgon/" \
                         | sed "s/$(date +" %Y")//"
         fi
 }
