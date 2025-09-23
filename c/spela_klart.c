@@ -46,6 +46,7 @@ int main (argc, argv)
         }
 
         struct mpd_connection *client = mpd_connection_new ("localhost", 6600, 2000);
+        mpd_connection_set_keepalive(client, true);
         struct mpd_status *status = mpd_run_status (client);
 
         for (it = 0; it < iterations; it++)
