@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-mpc -qw update
+if [[ "$1" == "--no-update" ]]; then
+        shift
+else
+        mpc -q update
+fi
 
 artist="(.+)"
 title="(.+)"
@@ -86,7 +90,7 @@ while [ "$(mpc -f "%file%" playlist | tail -1)" != "${last_song}" ]; do
                 break
         else
                 pos=${playlist_length}
-                mpc -q mv "$pos" "$n"
+                mpc -wq mv "$pos" "$n"
                 echo "$pos -> $n"
                 # Next position
                 ((i++))

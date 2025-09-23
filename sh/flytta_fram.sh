@@ -9,6 +9,12 @@ if [[ "$1" == "--no-update" ]]; then
 else
         mpc -wq update
 fi
+if [[ "$1" == "--exact" ]]; then
+        SANITIZE=true
+        shift
+else
+        SANITIZE=false
+fi
 
 if [ "$1" ]; then
         what="%$1%"
@@ -21,7 +27,9 @@ if [ "$2" ]; then
 else
         match="$(mpc -f "$what" current)"
 fi
-match="$(sanitize_regex "${match}")"
+if $SANITIZE; then
+        match="$(sanitize_regex "${match}")"
+fi
 
 c=$(mpc -f "%position%" current)
 ((j=$((RANDOM % 7 + 5))))
@@ -35,8 +43,9 @@ mpc -f "%position% $what" playlist | \
                 ((n=c+i))
                 ((i+=j))
                 printf "%'d -> %'d\n" "$pos" "$n"
-                mpc -q mv "$pos" "$n"
+                mpc -qw mv "$pos" "$n"
                 success=true
+                sleep 0.1
         fi
 done
 
