@@ -131,9 +131,18 @@ move_up "$original_last_file"
 
 ################################################################################
 #  Duplicated songs script
-#echo -n "Duplicerade: "
-#run_python "${HOME}/src/mpdups.py" | grep -c "These look the same:"
-#echo ""
+echo -n "Duplicerade: "
+run_python "${HOME}/src/mpdups.py" | grep -c "These look the same:"
+echo ""
+
+################################################################################
+#  Remove files which does not exist
+#  Remove duplicated entries
+script="${HOME}/src/ta_bort_filer_som_inte_finns_ur_mpd.sh"
+if [ -e "$script" ]; then
+        echo "Tar filer som inte finns och dubletter... "
+        "$script"
+fi
 
 ################################################################################
 #  Done 
