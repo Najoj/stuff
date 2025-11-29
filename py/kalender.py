@@ -169,9 +169,9 @@ class Date:
         y = 1970 if y == 0 else y
 
         if self.red_day and self.flag_day:
-            desc += ' (röd dag och flaggdag)'
+            desc += ' (helgdag och flaggdag)'
         elif self.red_day:
-            desc += ' (röd dag)'
+            desc += ' (helgdag)'
         elif self.flag_day:
             desc += ' (flaggdag)'
 
@@ -522,7 +522,7 @@ def allhelgonaafton(year: int) -> Date:
     _allhelgonaafton -= 1
 
     _allhelgonaafton.description = 'Allhelgonaafton'
-    _allhelgonaafton.red_day = True
+    _allhelgonaafton.red_day = False
     _allhelgonaafton.flag_day = False
 
     return _allhelgonaafton
@@ -686,7 +686,7 @@ def main(aar: int):
         Date(1943, dec, 23, description='Drottningens födelsedag', red=False, flag=True),
         # Varje år
         Date(0, dec, 10, description='Nobeldagen', red=False, flag=True),
-        Date(0, dec, 24, description='Julafton', red=True, flag=False),
+        Date(0, dec, 24, description='Julafton', red=False, flag=False),
         Date(0, dec, 25, description='Juldagen', red=True, flag=True),
         Date(0, dec, 26, description='Annandag jul', red=True, flag=False),
         Date(0, dec, 31, description='Nyårsafton', red=True, flag=False),
