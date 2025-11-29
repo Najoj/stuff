@@ -126,3 +126,8 @@ function spela_klart() {
                 mpc current --wait > /dev/null
         done
 }
+
+# If the argument is an integer
+function is_int() {
+        [[ "$1" =~ ^-?[0-9]+$ ]]
+}
