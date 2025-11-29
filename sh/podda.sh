@@ -5,6 +5,26 @@ SPELA_KLART="${HOME}/src/spela_klart"
 SLEEP="${HOME}/src/sleep"
 MOCP_LOCK="${HOME}/.moc/lock"
 
+cleanup() {
+        MPD_STATE="$(mpc status "%state%")"
+        MPD_PAUSE="paused"
+        mocp --pause
+        if [[ "$MPD_STATE" == "$MPD_PAUSE" ]]; then
+                mpc pause
+        fi
+        if [[ -e "$MOCP_LOCK" ]]; then
+                < "$MOCP_LOCK" xargs kill
+                rm -f "$MOCP_LOCK"
+        fi
+        if [[ -z "${1}" ]]; then
+                exit 1
+        else
+                exit "$1"
+        fi
+}
+trap cleanup SIGINT
+
+
 if [[ "$1" == "--kill" ]]; then
         cleanup 0
 fi
@@ -34,20 +54,6 @@ if [[ $# == 1 ]]; then
         fi
 fi
 
-cleanup() {
-        mocp --pause
-        mpc pause
-        if [[ "$MOCP_LOCK" ]]; then
-                < "$MOCP_LOCK" xargs kill
-                rm -f "$MOCP_LOCK"
-        fi
-        if [[ -z "${1}" ]]; then
-                exit 1
-        else
-                exit "$1"
-        fi
-}
-trap cleanup SIGINT
 
 MPD_TIME=$(mpc status "%currenttime%" | sed 's/:/*60+/' | bc)
 if [[ "$MPD_TIME" -ge 1 ]]; then
