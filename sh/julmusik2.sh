@@ -30,7 +30,7 @@ RMPL="${HOME}/.mpc_delete_me"
 if ! required_files "$JULLISTA" "$RMPL"; then
         exit 1
 fi
-if ! required_programs mpc grep sort shuf read; then
+if ! required_programs mpc spela_klart grep sort shuf read; then
         exit 1
 fi
 
@@ -45,9 +45,9 @@ sort -u "$JULLISTA" | shuf | while read -r file; do
         printf "\r%d / %d. %s" "$I" "$N" "$file"
         if [[ -e "/media/musik/$file" ]]; then
                 mpc insert "$file"
-                "$SPELA_KLART"
+                spela_klart
                 POS=$(mpc -f "%position%" current) 
-                "$SPELA_KLART"
+                spela_klart
                 mpc del "$POS"
         else 
                 grep -v "$file" "$JULLISTA" > "$TEMP" && mv "$TEMP" "$JULLISTA"
