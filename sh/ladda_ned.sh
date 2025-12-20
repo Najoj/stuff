@@ -17,6 +17,7 @@ fi
 # shellcheck disable=SC2068
 for URL in $@; do
         PRET=$RET
+        URL="$(trurl --trim query=fbclid "$URL")"
         if [[ "${URL}" =~ magnet:\? ]] ||
                 [[ "${URL}" =~ http(s)?://(.*)\.torrent ]]; then
                 deluge-console "add \"${URL}\""
