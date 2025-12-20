@@ -32,6 +32,9 @@ if ! required_programs mpc flock grep sort shuf read; then
         exit 1
 fi
 
+TEMP=$(mktemp)
+sort -u "$JULLISTA" > "$TEMP"
+mv -vn "$TEMP" "$JULLISTA"
 
 MPC_LOCK="${HOME}/.mpc_lock"
 N=$(sort -u "$JULLISTA" | sort -u | wc -l)
@@ -39,7 +42,7 @@ I=0
 sort -u "$JULLISTA" | shuf | while read -r file; do
         ((I++))
         (flock -x 9 
-        echo -e "\r$I / $N. $file"
+        printf "\r%d / %d. %s" "$I" "$N" "$file"
         if [[ -e "/media/musik/$file" ]]; then
                 mpc insert "$file"
                 "$SPELA_KLART"
@@ -47,23 +50,23 @@ sort -u "$JULLISTA" | shuf | while read -r file; do
                 "$SPELA_KLART"
                 mpc del "$POS"
         else 
-                TEMP=$(mktemp)
                 grep -v "$file" "$JULLISTA" > "$TEMP" && mv "$TEMP" "$JULLISTA"
-                >&2 echo "Tog bort $file"
+                >&2 echo -e "\nTog bort $file"
         fi) 9> "$MPC_LOCK"
 
         if [[ -e "/media/musik/$file" ]]; then
                 for ((i=0; i<FREQ; i++)); do
                         "$SPELA_KLART" && echo -n .
                 done
+                echo ""
         fi
         DAY=$(date +%_d)
         if [[ $DAY -lt 12 ]]; then
                 FREQ=$FREQ_L
-        elif [[ $DAY -lt 24 ]]; then
+        elif [[ $DAY -le 24 ]]; then
                 FREQ=$FREQ_H
         else
-                echo "Julafton har redan varit, dumbom!"
+                echo "Julafton är över för denna gång."
                 exit 1
         fi
 done
