@@ -19,15 +19,19 @@ elif [[ "$1" == "cleanup" ]]; then
         grep -Fv "$CURRENT" "$DELETE_ME" | sort -u | \
                 while read -r file; do
                         echo "$file"
-                        if [ "${file: -4}" == ".ogg" ]; then
-                                rm "${ROOT}/${file}"
-                        elif [ "${file: -5}" == ".flac" ]; then
+                        if [ "${file: -5}" == ".flac" ] || [ "${file: 0:1}" == "#" ]; then
+                                if [ "${file: 0:1}" == "#" ]; then
+                                        # if line starts with '#', then only remove ogg from playlist
+                                        file="${file:1}"
+                                fi
                                 mpc -f "%position% %file%" playlist |\
                                         grep -F "$file" |\
                                         tac |\
                                         while read -r pos _; do
                                                 mpc del "$pos"
                                         done
+                        elif [ "${file: -4}" == ".ogg" ]; then
+                                rm "${ROOT}/${file}"
                         fi
 
                 done
