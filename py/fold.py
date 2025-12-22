@@ -25,7 +25,7 @@ def parse_arguments() -> (str, str, str):
         raise FileNotFoundError(f'{_left} is does not exist or is not a file')
     if not os.path.exists(_right) and not os.path.isfile(_right):
         raise FileNotFoundError(f'{_right} is does not exist or is not a file')
-    if _output is not None and os.path.isfile(_right):
+    if _output is not None and os.path.isfile(_output):
         print(f'Warning: Outputfile {_output} already exist.')
 
     return _left, _right, _output
@@ -72,3 +72,4 @@ if __name__ == '__main__':
     left_file, right_file, output_file = parse_arguments()
     return_code = main(left_file, right_file, output_file)
     sys.exit(return_code)
+
