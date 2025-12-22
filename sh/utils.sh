@@ -122,7 +122,7 @@ function spela_klart() {
         if [[ -z "${num}" ]]; then
                 ((num=1))
         fi
-        for ((i=0; i<num; i++)); do
+        for ((_iterations=0; _iterations<num; _iterations++)); do
                 mpc current --wait > /dev/null
         done
 }
