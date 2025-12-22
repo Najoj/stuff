@@ -53,13 +53,15 @@ def _delete(files: list) -> int:
 
     ogg_files = [f for f in files if str(f)[-len(_ogg):] == _ogg]
     flac_files = [f for f in files if str(f)[-len(_flac):] == _flac]
-    sorted(flac_files, key=lambda x: x.position, reverse=False)
+    flac_files = sorted(flac_files, key=lambda x: x.position, reverse=True)
 
     client.connect()
     for flac_file in flac_files:
         if DEBUG:
             print_warning('Delete: ' + flac_file.position)
         else:
+            _client_file = client.stats()['file'][flac_file.position]
+            assert client.stats()['file'][flac_file.position] == flac_file.filename, f'found {_client_file} instead of {flac_file.filename}'
             client.delete(flac_file.position)
     client.close()
     client.disconnect()
@@ -79,6 +81,11 @@ def _delete(files: list) -> int:
 
 
 def sanitize(string: str) -> str:
+    if isinstance(string, list):
+        print_warning(f'Expected string but got list: {string}')
+        string = string[0]
+    elif not isinstance(string, str):
+        return string
     string = string.lower().replace(' and ', '').replace(' och ', '')
     string = re.sub(r'\W+', '', string, flags=re.U)
     return string
@@ -163,6 +170,10 @@ for song in client.playlistinfo():
     title = song['title'] if 'title' in song else None
     file = song['file'] if 'file' in song else None
     position = song['pos'] if 'pos' in song else None
+    position = int(position)
+
+    if isinstance(artist, list):
+        print(song, file=sys.stderr)
 
     if artist is None or title is None or file is None or position is None:
         print_warning('Missing value:')
@@ -183,14 +194,15 @@ for song in client.playlistinfo():
 client.close()
 client.disconnect()
 
+whitelist = []
+deletelist = []
 for at_key in all_songs:
     delete = ''
     if len(all_songs[at_key]) > 1 and at_key not in whitelisted:
         print('These look the same:')
         i = 0
         for file in all_songs[at_key]:
-            print(f'{i}. ', file)
-            i += 1
+            print(file)
 
         # Use of --ask flag
         if ASK:
@@ -199,31 +211,18 @@ for at_key in all_songs:
             else:
                 try:
                     delete = input('Delete or whitelist? ')
+                    delete = delete.strip()
                 except (KeyboardInterrupt, EOFError):
-                    break
-            delete = delete.strip()
-
-        elif len(delete) == 1 and delete[0] == 'q':
-            break
-
-        dw = ''
-        num = 0
-        if len(delete) >= 1:
-            dw = delete[0]
-        if len(delete) == 2:
-            num = delete[1]
-            try:
-                num = int(num)
-            except ValueError:
-                print_warning(f'Invalid number: {num}')
-                continue
-            if num < 0 or i < num:
-                print_warning(f'Invalid number: {num}')
-                continue
-
-        if dw == 'w':
-            print('Will whitelist "' + at_key + '"')
-            _whitelist([all_songs[at_key][num]])
-        if dw == 'd':
-            print('Will delete "' + str(all_songs[at_key][num]) + '"')
-            _delete([all_songs[at_key][num]])
+                    delete = ''
+            if delete:
+                if delete[0] == 'q':
+                    sys.exit(0)
+                if delete[0] == 'w':
+                    whitelist.extend(all_songs[at_key])
+                elif delete[0] == 'd':
+                    position = delete[1]
+                    position = int(position)
+                    deletelist.append(all_songs[at_key][position])
+if ASK:
+    _whitelist(whitelist)
+    _delete(deletelist)
