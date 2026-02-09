@@ -65,8 +65,7 @@ void brainfuck(char *argv[], unsigned char *c)
 #endif
 
             /* return pointer to next */
-
-            return;
+            if(*c > 0) while (*(argv[1]) != '[') argv[1]--;
 
             break;
 
@@ -85,7 +84,9 @@ int main(int argc, char *argv[])
 {
     unsigned char *c = malloc(2000 * sizeof(unsigned char));
 
-    if (argc == 2 && brainfuck(argv, c))
+    if (argc == 2) {
+        brainfuck(argv, c);
         return 0;
+        }
     return 1;
 }
