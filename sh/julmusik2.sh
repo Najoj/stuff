@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # Re-write of julmusik.sh without flock
+# shellcheck disable=SC1091
 source "${HOME}/src/utils.sh"
 
 # Not before December
@@ -11,15 +12,18 @@ if [[ $MONTH -lt 12 ]]; then
         exit 1
 elif [[ $DAY -gt 24 ]]; then
         echo "Julafton har redan varit, dumbom!"
-        exit 1
 fi
 
 # Song frequency changes
-FREQ_L=12
-FREQ_H=6
+FREQ_L=10   # low
+FREQ_M=5    # midd
+FREQ_H=15   # high
+
 if [[ $DAY -le 12 ]]; then
         FREQ=$FREQ_L
 elif [[ $DAY -le 24 ]]; then
+        FREQ=$FREQ_M
+else
         FREQ=$FREQ_H
 fi
 
@@ -42,34 +46,22 @@ N=$(sort -u "$JULLISTA" | sort -u | wc -l)
 I=0
 sort -u "$JULLISTA" | shuf | while read -r file; do
         ((I++))
-        printf "\r%d / %d. %s" "$I" "$N" "$file"
+        printf "%d / %d. %s\n" "$I" "$N" "$file"
         if [[ -e "/media/musik/$file" ]]; then
                 mpc insert "$file"
-                spela_klart
-                POS=$(mpc -f "%position%" current) 
-                spela_klart
-                mpc del "$POS"
-        else 
-                grep -v "$file" "$JULLISTA" > "$TEMP" && mv "$TEMP" "$JULLISTA"
-                >&2 echo -e "\nTog bort $file"
-        fi
-
-        if [[ -e "/media/musik/$file" ]]; then
+                spela_klart "$FREQ"
                 echo "#${file}" >> "$RMPL"
-                for ((i=0; i<FREQ; i++)); do
-                        # shellcheck disable=SC2119
-                        spela_klart
-                        echo -n .
-                done
                 echo ""
         fi
         DAY=$(date +%_d)
         if [[ $DAY -lt 12 ]]; then
                 FREQ=$FREQ_L
         elif [[ $DAY -le 24 ]]; then
+                FREQ=$FREQ_M
+        elif [[ $DAY -le 31 ]]; then
                 FREQ=$FREQ_H
         else
-                echo "Julafton är över för denna gång."
+                echo "Gott nytt år!"
                 exit 1
         fi
 done

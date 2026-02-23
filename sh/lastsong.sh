@@ -22,7 +22,7 @@ echo "Will \"${TODO}\"."
 
 "$PYTHON" "${HOME}"/src/spela_klart.py || exit 1
 
-mpc pause
+mpc -qw pause
 
 "${HOME}"/src/shutdown.sh "$TODO"
 

@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 source "${HOME}/src/utils.sh" || exit 1
 
-SPELA_KLART="${HOME}/src/spela_klart"
 SLEEP="${HOME}/src/sleep"
 MOCP_LOCK="${HOME}/.moc/lock"
 
-cleanup() {
+function _cleanup() {
         MPD_STATE="$(mpc status "%state%")"
         MPD_PAUSE="paused"
         mocp --pause
@@ -22,11 +21,11 @@ cleanup() {
                 exit "$1"
         fi
 }
-trap cleanup SIGINT
+trap _cleanup SIGINT
 
 
 if [[ "$1" == "--kill" ]]; then
-        cleanup 0
+        _cleanup 0
 fi
 
 if [[ "$1" == "--force" ]]; then
@@ -38,16 +37,13 @@ if [[ -e "$MOCP_LOCK" ]]; then
         exit 1
 fi
 
-if ! required_programs mpc mocp sleep trap; then
-        exit 1
-fi
-if ! required_files "$SPELA_KLART"; then
+if ! required_programs mpc mocp sleep trap spela_klart; then
         exit 1
 fi
 
 END=10
 if [[ $# == 1 ]]; then
-        if [[ $1 -ge 0 ]]; then
+        if [[ $1 -ge 0 ]] && is_int "$1"; then
                 END=$1
         else
                 print_warning "\"$1\" är ingen siffra"
@@ -57,7 +53,7 @@ fi
 
 MPD_TIME=$(mpc status "%currenttime%" | sed 's/:/*60+/' | bc)
 if [[ "$MPD_TIME" -ge 1 ]]; then
-        "$SPELA_KLART" || exit 1
+        spela_klart
 fi
 
 mpc -w pause 
@@ -71,7 +67,7 @@ while true; do
                 WAIT=$(mocp -Q "((%ts)-(%cs))" | bc )
                 STATE="$(mocp -Q"%state")"
 
-                if [[ "${STATE}" == "PASUE" ]] && [[ "$WAIT" -lt 60 ]]; then
+                if [[ "${STATE}" == "PASUE" ]] && [[ "$WAIT" -le 60 ]]; then
                         WAIT=60
                 else
                         WAIT=$((WAIT%900))
@@ -87,7 +83,7 @@ while true; do
         
         for((i=0;i<END;i++)) {
                 printf "\r%d / %d " "$i" "$END"
-                "$SPELA_KLART" 
+                spela_klart
         }
         echo ""
 

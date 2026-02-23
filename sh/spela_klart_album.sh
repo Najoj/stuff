@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-command -v mpc 2> /dev/null || exit 1
+command -v spela_klart mpc 2> /dev/null || exit 1
 
-SPELA_KLART="${HOME}/src/spela_klart"
-[ -f "$SPELA_KLART" ]    || exit 1
 
 ORIGINAL="$(mpc -f "%album%" | head -1)"
 CURRENT="$ORIGINAL"
@@ -21,7 +19,7 @@ else
     mpc -f "  === %album% ===" current
     while [ "$ORIGINAL" == "$CURRENT" ]; do
         mpc -f " %track%. %artist% - %title% (%time%)" random off | head -1
-        $SPELA_KLART
+        spela_klart
         CURRENT="$(mpc -f "%album%" | head -1)"
     done
 
