@@ -590,6 +590,7 @@ def fars_dag(year: int) -> Date:
 
     return _fars_dag
 
+
 def valaar(year):
     """
     Only valid from 1994 and forward.
@@ -626,6 +627,39 @@ def valdagen(year):
             increment = len(veckodagar)
 
     return _valdagen
+
+
+
+def foersta_advent(aar):
+    _advent = Date(aar, dec, 24, description='Första advent', red=False, flag=False)
+    while _advent.day_of_week != soen:
+        _advent -= 1
+    _advent -= 7*3
+    return _advent
+
+
+def andra_advent(aar):
+    _advent = Date(aar, dec, 24, description='Andra advent', red=False, flag=False)
+    while _advent.day_of_week != soen:
+        _advent -= 1
+    _advent -= 7*2
+    return _advent
+
+
+def tredje_advent(aar):
+    _advent = Date(aar, dec, 24, description='Tredje advent', red=False, flag=False)
+    while _advent.day_of_week != soen:
+        _advent -= 1
+    _advent -= 7*1
+    return _advent
+
+
+def fjaarde_advent(aar):
+    _advent = Date(aar, dec, 24, description='Fjärde advent', red=False, flag=False)
+    while _advent.day_of_week != soen:
+        _advent -= 1
+    _advent -= 7*0
+    return _advent
 
 
 def main(aar: int):
@@ -685,6 +719,10 @@ def main(aar: int):
         ## December
         Date(1943, dec, 23, description='Drottningens födelsedag', red=False, flag=True),
         # Varje år
+        foersta_advent(aar),
+        andra_advent(aar),
+        tredje_advent(aar),
+        fjaarde_advent(aar),
         Date(0, dec, 10, description='Nobeldagen', red=False, flag=True),
         Date(0, dec, 24, description='Julafton', red=False, flag=False),
         Date(0, dec, 25, description='Juldagen', red=True, flag=True),
