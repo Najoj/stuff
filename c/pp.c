@@ -11,19 +11,30 @@
  *      50 -> 40
  *      50 -> 50
  * to
- *      1 < 10
- *      11 < 20
- *      21 < 30
- *      45 > 40
- *      50 = 50
+ *      1 - 10 = -9
+ *      11 - 20 = -9
+ *      21 - 30 = -9
+ *      34 - 40 = -6
+ *      50 - 50 = 0
+ *      Moved 5 songs.
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main(argc, argv)
         int argc;
         char ** argv;
 {
+        int debug = 0;
+        for(int i = 0; i < argc; i++)
+        {
+                if(!strcmp("--debug", argv[i]))
+                {
+                        fprintf(stderr, "arg: %s\n", argv[i]);
+                    debug++;
+                }
+        }
         int start, stop, end = 0;
 
         int const size = 500;
@@ -35,11 +46,19 @@ int main(argc, argv)
 
         while(2 == scanf("%u -> %u\n", &start, &stop))
         {
-                if(0 == end && moved == 0)
+                if(debug != 0)
+                {
+                        fprintf(stderr, "start: %u\n", start);
+                        fprintf(stderr, "stop: %u\n", stop);
+                }
+                if(0 == end && -1 == moved)
                 {
                         moved++;
                         end = stop;
-                        /*fprintf(stderr, "end: %u\n", end);*/
+                        if(debug != 0)
+                        {
+                                fprintf(stderr, "end: %u\n", end);
+                        }
                 }
                 if(start == end && moved > 0)
                 {
@@ -53,6 +72,11 @@ int main(argc, argv)
                         moved++;
                         list[count] = start;
                         count++;
+                        if(debug != 0)
+                        {
+                                fprintf(stderr, "moved: %u\n", moved);
+                                fprintf(stderr, "count: %u\n", count);
+                        }
                 }
         }
 
@@ -61,4 +85,3 @@ int main(argc, argv)
         
         return 0;
 }
-
