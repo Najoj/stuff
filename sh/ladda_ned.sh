@@ -8,28 +8,29 @@ fi
 source "$UTILS"
 
 DIR="${HOME}/src/ln"
-RET=0
+RET=0   # retries
 
-if ! required_programs deluge-console youtube-dl trurl; then
+if ! required_programs deluge-console convert youtube-dl trurl disown; then
+        sleep 5
         exit 1
 fi
 
 # shellcheck disable=SC2068
 for URL in $@; do
         PRET=$RET
-        URL="$(trurl --trim query=fbclid "$URL")"
         if [[ "${URL}" =~ magnet:\? ]] ||
                 [[ "${URL}" =~ http(s)?://(.*)\.torrent ]]; then
                 deluge-console "add \"${URL}\""
                 TXT="${URL}"
         else
+                URL="$(trurl --set scheme=https "$URL")"
+                URL="$(trurl --trim query=fbclid "$URL")"
 
                 if ! trurl --verify "$URL"; then
                         print_warning "\"$URL\" is invalid"
                         break
                 fi
 
-                URL=$(trurl --set scheme=https "$URL")
                 if [[ "${URL}" =~ http(s?):\/\/open\.spotify\.com\/(artist|track|album)\/[A-Za-z0-9]{10}(\\?.*)? ]]; then
                              "${DIR}"/spotify.sh "${URL}" || RET=$((RET + 1))
                              if [ "$?" == 3 ]; then

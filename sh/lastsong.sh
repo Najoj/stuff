@@ -8,8 +8,7 @@ else
 	TODO=$1
 fi
 
-if ! required_files "${HOME}/src/spela_klart"	\
-                    "${HOME}/src/shutdown.sh"; then
+if ! required_files "${HOME}/src/shutdown.sh"; then
                     exit 1
 elif ! required_files "${HOME}/.mython/bin/python"; then
         PYTHON=${HOME}/.mython/bin/python
@@ -20,7 +19,7 @@ fi
 
 echo "Will \"${TODO}\"."
 
-"$PYTHON" "${HOME}"/src/spela_klart.py || exit 1
+run_python "${HOME}"/src/spela_klart.py || exit 1
 
 mpc -qw pause
 

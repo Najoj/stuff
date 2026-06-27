@@ -8,6 +8,6 @@ elif [[ "$1" =~ http(s)?://.*.(PNG|png|jpg|gif|jpeg) ]]; then
 
 else
         echo "Unsupportet URL. Opens i Firefox."
-        firefox "$1" &> /dev/null &
+        librewolf "$1" &> /dev/null &
 fi
 exit $?

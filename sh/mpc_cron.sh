@@ -58,12 +58,11 @@ LENGTH_BEFORE=$(mpc playlist | wc -l)
 current_position=$(mpc -f "%position%" current)
 original_last_file=$(mpc -f "%file%" playlist | tail -n1)
 echo "Lägger in spelade från .osorterat:"
+cd /media/musik/ && \
 mpc -f "%file%" playlist | \
         head -n $((current_position-1)) | \
         grep --color=never ".osorterat/" | \
         while read -r file; do
-                cd /media/musik/ || break
-
                 DIR="$(dirname "$file")"
                 BASE="$(basename "$file")"
 
@@ -76,7 +75,7 @@ mpc -f "%file%" playlist | \
 
                 mpc add "${REAL#/media/musik/}"
         done
-move_up "$original_last_file"
+#move_up "$original_last_file"
 
 ################################################################################
 #  Add new and shuffle

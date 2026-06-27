@@ -43,9 +43,14 @@ mpc -f "%position% $what" playlist | \
                 ((n=c+i))
                 ((i+=j))
                 printf "%'d -> %'d\n" "$pos" "$n"
-                mpc -qw mv "$pos" "$n"
-                success=true
-                sleep 0.1
+                if [[ $n -ge $pos ]]; then
+                        continue
+                elif mpc -qw mv "$pos" "$n"; then
+                        success=true
+                else
+                        success=false
+                        exit 1
+                fi
         fi
 done
 
