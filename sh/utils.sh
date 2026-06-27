@@ -118,6 +118,9 @@ function sanitize_regex() {
 
 # Waits for current song in MPD to finish
 function spela_klart() {
+        local num
+        local _iterations
+
         num=$1
         if [[ -z "${num}" ]]; then
                 ((num=1))
@@ -131,3 +134,95 @@ function spela_klart() {
 function is_int() {
         [[ "$1" =~ ^-?[0-9]+$ ]]
 }
+
+# executes command and logs
+function run_log() {
+        local logfile
+        local lineno
+        local command
+
+        if [[ -f "$1" ]] || touch "$1"; then
+                logfile="$1"
+        else
+                print_warning "$1 does not exist"
+                logfile="/dev/stderr"
+        fi
+
+        if is_int "$2"; then
+                lineno=$2
+        else
+                lineno=0
+        fi
+
+        if [[ $# -gt 2 ]]; then
+                shift 2
+                command=("${@}")
+
+                echo "${lineno}: ${command[*]}" >> "$logfile"
+                if "${command[@]}"; then
+                        true
+                else
+                        print_warning "FAILED EXECTUTON: $?"
+                        false
+                fi >> "$logfile"
+        else
+                echo "Error running: run_log \"$*\"" >> "$logfile"
+                false
+        fi
+}
+
+function progress_bar() {
+        if is_int "$1" && is_int "$2" && [[ $1 -le $2 ]] && [[ $1 -ge 0 ]]; then
+                local current=$1
+                local len=$2
+                local perc_done=$((100 * current / len))
+                local suffix=" $current/$len ($perc_done%)"
+                local length=$((80 - 2))
+                local num_bars=$((perc_done * length / 100))
+
+                local i
+                local s='['
+
+                for ((i = 0; i < num_bars; i++)); do
+                        s+='#'
+                done
+                for ((i = num_bars; i < length; i++)); do
+                        s+=' '
+                done
+
+                s+=']'
+
+                >&2 printf "\r%s %'d / %'d (%d%%)" "$s" "$current" "$len" "$perc_done"
+        else
+                return 1
+        fi
+}
+
+# Unique lines in file
+function unique_lines() {
+        local file
+        local temp
+        local total
+        local c
+        file="$1"
+        temp="$(mktemp)"
+
+        if [[ -e "$file" ]]; then
+                total="$(wc -l "$file" | tr -cd "[0-9]")"
+                ((c=0))
+                progress_bar "$c" "$total"
+
+                while read -r line; do
+                        ((c++))
+                        progress_bar "$c" "$total"
+                        sane="$(sanitize_regex "$line")"
+                        if ! grep -qE "$sane" "$temp"; then
+                                echo "$line" >> "$temp"
+                        fi
+                done < "$file"
+                mv -f "$temp" "$file"
+        else
+                return 1
+        fi
+}
+
