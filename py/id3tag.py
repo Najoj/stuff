@@ -5,12 +5,18 @@
 Remove all tags but artist and title from given file. Only tested with Vorbis
 files.
 
-Will make an attempt of capitalising letters propely.
+Will make an attempt of capitalising letters properly.
 """
 
 import mutagen
 import os
 import sys
+
+# Tags of interest
+INFO = 'info'  # Extra parenthesized information (e. g. live, cover, etc.)
+TITLE = 'title'  # Name of track
+ARTIST = 'artist'  # Name of artist or band
+ARTISTSORT = 'artistsort'  # Sortable name of artist (e. g. 'Beatles, The' and 'Lennon, John')
 
 
 def parent(word: str, first_word: bool) -> str:
@@ -149,20 +155,20 @@ def main():
             if not file:
                 print(f'{arg} is not a mutagen.File')
                 continue
-            elif 'artist' not in file:
+            elif ARTIST not in file:
                 print(f'Artist tag is missing from {arg}')
                 continue
-            elif 'title' not in file:
+            elif TITLE not in file:
                 print(f'Title tag is missing from {arg}')
                 continue
 
             changed = False
             for tag in file:
-                if tag not in ('artist', 'title', 'artistsort', 'info'):
+                if tag not in (ARTIST, TITLE, ARTISTSORT, INFO):
                     print(f'{arg}: Remove tag {tag}')
                     file.pop(tag)
                     changed = True
-                elif tag == 'info':
+                elif tag == INFO:
                     # Keep as is
                     pass
                 else:
@@ -173,26 +179,26 @@ def main():
                         changed = True
                         print(f'{before} -> {after}')
 
-            artist = file['artist'][0]
+            artist = file[ARTIST][0]
             artist_split = artist.split(' ')
             if artist_split[0] == 'The':
                 artistsort = ' '.join(artist_split[1:]) + ', The'
-                if 'artistsort' not in file:
-                    file['artistsort'] = []
-                file['artistsort'][0] = artistsort
+                if ARTISTSORT not in file:
+                    file[ARTISTSORT] = []
+                file[ARTISTSORT][0] = artistsort
                 changed = True
 
             elif artist_split[0] == 'A':
                 artistsort = ' '.join(artist_split[1:]) + ', A'
-                if 'artistsort' not in file:
-                    file['artistsort'] = []
-                file['artistsort'][0] = artistsort
+                if ARTISTSORT not in file:
+                    file[ARTISTSORT] = []
+                file[ARTISTSORT][0] = artistsort
                 changed = True
 
-            if 'artistsort' in file:
-                if (('artist' in file and file['artistsort'] == file['artist'])
-                    or (not file['artistsort'][0].strip())):
-                    file.pop('artistsort')
+            if ARTISTSORT in file:
+                if ((ARTIST in file and file[ARTISTSORT] == file[ARTIST])
+                    or (not file[ARTISTSORT][0].strip())):
+                    file.pop(ARTISTSORT)
             
             # Save tags
             file.save()
@@ -205,39 +211,40 @@ def main():
                     artist = at[0]
                     title = at[1].rsplit('.')[0]
 
-                    changed = (artist == file['artist'][0]) or (title == file['title'][0])
+                    changed = (artist == file[ARTIST][0]) or (title == file[TITLE][0])
 
             if changed:
                 # New filename
                 ext = arg.split('.')[-1]
 
-                artist = file['artist'][0] 
-                if 'artistsort' in file and file['artistsort'][0]:
-                    artist = file['artistsort'][0] 
-                title = file['title'][0]
+                artist = file[ARTIST][0] 
+                if ARTISTSORT in file and file[ARTISTSORT][0]:
+                    artist = file[ARTISTSORT][0] 
+                title = file[TITLE][0]
 
                 info = ''
-                if 'info' in file:
-                    info = ' ({})'.format(file['info'][0])  # note the space
+                if INFO in file:
+                    info = ' ({})'.format(file[INFO][0])  # note the space
 
                 artist_split = artist.split(' ')
                 if artist_split[0] == 'The':
                     artist = ' '.join(artist_split[1:]) + ', The'
-                    file['artistsort'][0] = artist
+                    file[ARTISTSORT][0] = artist
 
                 filename =  f'{artist} - {title}{info}.{ext}' 
 
-                answer = ''
-                while answer not in ('y', 'n'):
-                    answer = input(f'Move {arg} to {filename}? [y/n]').lower()
-                if answer == 'y':
-                    try:
-                        if os.path.exists(filename):
-                            print(f'{filename} already exist. Will not overwrite.')
-                        else:
-                            os.rename(arg, filename)
-                    except OSError:
-                        print(f'Could not write to {filename}.')
+                if filename != arg:
+                    answer = ''
+                    while answer not in ('y', 'n'):
+                        answer = input(f'Move {arg} to {filename}? [y/n]').lower()
+                    if answer == 'y':
+                        try:
+                            if os.path.exists(filename):
+                                print(f'{filename} already exist. Will not overwrite.')
+                            else:
+                                os.rename(arg, filename)
+                        except OSError:
+                            print(f'Could not write to {filename}.')
 
 
 if '__main__' == __name__:
