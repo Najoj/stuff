@@ -42,7 +42,7 @@ function clear_list {
 
 echo -e "\n================================================================================"
 echo -n "Uppdaterar databas..."
-mpc -w update > /dev/null || exit 1
+mpc -qw update || exit 1
 echo " klar!"
 
 LENGTH=$(mpc playlist | wc -l)
@@ -88,8 +88,7 @@ cd "$DIR" || exit 1
 if $OSORT; then
         echo -e "\n================================================================================"
         echo -n "Undersöker .osorterat-mappen... "
-        _LEN=$(find "${DIR}/.osorterat/" -maxdepth 1 -type f -and \( -name "*.flac" -or -name "*.ogg" \) | wc -l)
-        if ls "${DIR}/.osorterat/"*.ogg > /dev/null || ls "${DIR}/.osorterat/"*.flac > dev/null; then
+        if ls "${DIR}/.osorterat/"*.ogg > /dev/null || ls "${DIR}/.osorterat/"*.flac > /dev/null; then
                 cd "${DIR}/.osorterat/" || exit 1
 
                 LIMITA=$(( (LIMIT-LENGTH) / 2))
@@ -130,7 +129,7 @@ find . -maxdepth 1 -type f -name 'The *' -a '(' -name '*\.flac' -o -name '*\.ogg
 while read -r band; do
         newband="${band#./The }" 
         newband="${newband// - /, The - }"
-        mv -vn "${band}" "${newband}"    && \
+        mv -vn -- "${band}" "${newband}"    && \
         mpc -wq update                  && \
         mpc -w add "${newband#./}"
 done
@@ -139,7 +138,7 @@ done
 find . -maxdepth 1 -type d -name 'The *' | \
 while read -r dir; do
         newdir="${dir#./The }, The"
-        mv -vn "${dir}" "${newdir}"  && \
+        mv -vn -- "${dir}" "${newdir}"  && \
         mpc -wq update              && \
         mpc -w add "${newdir#./}"
 done
@@ -149,38 +148,49 @@ done
 cd "$DIR" || exit 1
 echo -e "\n================================================================================"
 echo "Undersöker om några band redan har mappar."
-find . -maxdepth 1 -type f -name \*" - "\* | sed -E 's/ - .+//' | sort -u | \
-while read -r band; do
+
+mapfile -t bands < <(find . -maxdepth 1 -type f -name \*" - "\* | sed -E 's/ - .+//' | sort -u )
+((bandc=0))
+for band in "${bands[@]}"; do
+        progress_bar "$bandc" "${#bands[@]}"
+
         if ls -d "${band}/" &> /dev/null ; then
-                mv -uvn "${band} - "* "${band}/"
+                mv -uvn -- "${band} - "* "${band}/"
                 cd "${band}" || break
                 # Remove inital ./
                 band=${band#./}
                 find . -name "${band} - "\* | sed -E 's/.+ - //' | \
                 while read -r title; do
-                        mv -vn "${band} - ${title}" "${title}"   && \
+                        mv -vn -- "${band} - ${title}" "${title}"   && \
                         mpc -wq update                          && \
                         mpc -w add "${band#./}/${title}"
                 done
                 mpc -wq update
         fi
+
         cd "$DIR" || exit 2
+        ((bandc++))
+        progress_bar "$bandc" "${#bands[@]}"
 done
+echo
 
 #################################
 
 cd "$DIR" || exit 1
 echo -e "\n================================================================================"
 echo "Undersöker om några band ska ha mappar."
-find . -maxdepth 1 -name \*" - "\* -type f | \
-    grep -Ev '.(omslag|spellistor|osorterat|torrenter)' | \
-    sed 's/ - /\n/' | grep -Ev "\\.(ogg|flac)"$ | sort -g | uniq  | \
-while read -r band; do
+
+mapfile -t bands < <(find . -maxdepth 1 -name \*" - "\* -type f | \
+        grep -Ev '.(omslag|spellistor|osorterat|torrenter)' | \
+        sed 's/ - /\n/' | grep -Ev "\\.(ogg|flac)"$ )
+((bandc=0))
+for band in "${bands[@]}"; do
+        progress_bar "$bandc" "${#bands[@]}"
         N=$(find . -maxdepth 1 -name "${band#./} - *\\.*" -type f | wc -l)
         if [ "$N" -ge "$DIRLIMIT" ]; then
                 first=true
                 mkdir "${band}"
-                mv -vn "${band} - "* "${band}/" || break
+                mv -vn -- "${band} - "* "${band}/" || break
                 cd "${band}" || exit 1
                 find . -maxdepth 1 -type f | cut -c 3- | while read -r bandtitle; do
                         # shellcheck disable=SC2001
@@ -203,21 +213,27 @@ while read -r band; do
                 done
         fi
         cd "$DIR" || exit 2
+        ((bandc++))
+        progress_bar "$bandc" "${#bands[@]}"
 done
+echo
 
 #################################
 
 cd "$DIR" || exit 2
 echo -e "\n================================================================================"
 echo "Undersöker om några låtar ska nedgraderas."
-find . -maxdepth 1 -type d -and -not -name '.*' -and -not -path "./lost+found" | \
-while read -r band; do
+
+mapfile -t bands < <(find . -maxdepth 1 -type d -and -not -name '.*' -and -not -path "./lost+found")
+((bandc=0))
+for band in "${bands[@]}"; do
+        progress_bar "$bandc" "${#bands[@]}"
         cd "${band}" || continue
         N=$(find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | wc -l)
         if ! ls ./*/ &> /dev/null && [ "$N" -lt "$DIRLIMIT" ]; then
                 first=true
-                grep -Fv "${band#./}" "${FORD}" > "${TMP}" && mv "$TMP" "$FORD"
-                grep -Fv "${band#./}" "${FRAM}" > "${TMP}" && mv "$TMP" "$FRAM"
+                grep -Fv "${band#./}" "${FORD}" > "${TMP}" && mv -- "$TMP" "$FORD"
+                grep -Fv "${band#./}" "${FRAM}" > "${TMP}" && mv -- "$TMP" "$FRAM"
                 find . -maxdepth 1 -type f -name "*.*" 2> /dev/null | \
                 cut -c 3- | \
                 while read -r title; do
@@ -234,7 +250,10 @@ while read -r band; do
         fi
         cd "$DIR" || exit 2
         rmdir "${band}" 2> /dev/null
+        ((bandc++))
+        progress_bar "$bandc" "${#bands[@]}"
 done
+echo
 
 #################################
 
