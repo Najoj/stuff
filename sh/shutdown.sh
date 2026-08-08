@@ -9,11 +9,11 @@ if ! flock -n 8; then
         exit 1
 fi
 
-REQ_PROGRAMS="mpc mocp whiptail systemctl dbus-send mocp xscreensaver-command"
+REQ_PROGRAMS=(mpc mocp whiptail systemctl dbus-send mocp xscreensaver-command)
 REQ_SCRIPTS="${HOME}/src/ch_vol.sh"
 SLEEP_TIME="2m"
 
-if ! required_programs $REQ_PROGRAMS; then
+if ! required_programs "${REQ_PROGRAMS[@]}"; then
         exit 1
 fi
 if ! required_files "$REQ_SCRIPTS"; then
