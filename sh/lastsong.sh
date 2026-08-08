@@ -8,14 +8,7 @@ else
 	TODO=$1
 fi
 
-if ! required_files "${HOME}/src/shutdown.sh"; then
-                    exit 1
-elif ! required_files "${HOME}/.mython/bin/python"; then
-        PYTHON=${HOME}/.mython/bin/python
-else
-        PYTHON=python3
-fi
-
+required_files "${HOME}/src/shutdown.sh" || exit 1
 
 echo "Will \"${TODO}\"."
 
