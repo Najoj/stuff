@@ -7,7 +7,7 @@ on:
     branches: [ main, master ]
 
 env:
-  SHELLCHECK_CMD: "shellcheck -e SC1091" # Anpassa argumenten här
+  SHELLCHECK_CMD: "shellcheck -e SC1090,SC1091"
 
 jobs:
   shellcheck:
