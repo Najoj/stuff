@@ -40,11 +40,14 @@ def main():
         # Connect to the MPD server
         client = MPDClient()
         client.connect("localhost", 6600)
-        client.socket_timeout = 10 # seconds
+        client.socket_timeout = 1 # seconds
         title_string = parser(client, str(sys.argv[1]))
 
     except TypeError:
         # Failure. Probably unable to connect to the MPD server.
+        return_value = 1
+        title_string = "Could not connect to the MPD server"
+    except musicpd.ConnectionError:
         return_value = 1
         title_string = "Could not connect to the MPD server"
 
@@ -83,4 +86,8 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Exception as e:
+        print(e)
+
