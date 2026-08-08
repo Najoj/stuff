@@ -1,9 +1,20 @@
 #!/usr/bin/env bash
 
+source "${HOME}/src/utils.sh" || exit 1
+LOG="${HOME}/.fördela.log"
+
+date >> "$LOG"
+echo "$@" >> "$LOG"
+
 if [[ "$1" == "--no-update" ]]; then
         shift
 else
         mpc -q update
+fi
+
+if [ $# -eq 0 ]; then
+        >&2 echo "Arguments must exist"
+        exit 1
 fi
 
 artist="(.+)"
@@ -12,11 +23,6 @@ album="(.*)"
 time="(.+)"
 freq="(.*)"
 file="(.+)"
-
-if [ $# -eq 0 ]; then
-        >&2 echo "Arguments must exist"
-        exit 1
-fi
 
 # Arguments
 no_args="true"
@@ -44,7 +50,8 @@ mpc_format="%artist% - %title% (%album%) %time% (%file%)"
 grep_format="$artist - $title \($album\) $time \($file\)"
 
 
-playlist_length=$(mpc playlist | wc -l)
+playlist_length=$(mpc -f "%position%" playlist | wc -l)
+echo "playlist_length = ${playlist_length}" >> "$LOG"
 current_position=$(mpc -f "%position%" current)
 
 occurance=$(mpc -f "$mpc_format" playlist | \
@@ -70,8 +77,10 @@ if [ -z ${freq+x} ]; then
 else
         f=$(echo "$diff / $occurance" | bc -l )
 fi
+f="${f%.*}"
 
 last_song="$(mpc -f "%file%" playlist | tail -1)"
+echo "last_song = ${last_song}" >> "$LOG"
 # Move all matching to the end
 mpc -f "%position% ${mpc_format}" playlist  | \
         tail -n ${diff} | \
@@ -79,22 +88,25 @@ mpc -f "%position% ${mpc_format}" playlist  | \
         cut -d" " -f1   | \
         tac             | \
         while read -r pos; do
-                mpc mv "$pos" "$playlist_length"
+                run_log "$LOG" "$LINENO" mpc -wq mv "$pos" "$playlist_length" 
                 echo "$pos -> $playlist_length"
         done
 # Move up last songs
 i=1
-n=$(echo "$c + $i * $f" | bc | cut -d'.' -f1)
+n="$(echo $((c + i * f)) | cut -d'.' -f1)"
+echo "last_song = ${last_song}" >> "$LOG"
+mpc -f "%file%" playlist | tail -1 >> "$LOG"
 while [ "$(mpc -f "%file%" playlist | tail -1)" != "${last_song}" ]; do
         if [ "$n" -gt "$playlist_length" ]; then
+                run_log "$LOG" "$LINENO" echo "Break: $n -gt $playlist_length"
                 break
         else
                 pos=${playlist_length}
-                mpc -wq mv "$pos" "$n"
+                run_log "$LOG" "$LINENO" mpc -wq mv "$pos" "$n"
                 echo "$pos -> $n"
                 # Next position
                 ((i++))
-                n=$(echo "$c + $i * $f" | bc | cut -d'.' -f1)
+                n=$(echo $((c + i * f)) | cut -d'.' -f1)
         fi
 done
 
