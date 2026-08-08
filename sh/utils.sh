@@ -50,6 +50,13 @@ function required_files() {
 # Compare sizes of the given inputs. Keep the greater file at $2.
 # $2 could be a directory, then check for the same basename of $1 in $2.
 function car () {
+    local FORCE
+    local file_1
+    local file1_size
+    local file_2
+    local file2_size
+    local filename
+
     # FORCE is used as flag by mv. If -f flag is not given, use interactive (-i).
     FORCE=-i
     if [[ $1 == "-f" ]]; then
@@ -103,8 +110,8 @@ function car () {
 }
 
 function run_python() {
-        SCRIPT="$1"
-        PYTHON="${HOME}/.mython/bin/python3"
+        local SCRIPT="$1"
+        local PYTHON="${HOME}/.mython/bin/python3"
         if ! [[ -e "$PYTHON" ]]; then
                 print_warnig "Python not found: $PYTHON"
                 PYTHON="python3"
