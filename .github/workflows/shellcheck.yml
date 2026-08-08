@@ -2,9 +2,9 @@ name: ShellCheck Changed Files
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 env:
   SHELLCHECK_CMD: "shellcheck -e SC1090,SC1091"
