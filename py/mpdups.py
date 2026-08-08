@@ -9,6 +9,8 @@ import musicpd
 
 DEBUG = False
 
+DELETE_FILE = os.getenv('HOME')
+DELETE_FILE = os.path.join(DELETE_FILE, '.mpc_delete_me')
 
 class Song:
     def __init__(self, filename, _at_key, list_position):
@@ -47,37 +49,10 @@ def _whitelist(files: list) -> int:
 
 
 def _delete(files: list) -> int:
-    _ogg = '.ogg'
-    _flac = '.flac'
-    nof_deleted = 0
-
-    ogg_files = [f for f in files if str(f)[-len(_ogg):] == _ogg]
-    flac_files = [f for f in files if str(f)[-len(_flac):] == _flac]
-    flac_files = sorted(flac_files, key=lambda x: x.position, reverse=True)
-
-    client.connect()
-    for flac_file in flac_files:
-        if DEBUG:
-            print_warning('Delete: ' + flac_file.position)
-        else:
-            _client_file = client.stats()['file'][flac_file.position]
-            assert client.stats()['file'][flac_file.position] == flac_file.filename, f'found {_client_file} instead of {flac_file.filename}'
-            client.delete(flac_file.position)
-    client.close()
-    client.disconnect()
-
-    for ogg_file in ogg_files:
-        full_file = os.path.join(music_directory, str(ogg_file))
-        if DEBUG:
-            print_warning('Delete: ' + full_file)
-        else:
-            full_path = os.path.join(music_directory, ogg_file.filename)
-            try:
-                os.remove(full_path)
-            except FileNotFoundError:
-                print_warning(f'{full_path} was not found')
-
-    return nof_deleted - len(files)
+    with open(DELETE_FILE, 'a+') as f:
+        for _file in files:
+            f.write(str(_file) + os.linesep)
+            
 
 
 def sanitize(string: str) -> str:
@@ -119,6 +94,8 @@ else:
 # Must be customised
 _CONFIG_FILE = os.path.join(os.getenv('HOME'), '.mpdconf')
 assert os.path.isfile(_CONFIG_FILE), f'Config file {_CONFIG_FILE} not found'
+assert os.path.isfile(DELETE_FILE), f'{DELETE_FILE} does not exist'
+
 
 # get port, address, & music_directory
 config = None
@@ -202,7 +179,8 @@ for at_key in all_songs:
         print('These look the same:')
         i = 0
         for file in all_songs[at_key]:
-            print(file)
+            print(i, file)
+            i += 1
 
         # Use of --ask flag
         if ASK:
