@@ -32,7 +32,7 @@ if $SANITIZE; then
 fi
 
 c=$(mpc -f "%position%" current)
-((j=$((RANDOM % 7 + 5))))
+((j=$((RANDOM % 4 + 4))))
 ((i=j))
 
 success=false
