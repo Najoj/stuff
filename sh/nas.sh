@@ -50,7 +50,7 @@ if $RESTORE; then
         if $OSORT; then
                 $RSYNC -az -e "ssh -i ${HOME}/.ssh/truenas-jojan.private" --recursive --delete "${ADDR}:/mnt/default/.osorterat" /media/musik/.osorterat
         else
-                $RSYNC -az -e "ssh -i ${HOME}/.ssh/truenas-jojan.private" --recursive --delete "${ADDR}:/mnt/default/" /media/musik ${HOME}/bilder
+                $RSYNC -az -e "ssh -i ${HOME}/.ssh/truenas-jojan.private" --recursive --delete "${ADDR}:/mnt/default/" /media/musik "${HOME}/bilder"
         fi
 
 elif [[ $((NOW-3600)) -ge $((SMALL+DAY)) ]]; then
@@ -62,10 +62,10 @@ elif [[ $((NOW-3600)) -ge $((SMALL+DAY)) ]]; then
 
         if [[ $((NOW-3600)) -ge $((BIG+MONTH)) ]]; then
                 echo "Delete files"
-                $RSYNC -az -e "ssh -i ${HOME}/.ssh/truenas-jojan.private" --recursive --delete /media/musik ${HOME}/bilder "${ADDR}:/mnt/default"
+                $RSYNC -az -e "ssh -i ${HOME}/.ssh/truenas-jojan.private" --recursive --delete /media/musik "${HOME}/bilder" "${ADDR}:/mnt/default"
                 echo "$NOW" > "$FILE"
         elif [[ $((NOW-3600)) -ge $((SMALL+DAY)) ]]; then
-                $RSYNC -az -e "ssh -i ${HOME}/.ssh/truenas-jojan.private" --recursive /media/musik ${HOME}/bilder "${ADDR}:/mnt/default"
+                $RSYNC -az -e "ssh -i ${HOME}/.ssh/truenas-jojan.private" --recursive /media/musik "${HOME}/bilder" "${ADDR}:/mnt/default"
                 echo "$NOW" >> "$FILE"
         fi
 fi | tee -a "$LOG"
