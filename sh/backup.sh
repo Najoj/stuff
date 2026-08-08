@@ -31,15 +31,15 @@ fi
 if [[ $((NOW-3600)) -ge $((BIG+MONTH)) ]]; then
         date
         echo "Delete files"
-        rsync -av --recursive --exclude={'nedladdat'} --delete /home/jojan /mount/backup
-        rsync -av --recursive --delete  /etc                          /mount/backup
-        rsync -av --recursive --delete  /var/lib/dpkg                 /mount/backup
+        rsync -av --recursive --exclude="{'nedladdat'}" --delete /home/jojan /mount/backup
+        rsync -av --recursive --delete  /etc                     /mount/backup
+        rsync -av --recursive --delete  /var/lib/dpkg            /mount/backup
         rsync -av --recursive --delete  /var/lib/apt/extended_states  /mount/backup
         dpkg --get-selection '' > /mount/backup/selections
         echo "$NOW" > "$FILE"
 elif [[ $((NOW-3600)) -ge $((SMALL+DAY)) ]]; then
         date
-        rsync -av --recursive  --exclude={'nedladdat'}       /home/jojan /mount/backup
+        rsync -av --recursive  --exclude="{'nedladdat'}"     /home/jojan /mount/backup
         rsync -av --recursive  /etc                          /mount/backup
         rsync -av --recursive  /var/lib/dpkg                 /mount/backup
         rsync -av --recursive  /var/lib/apt/extended_states  /mount/backup
