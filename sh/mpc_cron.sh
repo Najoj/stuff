@@ -7,8 +7,13 @@ source "${HOME}/src/utils.sh"
 #  the argument is the last one.
 move_up()
 {
+        # If no argument, do nothing and return.
+        if [[ -z "${1+x}" ]]; then
+                return
+        fi
+
         # Move first to position after current
-        if ! mpc -f "%file%" playlist | tail -1 | grep "$1"; then
+        if ! mpc -f "%file%" playlist | tail -1 | grep -F "$1"; then
                 current_position=$(mpc -f "%position%" current)
                 last_position=$(mpc -f "%position%" playlist | tail -1)
                 mpc mv "$last_position" "$((current_position+1))"
@@ -16,12 +21,8 @@ move_up()
         
         # Move the rest randomly
         flytta_upp="${HOME}/src/flytta_upp.sh"
-        # If no argument, do nothing and return.
-        if [[ -z "${1+x}" ]]; then
-                return
-        fi
 
-        current_position=$(mpc -f "%position% %file%" playlist | grep " $1" | cut -d" " -f 1)
+        current_position=$(mpc -f "%position% %file%" playlist | grep -F " $1" | cut -d" " -f 1)
         last_position=$(mpc -f "%position%" playlist | tail -1)
         ((N=last_position-current_position))
 
@@ -58,29 +59,33 @@ LENGTH_BEFORE=$(mpc playlist | wc -l)
 current_position=$(mpc -f "%position%" current)
 original_last_file=$(mpc -f "%file%" playlist | tail -n1)
 echo "Lägger in spelade från .osorterat:"
-cd /media/musik/ && \
-mpc -f "%file%" playlist | \
+cd /media/musik/ || exit 1
+mapfile -t files < <(mpc -f "%file%" playlist | \
         head -n $((current_position-1)) | \
-        grep --color=never ".osorterat/" | \
-        while read -r file; do
-                DIR="$(dirname "$file")"
-                BASE="$(basename "$file")"
+        grep --color=never ".osorterat/")
+((filec=0))
+for file in "${files[@]}"; do
+        progress_bar "$filec" "${#files[@]}"
+        DIR="$(dirname "$file")"
+        BASE="$(basename "$file")"
 
-                newfile="$DIR/../$BASE"
-                car "/media/musik/$file" "/media/musik/$newfile"
+        newfile="$DIR/../$BASE"
+        car "/media/musik/$file" "/media/musik/$newfile"
 
-                mpc -qw update
-                REAL="$(realpath "$DIR/../$BASE")"
-                echo "${REAL_PATH#/media/musik/}" 
+        mpc -qw update
+        REAL="$(realpath "$DIR/../$BASE")"
+        #echo "${REAL_PATH#/media/musik/}" 
 
-                mpc add "${REAL#/media/musik/}"
-        done
-#move_up "$original_last_file"
+        mpc add "${REAL#/media/musik/}"
+        ((filec++))
+        progress_bar "$filec" "${#files[@]}"
+done
+move_up "$original_last_file"
 
 ################################################################################
 #  Add new and shuffle
 original_last_file=$(mpc -f "%file%" playlist | tail -n1)
-"${HOME}/src/rensa_upp.sh" -o
+"${HOME}/src/rensa_upp.sh" # -o
 move_up "$original_last_file"
 
 
