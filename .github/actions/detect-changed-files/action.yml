@@ -1,0 +1,34 @@
+name: 'Detect Changed Files'
+description: 'Checks if files matching a pattern or the workflow file itself have changed'
+
+inputs:
+  file_pattern:
+    description: 'File path pattern for source files (e.g. **/*.sh)'
+    required: true
+  workflow_path:
+    description: 'Path to the triggering workflow file'
+    required: true
+
+outputs:
+  target_changed:
+    description: 'Whether any target source files changed'
+    value: ${{ steps.changed-files.outputs.target_any_changed }}
+  workflow_changed:
+    description: 'Whether the workflow file changed'
+    value: ${{ steps.changed-files.outputs.workflow_any_changed }}
+  changed_files:
+    description: 'Space-separated list of changed target source files'
+    value: ${{ steps.changed-files.outputs.target_all_changed_files }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Identify file changes
+      id: changed-files
+      uses: tj-actions/changed-files@v45
+      with:
+        files_yaml: |
+          target: |
+            ${{ inputs.file_pattern }}
+          workflow: |
+            ${{ inputs.workflow_path }}
