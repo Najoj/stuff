@@ -7,6 +7,16 @@
 #
 ###############################################################################
 
+# If the argument is an integer
+function is_int() {
+        [[ "$1" =~ ^-?[0-9]+$ ]]
+}
+
+# If the argument is an integer
+function is_empty() {
+        [[ -z "$1" ]]
+}
+
 function print_warning() {
         # Print to stderr
         >&2 echo "$@"
@@ -130,10 +140,6 @@ function spela_klart() {
         done
 }
 
-# If the argument is an integer
-function is_int() {
-        [[ "$1" =~ ^-?[0-9]+$ ]]
-}
 
 # executes command and logs
 function run_log() {
@@ -172,12 +178,12 @@ function run_log() {
 }
 
 function progress_bar() {
-        if is_int "$1" && is_int "$2" && [[ $1 -le $2 ]] && [[ $1 -ge 0 ]]; then
+        LEN="${BAR_LEN:-80}"
+        if is_int "$1" && is_int "$2" && [[ $1 -le $2 ]] && [[ $1 -ge 0 ]] && [[ $2 -gt 0 ]]; then
                 local current=$1
                 local len=$2
                 local perc_done=$((100 * current / len))
-                local suffix=" $current/$len ($perc_done%)"
-                local length=$((80 - 2))
+                local length=$((LEN - 2))
                 local num_bars=$((perc_done * length / 100))
 
                 local i
@@ -208,14 +214,14 @@ function unique_lines() {
         temp="$(mktemp)"
 
         if [[ -e "$file" ]]; then
-                total="$(wc -l "$file" | tr -cd "[0-9]")"
+                total="$(wc -l "$file" | tr -cd "0-9")"
                 ((c=0))
                 progress_bar "$c" "$total"
 
                 while read -r line; do
                         ((c++))
                         progress_bar "$c" "$total"
-                        sane="$(sanitize_regex "$line")"
+                        sane="^$(sanitize_regex "$line")$"
                         if ! grep -qE "$sane" "$temp"; then
                                 echo "$line" >> "$temp"
                         fi
