@@ -2,12 +2,12 @@ name: Pylint Changed Files
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
 
 env:
-  PYLINT_CMD: "pylint --disable=C0114,C0115" # Anpassa argumenten här
+  PYLINT_CMD: "pylint"
 
 jobs:
   pylint:
@@ -46,6 +46,7 @@ jobs:
             echo "Workflow changed – running Pylint on ALL .py files..."
             find . -type f -name "*.py" -not -path "*/.*" | xargs $PYLINT_CMD
           else
-            echo "Running Pylint on changed .py files..."
+            echo "Running Pylint on changed .py files: ${{ steps.changed-files.outputs.changed_files }}"
             $PYLINT_CMD ${{ steps.changed-files.outputs.changed_files }}
           fi
+

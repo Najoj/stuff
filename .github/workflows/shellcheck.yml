@@ -2,9 +2,9 @@ name: ShellCheck Changed Files
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
 
 env:
   SHELLCHECK_CMD: "shellcheck -e SC1090,SC1091"
@@ -35,6 +35,6 @@ jobs:
             echo "Workflow changed – running ShellCheck on ALL .sh files..."
             find . -type f -name "*.sh" -exec $SHELLCHECK_CMD {} +
           else
-            echo "Running ShellCheck on changed .sh files..."
+            echo "Running ShellCheck on changed .sh files: ${{ steps.changed-files.outputs.changed_files }}"
             $SHELLCHECK_CMD ${{ steps.changed-files.outputs.changed_files }}
           fi
