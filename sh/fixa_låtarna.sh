@@ -11,7 +11,7 @@ find . -name "* ($i).ogg" -type f | \
                         new="${old% ("$i").ogg} ($j).ogg"
                         if ! [ -f "$new" ]; then
                                 INSERT="${new#./}"
-                                echo "$INSERT"
+                                #echo "$INSERT"
                                 mv -nv "$old" "$new"
                                 mpc -qw update
                                 mpc add "$INSERT"
@@ -26,7 +26,7 @@ find . -name "* ($i).ogg" -type f | \
 
                         if ! [ -f "$new" ]; then
                                 INSERT="${new#./}"
-                                echo insert "$INSERT"
+                                #echo insert "$INSERT"
                                 mv -nv "$old" "$new"
                                 mpc -qw update
                                 mpc add "$INSERT"
