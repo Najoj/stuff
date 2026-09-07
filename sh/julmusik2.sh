@@ -42,7 +42,7 @@ TEMP=$(mktemp)
 sort -u "$JULLISTA" > "$TEMP"
 mv -vn "$TEMP" "$JULLISTA"
 
-N=$(sort -u "$JULLISTA" | sort -u | wc -l)
+N=$(sort -u "$JULLISTA" | wc -l)
 I=0
 sort -u "$JULLISTA" | shuf | while read -r file; do
         ((I++))
