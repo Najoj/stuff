@@ -2,32 +2,33 @@
 #
 source "${HOME}/src/utils.sh"
 
-if ! required_programs trurl youtube-dl; then
+if ! required_programs trurl yt-dlp; then
         exit 1
 fi
 
+((exit_status=0))
+
 function manage
 {
-        url="$(trurl --qtrim "*" "$url")"
-        base=$(echo "${url##*//}" | cut -d\. -f1)
-        if [ -z "${1+x}" ]; then
-                return  1
-        fi
+        local url
+        local base
+        local nwd
+        local fullwd
+        local retries
+        local count
 
+        url="$(trurl --qtrim "*" "$1")"
+        base=$(echo "${url##*//}" | cut -d\. -f1)
         nwd=${url##*/}
         fullwd="${base}/${nwd}"
         fullwd="bandcamp/${fullwd}"
 
         mkdir -p "$fullwd" 
-        cd "$fullwd" || return 1
-
-        #echo "$fullwd" 
-        #sleep 10
+        cd "$fullwd" || return
 
         ((retries=5))
         ((count=0))
-        #echo "$url"
-        until youtube-dl --ignore-config -x -ci --audio-format=vorbis "$url"; do
+        until yt-dlp --ignore-config -x -ci --audio-format=vorbis "$url"; do
                 if [[ "$retries" -le "$count" ]]; then
                         break
                 fi
@@ -36,12 +37,10 @@ function manage
         done
 
         if [[ "$retries" -le "$count" ]]; then
-                return 1
+                ((exit_status=1))
         fi
 
-
         cd "$wd" || cd ../..
-        return 0
 }
 cd /media/musik/.osorterat/oklart || (echo "Could not cd to oklart" && exit 1)
 
@@ -49,11 +48,11 @@ wd=$(pwd)
 ((r=0))
 if [[ "$#" -gt 0 ]]; then
         for url in "${@}"; do
-                ((r+=$(manage "$url")))
+                manage "$url"
         done
 else
         while read -r url; do
-                ((r+=$(manage "$url")))
+                manage "$url"
         done 
 fi
 

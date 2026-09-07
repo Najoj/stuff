@@ -10,7 +10,7 @@ source "$UTILS"
 DIR="${HOME}/src/ln"
 RET=0   # retries
 
-if ! required_programs deluge-console convert youtube-dl trurl disown; then
+if ! required_programs deluge-console convert yt-dlp trurl disown; then
         sleep 5
         exit 1
 fi
@@ -85,7 +85,7 @@ for URL in $@; do
                         "${HOME}"/src/minwget.sh "$URL" -O "$FILE"
                         TXT="film nedladdad"
                 else
-                        DURATION=$(youtube-dl --get-duration "$URL")
+                        DURATION=$(yt-dlp --get-duration "$URL")
                         if [[ "$DURATION" =~ ^1?.: ]]; then
                                 "${DIR}"/youtube.sh "${URL}" || RET=$((RET+1))
                                 TXT=$(youtube-dl --get-filename "${URL}")
