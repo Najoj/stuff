@@ -212,30 +212,32 @@ function progress_bar() {
 }
 
 # Unique lines in file
-function unique_lines() {
-        local file
-        local temp
-        local total
-        local c
-        file="$1"
-        temp="$(mktemp)"
+#function unique_lines() {
+        #local file
+        #local temp
+        #local total
+        #local c
 
-        if [[ -e "$file" ]]; then
-                total="$(wc -l "$file" | tr -cd "0-9")"
-                ((c=0))
-                progress_bar "$c" "$total"
+        #file="$1"
 
-                while read -r line; do
-                        ((c++))
-                        progress_bar "$c" "$total"
-                        sane="^$(sanitize_regex "$line")$"
-                        if ! grep -qE "$sane" "$temp"; then
-                                echo "$line" >> "$temp"
-                        fi
-                done < "$file"
-                mv -f "$temp" "$file"
-        else
-                return 1
-        fi
-}
+        #if [[ -e "$file" ]]; then
+                #temp="$(mktemp)"
+
+                #total="$(wc -l "$file" | tr -cd "0-9")"
+                #((c=0))
+                #progress_bar "$c" "$total"
+
+                #while read -r line; do
+                        #((c++))
+                        #progress_bar "$c" "$total"
+                        #sane="^$(sanitize_regex "$line")$"
+                        #if ! grep -qE "$sane" "$temp"; then
+                                #echo "$line" >> "$temp"
+                        #fi
+                #done < "$file"
+                #mv -f "$temp" "$file"
+        #else
+                #return 1
+        #fi
+#}
 
