@@ -12,6 +12,8 @@ import mutagen
 import os
 import sys
 
+from yt_dlp.plugins import directories
+
 # Tags of interest
 INFO = 'info'  # Extra parenthesized information (e. g. live, cover, etc.)
 TITLE = 'title'  # Name of track
@@ -134,6 +136,7 @@ def translate_characters(sentence):
     sentence = sentence.replace("´", "'")
     sentence = sentence.replace("’", "'")
     sentence = sentence.replace('…', '...')
+    sentence = sentence.replace(chr(0x0301), "'")
     return sentence
 
 
@@ -151,6 +154,7 @@ def main():
         elif arg == '-e':
             lang = 'e'
         else:
+            directory = os.path.dirname(arg)
             file = mutagen.File(arg)
             if not file:
                 print(f'{arg} is not a mutagen.File')
@@ -174,7 +178,7 @@ def main():
                 else:
                     before = file[tag][0]
                     after = capitalise(lang, before)
-                    file[tag][0] = after
+                    file.update({tag: after})
                     if before != after:
                         changed = True
                         print(f'{before} -> {after}')
@@ -211,7 +215,7 @@ def main():
                     artist = at[0]
                     title = at[1].rsplit('.')[0]
 
-                    changed = (artist == file[ARTIST][0]) or (title == file[TITLE][0])
+                    changed = (artist != file[ARTIST][0]) or (title != file[TITLE][0])
 
             if changed:
                 # New filename
@@ -231,7 +235,8 @@ def main():
                     artist = ' '.join(artist_split[1:]) + ', The'
                     file[ARTISTSORT][0] = artist
 
-                filename =  f'{artist} - {title}{info}.{ext}' 
+                filename =  f'{artist} - {title}{info}.{ext}'
+                filename = os.path.join(directory, filename)
 
                 if filename != arg:
                     answer = ''
