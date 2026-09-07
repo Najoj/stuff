@@ -5,6 +5,8 @@ SLEEP="${HOME}/src/sleep"
 MOCP_LOCK="${HOME}/.moc/lock"
 
 function _cleanup() {
+        local MPD_STATE
+        local MPD_PAUSE
         MPD_STATE="$(mpc status "%state%")"
         MPD_PAUSE="paused"
         mocp --pause
