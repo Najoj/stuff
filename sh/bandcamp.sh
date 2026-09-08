@@ -45,7 +45,6 @@ function manage
 cd /media/musik/.osorterat/oklart || (echo "Could not cd to oklart" && exit 1)
 
 wd=$(pwd)
-((r=0))
 if [[ "$#" -gt 0 ]]; then
         for url in "${@}"; do
                 manage "$url"
@@ -56,4 +55,4 @@ else
         done 
 fi
 
-exit "$r"
+exit "$exit_status"
