@@ -8,17 +8,16 @@ files.
 Will make an attempt of capitalising letters properly.
 """
 
-import mutagen
 import os
 import sys
 
-from yt_dlp.plugins import directories
+import mutagen
 
 # Tags of interest
-INFO = 'info'  # Extra parenthesized information (e. g. live, cover, etc.)
+INFO = 'info'  # Extra parenthesized information (e.g. live, cover, etc.)
 TITLE = 'title'  # Name of track
 ARTIST = 'artist'  # Name of artist or band
-ARTISTSORT = 'artistsort'  # Sortable name of artist (e. g. 'Beatles, The' and 'Lennon, John')
+ARTISTSORT = 'artistsort'  # Sortable name of artist (e.g. 'Beatles, The' and 'Lennon, John')
 
 
 def parent(word: str, first_word: bool) -> str:
@@ -133,6 +132,9 @@ def capitalise(lang: str, tag: str) -> str:
 
 
 def translate_characters(sentence):
+    """
+    Some simple character translations
+    """
     sentence = sentence.replace("´", "'")
     sentence = sentence.replace("’", "'")
     sentence = sentence.replace('…', '...')
@@ -203,7 +205,7 @@ def main():
                 if ((ARTIST in file and file[ARTISTSORT] == file[ARTIST])
                     or (not file[ARTISTSORT][0].strip())):
                     file.pop(ARTISTSORT)
-            
+
             # Save tags
             file.save()
 
@@ -220,10 +222,9 @@ def main():
             if changed:
                 # New filename
                 ext = arg.split('.')[-1]
-
-                artist = file[ARTIST][0] 
+                artist = file[ARTIST][0]
                 if ARTISTSORT in file and file[ARTISTSORT][0]:
-                    artist = file[ARTISTSORT][0] 
+                    artist = file[ARTISTSORT][0]
                 title = file[TITLE][0]
 
                 info = ''
