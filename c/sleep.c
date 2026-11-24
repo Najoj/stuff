@@ -117,7 +117,7 @@ void countdown()
         {
                 first = 1;
         }
-        elif (option == 0b1000)
+        else if (option == 0b1000)
         {
             printf("\r%id %02ih %02im %02is ", days, hours, minutes,
                     seconds);
@@ -132,9 +132,9 @@ void countdown()
             for(int i = 0; i < 6; i++) putchar('\b');
             printf("%02i:%02i ", minutes, seconds);
         }
-        else if (option == 0b0001)
+        else
         {
-            for(int i = 0; i < 4; i++) putchar('\b');
+            for (int i = 0; i < 4; i++) putchar('\b');
             printf("%02is ", seconds);
         }
 
