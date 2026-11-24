@@ -2,6 +2,8 @@
 command -v mpc grep mktemp > /dev/null || exit 1
 cd /media/musik || exit 1
 
+mpc -w update
+
 UNIKA=$(mktemp)
 mpc -f "%position% %file%" playlist | tac | \
         while IFS=' ' read -r pos file; do 
