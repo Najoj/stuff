@@ -190,14 +190,14 @@ def main():
             if artist_split[0] == 'The':
                 artistsort = ' '.join(artist_split[1:]) + ', The'
                 if ARTISTSORT not in file:
-                    file[ARTISTSORT] = []
+                    file[ARTISTSORT] = ()
                 file[ARTISTSORT][0] = artistsort
                 changed = True
 
             elif artist_split[0] == 'A':
                 artistsort = ' '.join(artist_split[1:]) + ', A'
                 if ARTISTSORT not in file:
-                    file[ARTISTSORT] = []
+                    file[ARTISTSORT] = ()
                 file[ARTISTSORT][0] = artistsort
                 changed = True
 
