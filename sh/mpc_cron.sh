@@ -144,7 +144,7 @@ fi
 
 ################################################################################
 #  Duplicated songs script
-echo -n "Duplicerade: "
+echo -n "Liknande låtar: "
 run_python "${HOME}/src/mpdups.py" | grep -c "These look the same:"
 echo ""
 
