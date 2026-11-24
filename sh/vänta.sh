@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
 if [ -z "${SLEEP}" ]; then
-    if [ -e "${HOME}"/src/sleep ]; then
-        SLEEP=${HOME}/src/sleep
-    else
+    SLEEP=${HOME}/bin/my_sleep
+    if ! [ -e "${HOME}"/src/sleep ]; then
         SLEEP=$(command -v sleep)
     fi
 fi
