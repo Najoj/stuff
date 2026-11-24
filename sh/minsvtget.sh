@@ -3,19 +3,25 @@
 SVTPLAYDL="${HOME}/src/svtplay-dl/svtplay-dl"
 FLAGS="--merge-subtitle"
 
-WD=$(pwd)
+WD=/media/video/nya
 URL=$1
 if [ -z "${URL}" ]; then
         echo "No URL argument"
         exit 2
 else
-        URL="$(trurl --url "$URL" --trim query=info)"
+        URL="$(trurl --url "$URL" --trim query=video --trim query=info)"
 fi
 
 TITLE="svtget" # ÄNDRA INTE
 echo -e '\033]2;'$TITLE'\007'
 
 TMP=".svtplay-dl-"
+TRGT=${URL#*/*/*/}
+if echo $TRGT | grep -q video; then
+        TRGT=${URL#*/*/*/*/*/}
+        TRGT=${TRGT%*/*}
+fi
+echo "$TRGT"
 
 # Remove stuck folders
 AGO=$(date --date="12 hours ago" +%s)
@@ -74,7 +80,8 @@ fi
 
 
 # Move files and remove files
-mv -nv -- *.* "$WD"
+mkdir -p "${WD}/${TRGT}"
+mv -nv -- *.* "${WD}/${TRGT}"
 cd .. && rmdir "$TMP_SHA"
 
 echo "Klar."
