@@ -11,7 +11,11 @@ fi
 if ! [ -e "$FILE" ]; then
         print_warning "Input file does not exist: $FILE"
         exit 1
-elif [ -e "$OUTPUT" ]; then
+fi
+if [ -d "$OUTPUT" ]; then
+        OUTPUT=${OUTPUT}/${FILE}
+fi
+if [ -e "$OUTPUT" ]; then
         print_warning "Output file does already exist: $OUTPUT"
         exit 1
 fi
