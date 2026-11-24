@@ -1,9 +1,25 @@
 #!/usr/bin/env bash
 
+FORCE_PAUSE=false
+if [[ $# -eq 1 ]]; then
+        if [[ $1 == "pause" ]]; then
+                FORCE_PAUSE=true
+        else
+                echo "Only acceptable option is \"pause\"" 1>&2
+        fi
+elif [[ $# -gt 1 ]]; then
+        echo "Only acceptable option is \"pause\"" 1>&2
+        exit 1
+fi
+
 MOCP_LOCK="${HOME}/.moc/lock"
 if ! [[ -e "$MOCP_LOCK" ]]; then
-        # MOCP script is not running
-        mpc toggle
+        if $FORCE_PAUSE; then
+                mpc pause
+        else
+                # MOCP script is not running
+                mpc toggle
+        fi
         exit 0
 fi
 
@@ -15,6 +31,8 @@ if ! required_programs mpc mocp ; then
         exit 1
 fi
 
+
+
 MOCP_PAUSE="PAUSE"
 MPD_PAUSE="paused"
 
@@ -24,7 +42,12 @@ MPD_STATE="$(mpc status "%state%")"
 MOCP_TIME="$(mocp -Q%cs)"
 MPD_TIME="$(mpc status "%currenttime%" | sed 's/:/*60+/' | bc)"
 
-if [ "$MPD_STATE" == "$MPD_PAUSE" ] && [ "$MOCP_STATE" == "$MOCP_PAUSE" ]; then
+if $FORCE_PAUSE; then
+        # Pause both
+        mocp --pause
+        mpc pause
+
+elif [ "$MPD_STATE" == "$MPD_PAUSE" ] && [ "$MOCP_STATE" == "$MOCP_PAUSE" ]; then
         # Both are paused. See which one was probably playing.
         if [ "$MOCP_TIME" -gt 2 ]; then
                 mocp --unpause
