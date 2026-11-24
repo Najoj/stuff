@@ -64,7 +64,7 @@ for URL in $@; do
                         TIME=30
                         i=0
                         FILE="$(date +%F-%T)-${RANDOM}.png"
-                        until wget -c "${URL}" -O- | convert - "${FILE}" && $LIMIT -le $i; do
+                        until wget -c "${URL}" -O- | convert - "${FILE}" && [[ $LIMIT -le $i ]]; do
                                 echo - en "försöker igen... om $TIME ($i/$LIMIT)"
                                 i=$((i + 1))
                         done || RET=$((RET + 1))
