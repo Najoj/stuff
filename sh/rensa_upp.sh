@@ -13,7 +13,7 @@ OSORT="false"
 TMP="$(mktemp)"
 FORD="${HOME}/.fördelade"
 FRAM="${HOME}/.framflyttade"
-ID3TAG="${HOME}/src/id3extract"
+ID3TAG="${HOME}/bin/binaries/id3extract"
 
 required_files "$ID3TAG" "$FORD" "$FRAM" "$DIR" || exit 1
 required_programs mpc flock || exit 1
@@ -30,6 +30,9 @@ else
 fi
 
 function clear_list {
+        local file
+        local artist
+
         file="${1}"
         artist="$(${ID3TAG} artist "${DIR}/${file}")"
         sed -i "/$artist/d" "$FORD"
@@ -88,7 +91,7 @@ cd "$DIR" || exit 1
 if $OSORT; then
         echo -e "\n================================================================================"
         echo -n "Undersöker .osorterat-mappen... "
-        if ls "${DIR}/.osorterat/"*.ogg > /dev/null || ls "${DIR}/.osorterat/"*.flac > /dev/null; then
+        if ls "${DIR}/.osorterat/"*.ogg > /dev/null; then
                 cd "${DIR}/.osorterat/" || exit 1
 
                 LIMITA=$(( (LIMIT-LENGTH) / 2))
@@ -109,7 +112,7 @@ if $OSORT; then
                 # populära artister
                 echo "Lägger till $LIMITB filer på måfå." 
                 cd "${DIR}/.osorterat/" || exit 1
-                find . -maxdepth 1 -type f -and \( -name "*.flac" -or -name "*.ogg" \) \
+                find . -maxdepth 1 -type f -name "*.ogg" \
                         | shuf | tail -n $LIMITB | while read -r track; do
                         if [[ -e "$track" ]]; then
                                 car "${track}" "${DIR}/${track}"   && \
@@ -125,7 +128,7 @@ fi
 cd "$DIR" || exit 1
 echo -e "\n================================================================================"
 echo "Flyttar på band som börjar med \"The\"." 
-find . -maxdepth 1 -type f -name 'The *' -a '(' -name '*\.flac' -o -name '*\.ogg'  ')' | \
+find . -maxdepth 1 -type f -name 'The *' -name '*\.ogg' | \
 while read -r band; do
         newband="${band#./The }" 
         newband="${newband// - /, The - }"
@@ -161,7 +164,7 @@ for band in "${bands[@]}"; do
                 band=${band#./}
                 find . -name "${band} - "\* | sed -E 's/.+ - //' | \
                 while read -r title; do
-                        mv -vn -- "${band} - ${title}" "${title}"   && \
+                        car "${band} - ${title}" "${title}"   && \
                         mpc -wq update                          && \
                         mpc -w add "${band#./}/${title}"
                 done
@@ -182,7 +185,7 @@ echo "Undersöker om några band ska ha mappar."
 
 mapfile -t bands < <(find . -maxdepth 1 -name \*" - "\* -type f | \
         grep -Ev '.(omslag|spellistor|osorterat|torrenter)' | \
-        sed 's/ - /\n/' | grep -Ev "\\.(ogg|flac)"$ )
+        sed 's/ - /\n/' | grep -Ev "\\.ogg"$ )
 ((bandc=0))
 for band in "${bands[@]}"; do
         progress_bar "$bandc" "${#bands[@]}"
