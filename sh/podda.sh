@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 source "${HOME}/src/utils.sh" || exit 1
 
-SLEEP="${HOME}/src/sleep"
+SLEEP="${HOME}/bin/binaries/my_sleep"
 MOCP_LOCK="${HOME}/.moc/lock"
 
 function _cleanup() {
