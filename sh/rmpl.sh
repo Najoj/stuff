@@ -21,7 +21,7 @@ elif [[ "$1" == "cleanup" ]]; then
                         echo "$file"
                         if [ "${file: -5}" == ".flac" ] || [ "${file: 0:1}" == "#" ]; then
                                 if [ "${file: 0:1}" == "#" ]; then
-                                        # if line starts with '#', then only remove ogg from playlist
+                                        # if line starts with '#', then only remove from playlist
                                         file="${file:1}"
                                 fi
                                 mpc -f "%position% %file%" playlist |\
@@ -34,7 +34,8 @@ elif [[ "$1" == "cleanup" ]]; then
                                 rm "${ROOT}/${file}"
                         fi
 
-                done
+                done | nl
                 cp "$DELETE_ME" "$DELETE_ME".backup
                 grep -F "$CURRENT" "$DELETE_ME".backup > "$DELETE_ME" 2> /dev/null || true
 fi
+
