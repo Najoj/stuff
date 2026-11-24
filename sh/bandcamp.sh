@@ -28,7 +28,7 @@ function manage
 
         ((retries=5))
         ((count=0))
-        until yt-dlp --ignore-config -x -ci --audio-format=vorbis "$url"; do
+        until ~/.mython/bin/python -m yt_dlp --ignore-config -x -ci --audio-format=vorbis "$url"; do
                 if [[ "$retries" -le "$count" ]]; then
                         break
                 fi
