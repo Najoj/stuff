@@ -17,6 +17,7 @@ function lock {
 function extra {
         lock
         echo "Full uppgradering."
+        date +"%F %T"
 
         sudo su -c \
             "   apt-get $Q update                                           && \
@@ -34,6 +35,7 @@ function extra {
 function regular {
         lock
         echo "Normal uppgradering."
+        date +"%F %T"
 
 
         sudo su -c \
@@ -65,13 +67,13 @@ function check_update {
                 REGULARL=$((REGULAR+SMALL_LIMIT))
 
                 # If limit is passed to one thing or the other thing
-                if [ "$NOW" -gt "$EXTRAL" ]; then
-                        extra
-                elif [ "$NOW" -gt "$REGULARL" ]; then
-                        regular
+                if (( NOW > EXTRAL )); then
+                        extra   2>&1 
+                elif (( NOW >  REGULARL )); then
+                        regular 2>&1 
                 fi
         else
-                extra
+                extra 
         fi
 }
 
@@ -114,7 +116,7 @@ function updatedates {
         fi
 }
 
-if ! required_programs fdupes apt-cache apt-get bc zcat gunzip date echo grep head less sed flock; then
+if ! required_programs fdupes apt-cache apt-get apt bc zcat gunzip date echo grep head less sed flock; then
         exit 1
 fi
 
@@ -122,15 +124,16 @@ fi
 FILE="${HOME}/.updatedate.gz"
 EXTRA=$(gunzip -c "$FILE" | head -n 1)
 REGULAR=$(gunzip -c "$FILE" | tail -n 1)
+LOG="${HOME}/.update.log"
 # Sekunder
-BIG_LIMIT=$(( 365*60*60*24 / 12  ))
-SMALL_LIMIT=$(( BIG_LIMIT / 16 ))
+BIG_LIMIT=$(( 365*60*60*24 / 12  )) # Once a month
+SMALL_LIMIT=$(( BIG_LIMIT / 8 ))   # Eight times a month
 NOW=$(date +%s)
 
 # Lyckovariabel
 SAVE=true
 
-if [ $# -gt 1 ]; then
+if (( $#  > 1 )); then
         echo "Only one argument is allowed." 1>&2
 else
         case "${1}" in
@@ -141,7 +144,7 @@ else
                         echo "less $0"
                         ;;
                 -s)
-                        regular
+                        regular | tee -a "$LOG"
                         ;;
                 -ts)
                         EXTRA=$(zcat "$FILE" | head -n 1)
@@ -150,7 +153,7 @@ else
                         EXTRAL=$((EXTRA+BIG_LIMIT-NOW))
                         REGULARL=$((REGULAR+SMALL_LIMIT-NOW))
 
-                        if [ $EXTRAL -gt $REGULARL ]; then
+                        if (( EXTRAL > REGULARL )); then
                                 echo $REGULARL
                         else
                                 echo $EXTRAL
@@ -170,10 +173,10 @@ else
                         fi
                         ;;
                 -x)
-                        extra
+                        extra | tee "$LOG"
                         ;;
                 *)
-                        check_update
+                        check_update | tee -a "$LOG"
                         ;;
         esac
 fi
