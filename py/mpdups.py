@@ -29,6 +29,9 @@ class Song:
 
     def __repr__(self):
         return str(self)
+    
+    def __lt__(self, other):
+        return self.filename < other.filename
 
 
 def print_warning(message):
@@ -175,10 +178,11 @@ whitelist = []
 deletelist = []
 for at_key in all_songs:
     delete = ''
-    if len(all_songs[at_key]) > 1 and at_key not in whitelisted:
+    sorted_list = sorted(all_songs[at_key])
+    if len(sorted_list) > 1 and at_key not in whitelisted:
         print('These look the same:')
         i = 0
-        for file in all_songs[at_key]:
+        for file in sorted_list:
             print(i, file)
             i += 1
 
@@ -196,11 +200,11 @@ for at_key in all_songs:
                 if delete[0] == 'q':
                     sys.exit(0)
                 if delete[0] == 'w':
-                    whitelist.extend(all_songs[at_key])
+                    whitelist.extend(sorted_list)
                 elif delete[0] == 'd':
                     position = delete[1]
                     position = int(position)
-                    deletelist.append(all_songs[at_key][position])
+                    deletelist.append(sorted_list[position])
 if ASK:
     _whitelist(whitelist)
     _delete(deletelist)
