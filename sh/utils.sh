@@ -67,7 +67,7 @@ function car () {
 	if [ $# -ne 2 ]
 	then
         echo "Usage: car [-f] \"file1\" \"file2\""
-		echo "if stat -c of file1 is greater than that of file2,"
+		echo "if stat -c%s of file1 is greater than that of file2,"
 		echo "replace file2 with file1, otherwise remove file1"
         echo "Optional first argument -f suppress promt, instead forces removals"
 		return 1
@@ -125,8 +125,16 @@ function run_python() {
 
 # Sanitize before regex usage
 function sanitize_regex() {
-    local input="$1"
+    local input
     local sanitized
+
+    if [[ $# -gt 0 ]]; then
+            input="$1"
+    else
+            # read form stdin
+            input=$(cat)
+    fi
+
     # Escape special regex characters
     # shellcheck disable=SC2016
     sanitized=$(printf '%s\n' "$input" | sed 's/[.*+?[^$(){}|\\]/\\&/g')
@@ -189,7 +197,7 @@ function progress_bar() {
         if is_int "$1" && is_int "$2" && [[ $1 -le $2 ]] && [[ $1 -ge 0 ]] && [[ $2 -gt 0 ]]; then
                 local current=$1
                 local len=$2
-                local perc_done=$((100 * current / len))
+                local perc_done=$(((100 * current / len) + (1/2)))
                 local length=$((LEN - 2))
                 local num_bars=$((perc_done * length / 100))
 
@@ -206,6 +214,11 @@ function progress_bar() {
                 s+=']'
 
                 >&2 printf "\r%s %'d / %'d (%d%%)" "$s" "$current" "$len" "$perc_done"
+
+                if [[ $current == $len ]]; then
+                        echo ""
+                        return 1 # debatable
+                fi
         else
                 return 1
         fi
