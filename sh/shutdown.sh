@@ -25,6 +25,21 @@ function forall
         pause_player
         all_downloaded
         remove_stuff
+        save_lists
+}
+
+function save_lists
+{
+        local DIR 
+        local DATE
+        DIR="${HOME}/gitspara"
+        DATE="$(date +"%F %T")"
+        if [[ -d "$DIR" ]]; then
+                cd "$DIR" || return
+                git add songs
+                git commit -m "songs ${DATE}"
+                cd -
+        fi
 }
 
 function all_downloaded
