@@ -50,6 +50,12 @@ def get_day_of_week(year, month, day):
     6
     >>> get_day_of_week(2022, 7, 25)
     0
+    >>> get_day_of_week(2022, 2, 29)
+    Traceback (most recent call last):
+      ...
+    ValueError: day is out of range for month
+    >>> get_day_of_week(2024, 2, 29)
+    3
 
     :param day:
     :param month:
